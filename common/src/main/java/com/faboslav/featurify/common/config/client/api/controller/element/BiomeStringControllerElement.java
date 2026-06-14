@@ -1,0 +1,269 @@
+package com.faboslav.featurify.common.config.client.api.controller.element;
+
+import com.faboslav.featurify.common.Featurify;
+import com.faboslav.featurify.common.config.client.api.controller.BiomeStringController;
+import com.faboslav.featurify.common.platform.ModIconInfo;
+import com.faboslav.featurify.common.platform.PlatformHooks;
+import com.faboslav.featurify.common.util.LanguageUtil;
+import dev.isxander.yacl3.api.utils.Dimension;
+import dev.isxander.yacl3.gui.YACLScreen;
+import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownControllerElement;
+import dev.isxander.yacl3.gui.image.impl.ResourceTextureImage;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Optional;
+
+//? if >= 1.21.6 {
+/*import net.minecraft.client.renderer.RenderPipelines;
+*///?}
+
+//? if < 1.21.5 {
+import com.mojang.blaze3d.systems.RenderSystem;
+ //?}
+
+//? if >= 1.21.3 {
+/*import net.minecraft.client.renderer.RenderType;
+*///?}
+
+//? if >= 26.1 {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+ *///?} else {
+import net.minecraft.client.gui.GuiGraphics;
+//?}
+
+/**
+ * Related code is based on LibBamboo: Utility library mod with permissions from the author
+ *
+ * @author Crendgrim
+ * <a href="https://github.com/Crendgrim/libbamboo</a>
+ */
+public final class BiomeStringControllerElement extends AbstractDropdownControllerElement<String, String>
+{
+	private final BiomeStringController biomeStringController;
+
+
+	public BiomeStringControllerElement(BiomeStringController control, YACLScreen screen, Dimension<Integer> dim) {
+		super(control, screen, dim);
+		this.biomeStringController = control;
+	}
+
+	@Override
+		//? if >= 26.1 {
+	/*protected void extractValueText(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta)
+	 *///?} else {
+	protected void drawValueText(GuiGraphics graphics, int mouseX, int mouseY, float delta)
+	//?}
+	{
+		var oldDimension = getDimension();
+		setDimension(getDimension().withWidth(getDimension().width() - getDecorationPadding()));
+		//? if >= 26.1 {
+		/*super.extractValueText(graphics, mouseX, mouseY, delta);
+		 *///?} else {
+		super.drawValueText(graphics, mouseX, mouseY, delta);
+		//?}
+		setDimension(oldDimension);
+
+		int imageX = getDimension().xLimit() - getXPadding() - getDecorationPadding() + 4;
+		int imageY = getDimension().y() + 4;
+		this.renderBiomeImage(this.biomeStringController.option().pendingValue(), graphics, imageX, imageY, delta);
+	}
+
+	@Override
+	public List<String> computeMatchingValues() {
+		var matchingValues = this.biomeStringController.getAllowedValues(this.inputField).stream().filter(this::matchingValue).sorted((s1, s2) -> {
+
+			if (s1.startsWith(this.inputField) && !s2.startsWith(this.inputField)) {
+				return -1;
+			} else {
+				return !s1.startsWith(this.inputField) && s2.startsWith(this.inputField) ? 1:s1.compareTo(s2);
+			}
+		}).toList();
+
+		return matchingValues;
+	}
+
+	@Override
+	public boolean matchingValue(String value) {
+		var slugifiedValue = inputField.toLowerCase().replace(" ", "_");
+		var slugifiedBiome = value.toLowerCase().replace(" ", "_");
+		var slugifiedTranslatedBiome = LanguageUtil.translateId("biome", value).getString().toLowerCase().replace(" ", "_");
+
+		return slugifiedBiome.contains(slugifiedValue) || slugifiedTranslatedBiome.contains(slugifiedValue) || super.matchingValue(value);
+	}
+
+	public Component getTranslatedBiome(String biome) {
+		return LanguageUtil.translateId("biome", biome).append((" (" + biome + ") "));
+	}
+
+	@Override
+	public String getString(String biome) {
+		// Dropdown value
+		return this.getTranslatedBiome(biome).getString();
+	}
+
+	@Override
+	protected int getDecorationPadding() {
+		return 16;
+	}
+
+	@Override
+	protected int getDropdownEntryPadding() {
+		return 4;
+	}
+
+	@Override
+		//? if >= 26.1 {
+	/*protected void extractDropdownEntry(GuiGraphicsExtractor graphics, Dimension<Integer> entryDimension, String value)
+	 *///?} else {
+	protected void renderDropdownEntry(GuiGraphics graphics, Dimension<Integer> entryDimension, String value)
+	//?}
+	{
+		//? if >= 26.1 {
+		/*super.extractDropdownEntry(graphics, entryDimension, value);
+		 *///?} else {
+		super.renderDropdownEntry(graphics, entryDimension, value);
+		//?}
+
+		int imageX = entryDimension.xLimit() - 1;
+		int imageY = entryDimension.y() + 4;
+		this.renderBiomeImage(value, graphics, imageX, imageY, 1);
+	}
+
+	@Override
+	protected int getControlWidth() {
+		return super.getControlWidth() + getDecorationPadding();
+	}
+
+	@Override
+	protected Component getValueText() {
+		if (inputField.isEmpty() || biomeStringController == null) {
+			return super.getValueText();
+		}
+
+		if (inputFieldFocused) {
+			return Component.literal(inputField);
+		}
+
+		var pendingValue = this.biomeStringController.option().pendingValue();
+
+		if (pendingValue.contains(":")) {
+			return this.getTranslatedBiome(this.biomeStringController.option().pendingValue());
+		}
+
+		return Component.literal(pendingValue);
+	}
+
+	private void renderBiomeImage(
+		String biomeName,
+		//? if >= 26.1 {
+		/*GuiGraphicsExtractor graphics,
+		 *///?} else {
+		GuiGraphics graphics,
+		//?}
+		int x,
+		int y,
+		float delta
+	) {
+		Optional<ResourceLocation> biomeIcon;
+
+		if(biomeName.contains("#c:")) {
+			biomeIcon = Optional.of(Featurify.makeNamespacedId("minecraft:textures/item/bundle.png"));
+		} else if(biomeName.contains("#minecraft:")) {
+			biomeIcon = Optional.of(Featurify.makeId("textures/gui/config/images/biomes/minecraft.png"));
+		} else if(biomeName.contains("#forge:")) {
+			biomeIcon = Optional.of(Featurify.makeId("textures/gui/config/images/biomes/forge.png"));
+		} else {
+			biomeIcon = this.tryToGetBiomeIcon(biomeName);
+		}
+
+		if (biomeIcon.isPresent()) {
+			try {
+				ResourceTextureImage.createFactory(biomeIcon.get(), 0.0F, 0.0F, 16, 16, 16, 16).prepareImage().completeImage().render(graphics,
+					x,
+					y,
+					11,
+					delta
+				);
+				return;
+			} catch (Exception e) {
+				// Ignore
+			}
+		}
+
+		var modIcon = this.tryToGetModIcon(biomeName);
+
+		if(modIcon.isPresent()) {
+			try {
+				var iconWidth = 11;
+				var iconHeight = 11;
+				var modIconId = modIcon.get().location();
+				var modIconWidth = modIcon.get().width();
+				var modIconHeight = modIcon.get().height();
+
+				//? if < 1.21.5 {
+				RenderSystem.setShaderTexture(0, modIconId);
+				 //?}
+
+				//? if >= 1.21.6 {
+				/*graphics.blit(RenderPipelines.GUI_TEXTURED, modIconId, x, y, 0.0F, 0.0F, iconWidth, iconHeight, modIconWidth, modIconHeight, modIconWidth, modIconHeight);
+				*///?} else if >= 1.21.3 {
+				/*graphics.blit(RenderType::guiTextured, modIconId, x, y, iconWidth, iconHeight, 0, 0, modIconWidth, modIconHeight, modIconWidth, modIconHeight);
+				 *///?} else {
+				graphics.blit(modIconId, x, y, iconWidth, iconHeight, 0.0F, 0.0F, modIconWidth, modIconHeight, modIconWidth, modIconHeight);
+				 //?}
+				return;
+			} catch (Exception e) {
+				// Ignore
+			}
+		}
+
+		var unknownIcon = Featurify.makeId("textures/gui/config/images/biomes/unknown.png");
+
+		try {
+			ResourceTextureImage.createFactory(unknownIcon, 0.0F, 0.0F, 16, 16, 16, 16).prepareImage().completeImage().render(graphics,
+				x,
+				y,
+				11,
+				delta
+			);
+		} catch (Exception e) {
+			// Ignore
+		}
+	}
+
+	private Optional<ResourceLocation> tryToGetBiomeIcon(String biomeName) {
+		ResourceLocation imageId;
+
+		if(biomeName.contains("#")) {
+			return Optional.empty();
+		} else if (!biomeName.contains(":")) {
+			imageId = Featurify.makeId("textures/gui/config/images/biomes/unknown.png");
+		} else {
+			biomeName = Featurify.makeNamespacedId(biomeName).getPath();
+			imageId = Featurify.makeId("textures/gui/config/images/biomes/" + biomeName + ".png");
+
+			ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+
+			try {
+				var resource = resourceManager.getResourceOrThrow(imageId);
+				resource.source().close();
+			} catch (FileNotFoundException e) {
+				return Optional.empty();
+			}
+		}
+
+		return Optional.of(imageId);
+	}
+
+	private Optional<ModIconInfo> tryToGetModIcon(String biomeName) {
+		biomeName = biomeName.startsWith("#") ? biomeName.substring(1) : biomeName;
+		var modName = Featurify.makeNamespacedId(biomeName).getNamespace();
+
+		return PlatformHooks.PLATFORM_HELPER.getModIconInfo(modName);
+	}
+}
