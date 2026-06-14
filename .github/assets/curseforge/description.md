@@ -1,7 +1,7 @@
 <br>
 
 <p style="text-align: center;">
-	<img title="Featurify" src="https://raw.githubusercontent.com/Faboslav/featurify/master/.github/assets/images/logo/logo.png" alt="Featurify" width="743">
+	<img title="Featurify" src="https://raw.githubusercontent.com/Faboslav/featurify/refs/heads/master/.github/assets/images/logo/logo.png" alt="Featurify" width="743">
 </p>
 
 <br>

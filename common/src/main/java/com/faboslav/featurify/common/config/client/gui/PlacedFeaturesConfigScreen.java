@@ -7,13 +7,18 @@ import com.faboslav.featurify.common.config.client.api.controller.builder.Struct
 import com.faboslav.featurify.common.config.client.api.option.InvisibleOptionGroup;
 import com.faboslav.featurify.common.config.data.PlacedFeatureData;
 import com.faboslav.featurify.common.config.data.WorldgenDataProvider;
+import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.common.util.Comparators;
 import com.faboslav.featurify.common.util.LanguageUtil;
 import com.faboslav.featurify.common.util.YACLUtil;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.gui.YACLScreen;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 
 import java.util.*;
 
@@ -35,6 +40,7 @@ public final class PlacedFeaturesConfigScreen
 	private static void addPlacedFeatures(ConfigCategory.Builder placedFeaturesCategoryBuilder, FeaturifyConfig config) {
 		var placedFeatures = WorldgenDataProvider.getPlacedFeatures();
 		var placedFeatureGroups = new TreeMap<String, TreeMap<ResourceLocation, PlacedFeatureData>>(Comparators.ALPHABETICALL_NAMESPACE_COMPARATOR);
+		var biomeRegistry = RegistryManagerProvider.getBiomeRegistry();
 
 		for (Map.Entry<String, PlacedFeatureData> entry : placedFeatures.entrySet()) {
 			String placedFeatureStringId = entry.getKey();
@@ -61,7 +67,7 @@ public final class PlacedFeaturesConfigScreen
 			for (var namespacePlacedFeature : namespacePlacedFeatures.entrySet()) {
 				var placedFeatureData = namespacePlacedFeature.getValue();
 				var placedFeatureStringId = namespacePlacedFeature.getKey().toString();
-				var placedFeatureOption = addPlacedFeature(placedFeatureData, placedFeatureStringId);
+				var placedFeatureOption = addPlacedFeature(placedFeatureData, placedFeatureStringId, biomeRegistry);
 				namespaceGroupBuilder.option(placedFeatureOption);
 				placedFeaturesOptions.add(placedFeatureOption);
 			}
@@ -76,7 +82,8 @@ public final class PlacedFeaturesConfigScreen
 
 	private static Option<Boolean> addPlacedFeature(
 		PlacedFeatureData placedFeatureData,
-		String placedFeatureId
+		String placedFeatureId,
+		HolderLookup.RegistryLookup<Biome> biomeRegistry
 	) {
 		var placedFeatureName = LanguageUtil.translatePlacedFeatureId(placedFeatureId);
 
@@ -109,6 +116,31 @@ public final class PlacedFeaturesConfigScreen
 
 		structureOptionBuilder.description(v -> {
 			var descriptionBuilder = OptionDescription.createBuilder();
+
+			if(!placedFeatureData.getBiomes().isEmpty()) {
+				descriptionBuilder.text(Component.translatable("gui.featurify.placed_features.biomes_description").append(Component.literal("\n")));
+
+				for (String biome : placedFeatureData.getBiomes()) {
+					if (biome.contains("#")) {
+						if (biomeRegistry == null) {
+							continue;
+						}
+
+						var biomeTagKey = TagKey.create(Registries.BIOME, Featurify.makeNamespacedId(biome.replace("#", "")));
+						var biomeTagHolder = biomeRegistry.get(biomeTagKey).orElse(null);
+
+						if (biomeTagHolder == null) {
+							continue;
+						}
+
+						for (var biomeHolder : biomeTagHolder.stream().toList()) {
+							descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", biomeHolder.unwrap().left().get()/*? if >= 1.21.11 {*//*.identifier()*//*?} else {*/.location()/*?}*/.toLanguageKey())));
+						}
+					} else {
+						descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", biome)));
+					}
+				}
+			}
 
 			return descriptionBuilder.build();
 		});
