@@ -1,6 +1,5 @@
 package com.faboslav.featurify.common.config.data;
 
-import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.common.util.Comparators;
 import net.minecraft.core.Holder;
@@ -42,9 +41,10 @@ public final class WorldgenDataProvider
 
 		List<String> biomes = new ArrayList<>();
 
+		/*
 		for (var biomeTag : biomeRegistry.listTags().toList()) {
 			biomes.add('#' + biomeTag.unwrapKey().get().location().toString());
-		}
+		}*/
 
 		for (var biome : biomeRegistry.listElements().toList()) {
 			biomes.add(biome.unwrapKey().get()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString());
