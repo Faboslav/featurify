@@ -33,7 +33,8 @@ public final class FeaturifyConfig
 
 	private static final String CONFIG_VERSION_PROPERTY = "config_version";
 	private static final String CONFIG_DATETIME_PROPERTY = "config_datetime";
-	private static final String GENERAL_PROPERTY = "general";
+	private static final String GLOBAL_PROPERTY = "global";
+	private static final String DISABLE_ALL_PLACED_FEATURES_PROPERTY = "disable_all_placed_features";
 
 	private static final String PLACED_FEATURES_PROPERTY = "placed_features";
 
@@ -68,6 +69,7 @@ public final class FeaturifyConfig
 			String jsonString = Files.readString(configPath);
 			JsonObject json = gson.fromJson(jsonString, JsonObject.class);
 
+			loadGlobal(json);
 			loadPlacedFeatures(json);
 
 			Featurify.getLogger().info("Featurify config loaded");
@@ -77,6 +79,18 @@ public final class FeaturifyConfig
 			e.printStackTrace();
 		} finally {
 			this.isLoading = false;
+		}
+	}
+
+	private void loadGlobal(JsonObject json) {
+		if (!json.has(GLOBAL_PROPERTY)) {
+			return;
+		}
+
+		var global = json.getAsJsonObject(GLOBAL_PROPERTY);
+
+		if (global.has(DISABLE_ALL_PLACED_FEATURES_PROPERTY)) {
+			this.disableAllPlacedFeatures = global.get(DISABLE_ALL_PLACED_FEATURES_PROPERTY).getAsBoolean();
 		}
 	}
 
@@ -135,6 +149,7 @@ public final class FeaturifyConfig
 
 			json.addProperty(CONFIG_VERSION_PROPERTY, PlatformHooks.PLATFORM_HELPER.getModVersion());
 			json.addProperty(CONFIG_DATETIME_PROPERTY, LocalDateTime.now().format(DATETIME_FORMATTER));
+			this.saveGlobalData(json);
 			this.savePlacedFeaturesData(json, true);
 
 			Files.createDirectories(configPath.getParent());
@@ -182,6 +197,7 @@ public final class FeaturifyConfig
 
 			json.addProperty(CONFIG_VERSION_PROPERTY, PlatformHooks.PLATFORM_HELPER.getModVersion());
 			json.addProperty(CONFIG_DATETIME_PROPERTY, LocalDateTime.now().format(DATETIME_FORMATTER));
+			this.saveGlobalData(json);
 			this.savePlacedFeaturesData(json, false);
 
 			Files.createDirectories(configDumpPath.getParent());
@@ -194,6 +210,14 @@ public final class FeaturifyConfig
 			e.printStackTrace();
 		}
 	}
+
+	private void saveGlobalData(JsonObject json) {
+		JsonObject general = new JsonObject();
+		general.addProperty(DISABLE_ALL_PLACED_FEATURES_PROPERTY, this.disableAllPlacedFeatures);
+
+		json.add(GLOBAL_PROPERTY, general);
+	}
+
 
 	private void savePlacedFeaturesData(JsonObject json, boolean saveOnlyChanged) {
 		JsonArray placedFeatures = new JsonArray();

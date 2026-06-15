@@ -19,8 +19,7 @@ public class PlacedFeatureMixin implements FeaturifyPlacedFeature
 	@Unique
 	@Nullable
 	public ResourceLocation featurify$resourceLocation = null;
-
-
+	
 	@Override
 	public void featurify$setResourceLocation(@Nullable ResourceLocation resourceLocation) {
 		this.featurify$resourceLocation = resourceLocation;
@@ -40,8 +39,14 @@ public class PlacedFeatureMixin implements FeaturifyPlacedFeature
 		BlockPos pos,
 		Operation<Boolean> original
 	) {
+			var config = Featurify.getConfig();
+
+			if(config.disableAllPlacedFeatures) {
+				return false;
+			}
+
 			var placedFeatureId = this.featurify$getResourceLocation();
-			var placedFeatureData = Featurify.getConfig().getPlacedFeatureData();
+			var placedFeatureData = config.getPlacedFeatureData();
 
 			if(placedFeatureId == null || !placedFeatureData.containsKey(placedFeatureId.toString())) {
 				return original.call(context, source, pos);

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface FeaturifyPlacedFeature
 {
-	void featurify$setResourceLocation(@Nullable ResourceLocation structureSetResourceLocation);
+	void featurify$setResourceLocation(@Nullable ResourceLocation placedFeatureResourceLocation);
 
 	@Nullable
 	ResourceLocation featurify$getResourceLocation();

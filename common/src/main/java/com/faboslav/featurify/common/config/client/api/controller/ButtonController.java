@@ -25,34 +25,34 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.GuiGraphics;
 	//?}
 
-public class StructureButtonController extends BooleanController
+public class ButtonController extends BooleanController
 {
 	@FunctionalInterface
 	public interface OpenConfigCallback {
 		void openConfig(YACLScreen parentScreen, String id);
 	}
 
-	private final String structureId;
+	private final String id;
 	private final OpenConfigCallback openConfigCallback;
 	private final String buttonTooltip;
 
-	public StructureButtonController(
+	public ButtonController(
 		Option<Boolean> option,
-		String structureId,
+		String id,
 		Function<Boolean, Component> valueFormatter,
 		boolean coloured,
 		OpenConfigCallback openConfigCallback,
 		String buttonTooltip
 	) {
 		super(option, valueFormatter, coloured);
-		this.structureId = structureId;
+		this.id = id;
 		this.openConfigCallback = openConfigCallback;
 		this.buttonTooltip = buttonTooltip;
 	}
 
 	@Override
 	public AbstractWidget provideWidget(YACLScreen screen, Dimension<Integer> widgetDimension) {
-		return new BooleanWithConfigButtonWidget(this, screen, widgetDimension, structureId, openConfigCallback, buttonTooltip);
+		return new BooleanWithConfigButtonWidget(this, screen, widgetDimension, id, openConfigCallback, buttonTooltip);
 	}
 
 	public static final class BooleanWithConfigButtonWidget extends AbstractWidget
@@ -61,7 +61,7 @@ public class StructureButtonController extends BooleanController
 		private static final int CONFIG_BUTTON_HEIGHT = 20;
 
 		private final YACLScreen screen;
-		private final String structureId;
+		private final String id;
 		private final OpenConfigCallback openConfigCallback;
 		private final String buttonTooltip;
 
@@ -74,14 +74,14 @@ public class StructureButtonController extends BooleanController
 			BooleanController controller,
 			YACLScreen screen,
 			Dimension<Integer> dim,
-			String structureId,
+			String id,
 			OpenConfigCallback openConfigCallback,
 			String buttonTooltip
 		) {
 			super(dim);
 
 			this.screen = screen;
-			this.structureId = structureId;
+			this.id = id;
 			this.openConfigCallback = openConfigCallback;
 			this.buttonTooltip = buttonTooltip;
 
@@ -95,13 +95,13 @@ public class StructureButtonController extends BooleanController
 				CONFIG_BUTTON_HEIGHT,
 				1.0f,
 				Component.literal("\u2699").withStyle(style -> style.withBold(true)),
-				button -> this.openConfigCallback.openConfig(this.screen, this.structureId)
+				button -> this.openConfigCallback.openConfig(this.screen, this.id)
 			);
 
 			this.configurationButton.setTooltip(Tooltip.create(
 				Component.translatable(
 					this.buttonTooltip,
-					LanguageUtil.translateId("structure", structureId)
+					LanguageUtil.translateId("placed_feature", id)
 				)
 			));
 

@@ -20,14 +20,12 @@ public final class PlacedFeatureConfigScreen
 			.save(config::save);
 
 		var placedFeatureData = config.getPlacedFeatureData().get(placedFeatureId);
-		var translatedStructureName = LanguageUtil.translatePlacedFeatureId(placedFeatureId);
+		var translatedPlacedFeatureName = LanguageUtil.translatePlacedFeatureId(placedFeatureId);
 		var placedFeatureCategoryBuilder = ConfigCategory.createBuilder()
-			.name(Component.translatable("gui.featurify.placed_features.placed_feature.title", translatedStructureName))
-			.tooltip(Component.translatable("gui.featurify.placed_features.placed_feature.description", translatedStructureName));
+			.name(Component.translatable("gui.featurify.placed_features.placed_feature.title", translatedPlacedFeatureName))
+			.tooltip(Component.translatable("gui.featurify.placed_features.placed_feature.description", translatedPlacedFeatureName));
 
 		var placedFeatureSettingsGroup = new InvisibleOptionGroup.Builder().name(Component.literal("test"));
-
-		//placedFeatureSettingsGroup.option(LabelOption.create(Component.translatable("gui.featurify.placed_features.structures.structure.title").withStyle(style -> style.withBold(true))));
 
 		var isDisabledOption = Option.<Boolean>createBuilder()
 			.name(Component.translatable("gui.featurify.placed_features.placed_feature.is_disabled.title"))
@@ -46,7 +44,7 @@ public final class PlacedFeatureConfigScreen
 		if(!placedFeatureData.getDefaultBiomes().isEmpty()) {
 			var biomesOption = ListOption.<String>createBuilder()
 				.name(Component.translatable("gui.featurify.placed_features.placed_feature.biomes.title"))
-				.description(OptionDescription.of(Component.translatable("gui.featurify.placed_features.placed_feature.biomes.description", translatedStructureName)))
+				.description(OptionDescription.of(Component.translatable("gui.featurify.placed_features.placed_feature.biomes.description", translatedPlacedFeatureName)))
 				.insertEntriesAtEnd(false)
 				.binding(
 					placedFeatureData.getDefaultBiomes(),

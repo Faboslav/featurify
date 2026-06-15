@@ -3,7 +3,7 @@ package com.faboslav.featurify.common.config.client.gui;
 import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.FeaturifyClient;
 import com.faboslav.featurify.common.config.FeaturifyConfig;
-import com.faboslav.featurify.common.config.client.api.controller.builder.StructureButtonControllerBuilder;
+import com.faboslav.featurify.common.config.client.api.controller.builder.ButtonControllerBuilder;
 import com.faboslav.featurify.common.config.client.api.option.InvisibleOptionGroup;
 import com.faboslav.featurify.common.config.data.PlacedFeatureData;
 import com.faboslav.featurify.common.config.data.WorldgenDataProvider;
@@ -12,7 +12,9 @@ import com.faboslav.featurify.common.util.Comparators;
 import com.faboslav.featurify.common.util.LanguageUtil;
 import com.faboslav.featurify.common.util.YACLUtil;
 import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.gui.YACLScreen;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -32,9 +34,37 @@ public final class PlacedFeaturesConfigScreen
 			.name(Component.translatable("gui.featurify.placed_features_category.title"))
 			.tooltip(Component.translatable("gui.featurify.placed_features_category.description"));
 
+		addGlobalSettings(placedFeaturesCategoryBuilder, config);
 		addPlacedFeatures(placedFeaturesCategoryBuilder, config);
 
 		yacl.category(placedFeaturesCategoryBuilder.build());
+	}
+
+	private static void addGlobalSettings(ConfigCategory.Builder placedFeaturesCategoryBuilder, FeaturifyConfig config) {
+		var globalPlacedFeaturesGroupBuilder = OptionGroup.createBuilder()
+			.name(Component.translatable("gui.featurify.placed_features.global.title").withStyle(style -> style.withUnderlined(true)))
+			.description(OptionDescription.of(Component.translatable("gui.featurify.placed_features.global.description")));
+
+		var disableAllPlacedFeaturesOption = Option.<Boolean>createBuilder()
+			.name(Component.translatable("gui.featurify.placed_features.disable_all_placed_features.title"))
+			.description(OptionDescription.of(Component.translatable("gui.featurify.placed_features.disable_all_placed_features.description")))
+			.binding(
+				false,
+				() -> config.disableAllPlacedFeatures,
+				disableAllPlacedFeatures -> config.disableAllPlacedFeatures = disableAllPlacedFeatures
+			)
+			.controller(opt -> BooleanControllerBuilder.create(opt).formatValue(val -> val ? Component.translatable("gui.featurify.label.yes").withStyle(style -> style.withColor(ChatFormatting.RED)):Component.translatable("gui.featurify.label.no").withStyle(style -> style.withColor(ChatFormatting.GREEN)))).build();
+
+		disableAllPlacedFeaturesOption.addListener((opt, disableAllPlacedFeatures) -> {
+			for (var placedFeaturesOption : placedFeaturesOptions) {
+				placedFeaturesOption.requestSet(!disableAllPlacedFeatures);
+				placedFeaturesOption.applyValue();
+				placedFeaturesOption.setAvailable(!disableAllPlacedFeatures);
+			}
+		});
+
+		globalPlacedFeaturesGroupBuilder.option(disableAllPlacedFeaturesOption);
+		placedFeaturesCategoryBuilder.group(globalPlacedFeaturesGroupBuilder.build());
 	}
 
 	private static void addPlacedFeatures(ConfigCategory.Builder placedFeaturesCategoryBuilder, FeaturifyConfig config) {
@@ -53,7 +83,7 @@ public final class PlacedFeaturesConfigScreen
 		}
 
 		for (var placedFeatureGroup : placedFeatureGroups.entrySet()) {
-			String structureNamespace = placedFeatureGroup.getKey();
+			String placedFeatureNamespace = placedFeatureGroup.getKey();
 			var namespacePlacedFeatures = placedFeatureGroup.getValue();
 
 			var invisibleGroup = new InvisibleOptionGroup.Builder().name(Component.literal(""));
@@ -61,13 +91,13 @@ public final class PlacedFeaturesConfigScreen
 			placedFeaturesCategoryBuilder.group(invisibleGroup.build());
 
 			OptionGroup.Builder namespaceGroupBuilder = OptionGroup.createBuilder()
-				.name(Component.translatable("gui.featurify.placed_features.placed_feature_group.title", LanguageUtil.translateId(null, structureNamespace).getString()).withStyle(style -> style.withUnderlined(true)))
-				.description(OptionDescription.of(Component.translatable("gui.featurify.placed_features.placed_feature_group.description", structureNamespace)));
+				.name(Component.translatable("gui.featurify.placed_features.placed_feature_group.title", LanguageUtil.translateId(null, placedFeatureNamespace).getString()).withStyle(style -> style.withUnderlined(true)))
+				.description(OptionDescription.of(Component.translatable("gui.featurify.placed_features.placed_feature_group.description", placedFeatureNamespace)));
 
 			for (var namespacePlacedFeature : namespacePlacedFeatures.entrySet()) {
 				var placedFeatureData = namespacePlacedFeature.getValue();
 				var placedFeatureStringId = namespacePlacedFeature.getKey().toString();
-				var placedFeatureOption = addPlacedFeature(placedFeatureData, placedFeatureStringId, biomeRegistry);
+				var placedFeatureOption = addPlacedFeature(placedFeatureData, placedFeatureStringId, config, biomeRegistry);
 				namespaceGroupBuilder.option(placedFeatureOption);
 				placedFeaturesOptions.add(placedFeatureOption);
 			}
@@ -83,18 +113,20 @@ public final class PlacedFeaturesConfigScreen
 	private static Option<Boolean> addPlacedFeature(
 		PlacedFeatureData placedFeatureData,
 		String placedFeatureId,
+		FeaturifyConfig config,
 		HolderLookup.RegistryLookup<Biome> biomeRegistry
 	) {
 		var placedFeatureName = LanguageUtil.translatePlacedFeatureId(placedFeatureId);
 
-		var structureOptionBuilder = Option.<Boolean>createBuilder()
+		var placedFeatureOptionBuilder = Option.<Boolean>createBuilder()
 			.name(placedFeatureName)
 			.binding(
 				true,
 				() -> !placedFeatureData.isDisabled(),
 				isEnabled -> placedFeatureData.setDisabled(!isEnabled)
 			)
-			.controller(opt -> StructureButtonControllerBuilder.create(opt, placedFeatureId)
+			.available(!config.disableAllPlacedFeatures)
+			.controller(opt -> ButtonControllerBuilder.create(opt, placedFeatureId)
 				.formatValue(val -> val ? Component.translatable("gui.featurify.label.enabled"):Component.translatable("gui.featurify.label.disabled"))
 				.coloured(true)
 				.openConfigCallback((screen, id) -> {
@@ -114,7 +146,7 @@ public final class PlacedFeaturesConfigScreen
 				}).buttonTooltip("gui.featurify.placed_features.placed_feature.detail_button.tooltip")
 			);
 
-		structureOptionBuilder.description(v -> {
+		placedFeatureOptionBuilder.description(v -> {
 			var descriptionBuilder = OptionDescription.createBuilder();
 
 			if(!placedFeatureData.getBiomes().isEmpty()) {
@@ -145,6 +177,6 @@ public final class PlacedFeaturesConfigScreen
 			return descriptionBuilder.build();
 		});
 
-		return structureOptionBuilder.build();
+		return placedFeatureOptionBuilder.build();
 	}
 }
