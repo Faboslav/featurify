@@ -8,8 +8,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
 //? if >= 1.21.11 {
-/*import net.minecraft.server.permissions.Permissions;
-*///?}
+import net.minecraft.server.permissions.Permissions;
+//?}
 
 public final class FeaturifyCommands
 {
@@ -17,10 +17,10 @@ public final class FeaturifyCommands
 		dispatcher.register(
 			Commands.literal("featurify")
 				//? if >= 1.21.11 {
-				/*.requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
-				*///?} else {
-				.requires(source -> source.hasPermission(2))
-				 //?}
+				.requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+				//?} else {
+				/*.requires(source -> source.hasPermission(2))
+				 *///?}
 				.then(Commands.literal("dump")
 					.executes(ctx -> {
 						Featurify.getConfig().dump();

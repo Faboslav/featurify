@@ -18,7 +18,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
@@ -69,16 +69,16 @@ public final class PlacedFeaturesConfigScreen
 
 	private static void addPlacedFeatures(ConfigCategory.Builder placedFeaturesCategoryBuilder, FeaturifyConfig config) {
 		var placedFeatures = WorldgenDataProvider.getPlacedFeatures();
-		var placedFeatureGroups = new TreeMap<String, TreeMap<ResourceLocation, PlacedFeatureData>>(Comparators.ALPHABETICALL_NAMESPACE_COMPARATOR);
+		var placedFeatureGroups = new TreeMap<String, TreeMap<Identifier, PlacedFeatureData>>(Comparators.ALPHABETICALL_NAMESPACE_COMPARATOR);
 		var biomeRegistry = RegistryManagerProvider.getBiomeRegistry();
 
 		for (Map.Entry<String, PlacedFeatureData> entry : placedFeatures.entrySet()) {
 			String placedFeatureStringId = entry.getKey();
-			ResourceLocation placedFeatureId = Featurify.makeNamespacedId(placedFeatureStringId);
+			Identifier placedFeatureId = Featurify.makeNamespacedId(placedFeatureStringId);
 			String placedFeatureNamespace = placedFeatureId.getNamespace();
 			PlacedFeatureData placedFeatureData = entry.getValue();
 			placedFeatureGroups
-				.computeIfAbsent(placedFeatureNamespace, namespace -> new TreeMap<>(Comparator.comparing(ResourceLocation::getPath)))
+				.computeIfAbsent(placedFeatureNamespace, namespace -> new TreeMap<>(Comparator.comparing(Identifier::getPath)))
 				.put(placedFeatureId, placedFeatureData);
 		}
 
@@ -166,7 +166,7 @@ public final class PlacedFeaturesConfigScreen
 						}
 
 						for (var biomeHolder : biomeTagHolder.stream().toList()) {
-							descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", biomeHolder.unwrap().left().get()/*? if >= 1.21.11 {*//*.identifier()*//*?} else {*/.location()/*?}*/.toLanguageKey())));
+							descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", biomeHolder.unwrap().left().get()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toLanguageKey())));
 						}
 					} else {
 						descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", biome)));

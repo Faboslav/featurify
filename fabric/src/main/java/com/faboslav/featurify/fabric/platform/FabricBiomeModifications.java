@@ -6,7 +6,7 @@ import com.faboslav.featurify.common.versions.VersionedId;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -16,8 +16,8 @@ import java.util.Set;
 
 public final class FabricBiomeModifications implements PlatformBiomeModifications
 {
-	private static final Set<ResourceLocation> ADDED_MODIFICATIONS = new HashSet<>();
-	private static final Set<ResourceLocation> REMOVED_MODIFICATIONS = new HashSet<>();
+	private static final Set<Identifier> ADDED_MODIFICATIONS = new HashSet<>();
+	private static final Set<Identifier> REMOVED_MODIFICATIONS = new HashSet<>();
 
 	@Override
 	public void addPlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biomeReference, GenerationStep.Decoration generationStep) {

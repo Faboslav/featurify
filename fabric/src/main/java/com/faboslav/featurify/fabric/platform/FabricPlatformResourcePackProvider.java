@@ -7,10 +7,10 @@ import net.minecraft.server.packs.repository.RepositorySource;
 import java.util.ArrayList;
 
 //? if >= 1.21.11 {
-/*import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
-*///?} else {
-import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
- //?}
+import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
+//?} else {
+/*import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
+ *///?}
 
 public class FabricPlatformResourcePackProvider implements PlatformResourcePackProvider
 {

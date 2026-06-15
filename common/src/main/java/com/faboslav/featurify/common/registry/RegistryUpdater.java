@@ -9,7 +9,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -57,10 +57,10 @@ public final class RegistryUpdater
 		for (var placedFeatureReference : placedFeatureRegistry.listElements().toList()) {
 			PlacedFeature placedFeature = placedFeatureReference.value();
 			var placedFeatureRegistryKey = placedFeatureReference.key();
-			ResourceLocation placedFeatureId = placedFeatureRegistryKey/*? if >= 1.21.11 {*//*.identifier()*//*?} else {*/.location()/*?}*/;
+			Identifier placedFeatureId = placedFeatureRegistryKey/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/;
 
 			var featurifyPlacedFeature = ((FeaturifyPlacedFeature) (Object) placedFeature);
-			featurifyPlacedFeature.featurify$setResourceLocation(placedFeatureId);
+			featurifyPlacedFeature.featurify$setIdentifier(placedFeatureId);
 
 			var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().get(placedFeatureId.toString());
 
@@ -83,7 +83,7 @@ public final class RegistryUpdater
 
 			for (var biomeReference : biomeReferences) {
 				var biomeKey = biomeReference.unwrapKey().orElseThrow();
-				String biomeId = biomeKey/*? if >= 1.21.11 {*//*.identifier()*//*?} else {*/.location()/*?}*/.toString();
+				String biomeId = biomeKey/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString();
 				var currentFeatures = getFeaturesForBiome(simulatedFeatures, biomeReference);
 
 				if (removedBiomes.contains(biomeId) && containsFeature(currentFeatures, placedFeatureReference)) {

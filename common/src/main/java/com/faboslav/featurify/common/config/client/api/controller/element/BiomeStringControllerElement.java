@@ -11,7 +11,7 @@ import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownControllerEle
 import dev.isxander.yacl3.gui.image.impl.ResourceTextureImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.FileNotFoundException;
@@ -19,22 +19,22 @@ import java.util.List;
 import java.util.Optional;
 
 //? if >= 1.21.6 {
-/*import net.minecraft.client.renderer.RenderPipelines;
-*///?}
+import net.minecraft.client.renderer.RenderPipelines;
+//?}
 
 //? if < 1.21.5 {
-import com.mojang.blaze3d.systems.RenderSystem;
- //?}
+/*import com.mojang.blaze3d.systems.RenderSystem;
+ *///?}
 
 //? if >= 1.21.3 {
-/*import net.minecraft.client.renderer.RenderType;
-*///?}
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+//?}
 
 //? if >= 26.1 {
-/*import net.minecraft.client.gui.GuiGraphicsExtractor;
- *///?} else {
-import net.minecraft.client.gui.GuiGraphics;
-//?}
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+ //?} else {
+/*import net.minecraft.client.gui.GuiGraphics;
+*///?}
 
 /**
  * Related code is based on LibBamboo: Utility library mod with permissions from the author
@@ -54,18 +54,18 @@ public final class BiomeStringControllerElement extends AbstractDropdownControll
 
 	@Override
 		//? if >= 26.1 {
-	/*protected void extractValueText(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta)
-	 *///?} else {
-	protected void drawValueText(GuiGraphics graphics, int mouseX, int mouseY, float delta)
-	//?}
+	protected void extractValueText(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta)
+	 //?} else {
+	/*protected void drawValueText(GuiGraphics graphics, int mouseX, int mouseY, float delta)
+	*///?}
 	{
 		var oldDimension = getDimension();
 		setDimension(getDimension().withWidth(getDimension().width() - getDecorationPadding()));
 		//? if >= 26.1 {
-		/*super.extractValueText(graphics, mouseX, mouseY, delta);
-		 *///?} else {
-		super.drawValueText(graphics, mouseX, mouseY, delta);
-		//?}
+		super.extractValueText(graphics, mouseX, mouseY, delta);
+		 //?} else {
+		/*super.drawValueText(graphics, mouseX, mouseY, delta);
+		*///?}
 		setDimension(oldDimension);
 
 		int imageX = getDimension().xLimit() - getXPadding() - getDecorationPadding() + 4;
@@ -118,16 +118,16 @@ public final class BiomeStringControllerElement extends AbstractDropdownControll
 
 	@Override
 		//? if >= 26.1 {
-	/*protected void extractDropdownEntry(GuiGraphicsExtractor graphics, Dimension<Integer> entryDimension, String value)
-	 *///?} else {
-	protected void renderDropdownEntry(GuiGraphics graphics, Dimension<Integer> entryDimension, String value)
-	//?}
+	protected void extractDropdownEntry(GuiGraphicsExtractor graphics, Dimension<Integer> entryDimension, String value)
+	 //?} else {
+	/*protected void renderDropdownEntry(GuiGraphics graphics, Dimension<Integer> entryDimension, String value)
+	*///?}
 	{
 		//? if >= 26.1 {
-		/*super.extractDropdownEntry(graphics, entryDimension, value);
-		 *///?} else {
-		super.renderDropdownEntry(graphics, entryDimension, value);
-		//?}
+		super.extractDropdownEntry(graphics, entryDimension, value);
+		 //?} else {
+		/*super.renderDropdownEntry(graphics, entryDimension, value);
+		*///?}
 
 		int imageX = entryDimension.xLimit() - 1;
 		int imageY = entryDimension.y() + 4;
@@ -161,15 +161,15 @@ public final class BiomeStringControllerElement extends AbstractDropdownControll
 	private void renderBiomeImage(
 		String biomeName,
 		//? if >= 26.1 {
-		/*GuiGraphicsExtractor graphics,
-		 *///?} else {
-		GuiGraphics graphics,
-		//?}
+		GuiGraphicsExtractor graphics,
+		 //?} else {
+		/*GuiGraphics graphics,
+		*///?}
 		int x,
 		int y,
 		float delta
 	) {
-		Optional<ResourceLocation> biomeIcon;
+		Optional<Identifier> biomeIcon;
 
 		if(biomeName.contains("#c:")) {
 			biomeIcon = Optional.of(Featurify.makeNamespacedId("minecraft:textures/item/bundle.png"));
@@ -206,16 +206,16 @@ public final class BiomeStringControllerElement extends AbstractDropdownControll
 				var modIconHeight = modIcon.get().height();
 
 				//? if < 1.21.5 {
-				RenderSystem.setShaderTexture(0, modIconId);
-				 //?}
+				/*RenderSystem.setShaderTexture(0, modIconId);
+				 *///?}
 
 				//? if >= 1.21.6 {
-				/*graphics.blit(RenderPipelines.GUI_TEXTURED, modIconId, x, y, 0.0F, 0.0F, iconWidth, iconHeight, modIconWidth, modIconHeight, modIconWidth, modIconHeight);
-				*///?} else if >= 1.21.3 {
+				graphics.blit(RenderPipelines.GUI_TEXTURED, modIconId, x, y, 0.0F, 0.0F, iconWidth, iconHeight, modIconWidth, modIconHeight, modIconWidth, modIconHeight);
+				//?} else if >= 1.21.3 {
 				/*graphics.blit(RenderType::guiTextured, modIconId, x, y, iconWidth, iconHeight, 0, 0, modIconWidth, modIconHeight, modIconWidth, modIconHeight);
 				 *///?} else {
-				graphics.blit(modIconId, x, y, iconWidth, iconHeight, 0.0F, 0.0F, modIconWidth, modIconHeight, modIconWidth, modIconHeight);
-				 //?}
+				/*graphics.blit(modIconId, x, y, iconWidth, iconHeight, 0.0F, 0.0F, modIconWidth, modIconHeight, modIconWidth, modIconHeight);
+				 *///?}
 				return;
 			} catch (Exception e) {
 				// Ignore
@@ -236,8 +236,8 @@ public final class BiomeStringControllerElement extends AbstractDropdownControll
 		}
 	}
 
-	private Optional<ResourceLocation> tryToGetBiomeIcon(String biomeName) {
-		ResourceLocation imageId;
+	private Optional<Identifier> tryToGetBiomeIcon(String biomeName) {
+		Identifier imageId;
 
 		if(biomeName.contains("#")) {
 			return Optional.empty();

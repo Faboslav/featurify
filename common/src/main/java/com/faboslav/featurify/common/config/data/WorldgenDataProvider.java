@@ -47,7 +47,7 @@ public final class WorldgenDataProvider
 		}
 
 		for (var biome : biomeRegistry.listElements().toList()) {
-			biomes.add(biome.unwrapKey().get()/*? if >= 1.21.11 {*//*.identifier()*//*?} else {*/.location()/*?}*/.toString());
+			biomes.add(biome.unwrapKey().get()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString());
 		}
 
 		return biomes;
@@ -70,7 +70,7 @@ public final class WorldgenDataProvider
 
 		for (var placedFeatureReference : placedFeatureRegistry.listElements().toList()) {
 			var placedFeature = placedFeatureReference.value();
-			String placedFeatureId = placedFeatureReference.key()/*? if >= 1.21.11 {*//*.identifier()*//*?} else {*/.location()/*?}*/.toString();
+			String placedFeatureId = placedFeatureReference.key()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString();
 
 			var defaultBiomes = new ArrayList<String>();
 
@@ -79,7 +79,7 @@ public final class WorldgenDataProvider
 					continue;
 				}
 
-				String biomeId = biomeReference.key()/*? if >= 1.21.11 {*//*.identifier()*//*?} else {*/.location()/*?}*/.toString();
+				String biomeId = biomeReference.key()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString();
 
 				if (!defaultBiomes.contains(biomeId)) {
 					defaultBiomes.add(biomeId);

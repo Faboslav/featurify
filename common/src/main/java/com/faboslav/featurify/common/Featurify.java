@@ -6,7 +6,7 @@ import com.faboslav.featurify.common.events.common.LoadConfigEvent;
 import com.faboslav.featurify.common.events.common.UpdateRegistriesEvent;
 import com.faboslav.featurify.common.modcompat.ModChecker;
 import com.faboslav.featurify.common.registry.RegistryUpdater;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,44 +25,44 @@ public final class Featurify
 		return LOGGER;
 	}
 
-	public static ResourceLocation makeId(String path) {
+	public static Identifier makeId(String path) {
 		//? if >=1.21 {
-		/*return ResourceLocation.tryBuild(
+		return Identifier.tryBuild(
 			MOD_ID,
 			path
 		);
-		*///?} else {
-		return new ResourceLocation(
+		//?} else {
+		/*return new Identifier(
 			MOD_ID,
 			path
 		);
-		//?}
+		*///?}
 	}
 
-	public static ResourceLocation makeId(String namespace, String path) {
+	public static Identifier makeId(String namespace, String path) {
 		//? if >=1.21 {
-		/*return ResourceLocation.tryBuild(
+		return Identifier.tryBuild(
 			namespace,
 			path
 		);
-		*///?} else {
-		return new ResourceLocation(
+		//?} else {
+		/*return new Identifier(
 			namespace,
 			path
 		);
-		//?}
+		*///?}
 	}
 
-	public static ResourceLocation makeNamespacedId(String id) {
+	public static Identifier makeNamespacedId(String id) {
 		//? if >=1.21 {
-		/*return ResourceLocation.parse(
+		return Identifier.parse(
 			id
 		);
-		*///?} else {
-		return new ResourceLocation(
+		//?} else {
+		/*return new Identifier(
 			id
 		);
-		//?}
+		*///?}
 	}
 
 	public static String makeStringID(String name) {

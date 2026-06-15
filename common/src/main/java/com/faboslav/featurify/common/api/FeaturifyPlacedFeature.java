@@ -1,13 +1,13 @@
 package com.faboslav.featurify.common.api;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public interface FeaturifyPlacedFeature
 {
-	void featurify$setResourceLocation(@Nullable ResourceLocation placedFeatureResourceLocation);
+	void featurify$setIdentifier(@Nullable Identifier placedFeatureIdentifier);
 
 	@Nullable
-	ResourceLocation featurify$getResourceLocation();
+	Identifier featurify$getIdentifier();
 
 }
