@@ -71,6 +71,8 @@ All configurations mentioned in the `In-Game` section of this guide are mirrored
 This file is particularly useful for managing configurations on the server side. For that case it is recommended to
 configure everything based on the `In-Game` section of this guide.
 
+<br>
+
 # ⚙️ Compatibility
 
 Featurify is designed to be fully compatible with most of the worldgen mods and datapacks, and it currently
