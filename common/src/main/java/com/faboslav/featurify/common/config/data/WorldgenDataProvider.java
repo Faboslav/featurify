@@ -96,15 +96,21 @@ public final class WorldgenDataProvider
 	@Nullable
 	public static GenerationStep.Decoration getFeatureStep(Biome biome, Holder<PlacedFeature> targetFeature) {
 		var targetFeatureKey = targetFeature.unwrapKey().orElse(null);
-
 		if (targetFeatureKey == null) {
 			return null;
 		}
 
-		for (int stepIndex = 0; stepIndex < biome.getGenerationSettings().features().size(); stepIndex++) {
-			for (Holder<PlacedFeature> feature : biome.getGenerationSettings().features().get(stepIndex)) {
+		var decorations = GenerationStep.Decoration.values();
+		var features = biome.getGenerationSettings().features();
+
+		for (int stepIndex = 0; stepIndex < features.size(); stepIndex++) {
+			if (stepIndex >= decorations.length) {
+				continue;
+			}
+
+			for (Holder<PlacedFeature> feature : features.get(stepIndex)) {
 				if (feature.is(targetFeatureKey)) {
-					return GenerationStep.Decoration.values()[stepIndex];
+					return decorations[stepIndex];
 				}
 			}
 		}

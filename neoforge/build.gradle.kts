@@ -1,3 +1,5 @@
+val IS_CI = System.getenv("CI") == "true"
+
 plugins {
 	`multiloader-loader`
 	id("net.neoforged.moddev")
@@ -33,6 +35,17 @@ dependencies {
 				name = "OpenLoader-NeoForge-${commonMod.mc}",
 				version = openLoaderVersion
 			)
+		}
+	}
+
+	if(!IS_CI) {
+		if (commonMod.mc == "1.21.1") {
+			val noMansLand: List<Dependency> =
+				fletchingTable.modrinthBundle("no-mans-land", commonMod.mc, "neoforge") {
+					recursive = true
+					include("required", "optional", "embedded")
+				}
+			for (mod in noMansLand) implementation(mod)
 		}
 	}
 }
