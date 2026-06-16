@@ -90,8 +90,6 @@ public final class RegistryUpdater
 					currentFeatures = createFeaturesWithRemovedFeature(currentFeatures, placedFeatureReference, knownStep);
 					simulatedFeatures.put(biomeKey, currentFeatures);
 
-					Featurify.getLogger().info("Removing feature: " + placedFeatureId + " from biome " + biomeId);
-
 					PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.removePlacedFeature(
 						placedFeatureReference,
 						biomeReference,
@@ -100,24 +98,19 @@ public final class RegistryUpdater
 				}
 
 				if (!additionalBiomes.contains(biomeId)) {
-					Featurify.getLogger().info("Skikkping feature 1: " + placedFeatureId + " from biome " + biomeId);
 					continue;
 				}
 
 				if (containsFeature(currentFeatures, placedFeatureReference)) {
-					Featurify.getLogger().info("Skikkping feature 2: " + placedFeatureId + " from biome " + biomeId);
 					continue;
 				}
 
 				if (!canSafelyAddPlacedFeatureToBiome(simulatedFeatures, placedFeatureReference, biomeReference, knownStep)) {
-					Featurify.getLogger().info("Skipping feature 3: " + placedFeatureId + " from biome " + biomeId);
 					continue;
 				}
 
 				currentFeatures = createFeaturesWithAddedFeature(currentFeatures, placedFeatureReference, knownStep);
 				simulatedFeatures.put(biomeKey, currentFeatures);
-
-				Featurify.getLogger().info("Adding feature: " + placedFeatureId + " to biome " + biomeId);
 
 				PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.addPlacedFeature(
 					placedFeatureReference,
