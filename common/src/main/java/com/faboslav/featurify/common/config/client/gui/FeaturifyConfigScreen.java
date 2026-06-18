@@ -3,18 +3,21 @@ package com.faboslav.featurify.common.config.client.gui;
 import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.events.common.LoadConfigEvent;
 import com.faboslav.featurify.common.mixin.yacl.CategoryTabAccessor;
-import com.faboslav.featurify.common.mixin.yacl.ElementListWidgetExtMixin;
 import com.faboslav.featurify.common.mixin.yacl.GroupSeparatorEntryAccessor;
 import com.faboslav.featurify.common.util.YACLUtil;
+import com.faboslav.featurify.common.versions.VersionedGui;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.gui.OptionListWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+
+//? if <= 1.20.1 {
+/*import com.faboslav.featurify.common.mixin.yacl.ElementListWidgetExtMixin;
+*///?}
 
 public class FeaturifyConfigScreen
 {
@@ -98,7 +101,7 @@ public class FeaturifyConfigScreen
 
 	public void switchScreen(YACLScreen from, YACLScreen to) {
 		this.previousScreen = from;
-		Minecraft.getInstance().setScreen(to);
+		VersionedGui.getGui().setScreen(to);
 		this.currentScreen = to;
 	}
 }

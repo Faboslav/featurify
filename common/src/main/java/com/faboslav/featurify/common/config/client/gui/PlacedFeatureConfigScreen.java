@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.Locale;
 
+@SuppressWarnings({"all", "deprecated", "removal"})
 public final class PlacedFeatureConfigScreen
 {
 	public static YACLScreen create(FeaturifyConfig config, String placedFeatureId, Screen parent) {

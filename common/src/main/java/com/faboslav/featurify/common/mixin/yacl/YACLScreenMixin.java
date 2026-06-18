@@ -1,6 +1,7 @@
 package com.faboslav.featurify.common.mixin.yacl;
 
 import com.faboslav.featurify.common.FeaturifyClient;
+import com.faboslav.featurify.common.versions.VersionedGui;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -22,7 +23,7 @@ public abstract class YACLScreenMixin extends Screen
 	)
 	public void featurify$onCloseHead(CallbackInfo ci) {
 		if (this.minecraft != null) {
-			if (this.minecraft.screen instanceof YACLScreen yaclsScreen) {
+			if (VersionedGui.getScreen(this.minecraft) instanceof YACLScreen yaclsScreen) {
 				var configScreen = FeaturifyClient.getConfigScreen();
 
 				if (configScreen != null) {
@@ -38,7 +39,7 @@ public abstract class YACLScreenMixin extends Screen
 	)
 	public void featurify$onCloseTail(CallbackInfo ci) {
 		if (this.minecraft != null) {
-			if (this.minecraft.screen instanceof YACLScreen yaclsScreen) {
+			if (VersionedGui.getScreen(this.minecraft) instanceof YACLScreen yaclsScreen) {
 				var configScreen = FeaturifyClient.getConfigScreen();
 
 				if (configScreen != null) {

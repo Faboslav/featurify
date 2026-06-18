@@ -5,6 +5,7 @@ import com.faboslav.featurify.common.api.FeaturifyPlacedFeature;
 import com.faboslav.featurify.common.events.common.UpdateRegistriesEvent;
 import com.faboslav.featurify.common.mixin.feature.WeightedPlacedFeatureMixin;
 import com.faboslav.featurify.common.platform.PlatformHooks;
+import com.faboslav.featurify.common.versions.VersionedId;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
@@ -74,9 +75,23 @@ public final class RegistryUpdater
 			var subFeatures = placedFeature.getFeatures();
 
 			for (var subFeatureReference : subFeatures.toList()) {
-				if (subFeatureReference.value().config() instanceof RandomFeatureConfiguration config) {
-					for (WeightedPlacedFeature weightedPlacedFeature : config.features) {
-						var configuredFeatureKey = weightedPlacedFeature.feature.value()
+				//? if >= 26.1 {
+				if (subFeatureReference.value().config() instanceof RandomFeatureConfiguration config)
+				//?} else {
+				/*if (subFeatureReference.config() instanceof RandomFeatureConfiguration config)
+				*///?}
+				{
+					//? if >= 26.2 {
+					var features = config.features();
+					//?} else {
+					/*var features = config.features;
+					*///?}
+					for (WeightedPlacedFeature weightedPlacedFeature : features) {
+						//? if >= 26.2 {
+						var configuredFeatureKey = weightedPlacedFeature.feature().value()
+						//?} else {
+						/*var configuredFeatureKey = weightedPlacedFeature.feature.value()
+						*///?}
 							.feature()
 							.unwrapKey()
 							.orElse(null);
@@ -85,14 +100,20 @@ public final class RegistryUpdater
 							continue;
 						}
 
-						var weightedPlacedFeatureId = configuredFeatureKey.identifier();
+						var weightedPlacedFeatureId = VersionedId.GetId(configuredFeatureKey);
 						var weightedPlacedFeatureChance = placedFeatureData.getWeightedPlacedFeatures().getOrDefault(weightedPlacedFeatureId.toString(), null);
+						//? if >= 26.2 {
+						var originalChance = weightedPlacedFeature.chance();
+						//?} else {
+						/*var originalChance = weightedPlacedFeature.chance;
+						 *///?}
 
-						if(weightedPlacedFeatureChance == null || weightedPlacedFeatureChance == weightedPlacedFeature.chance) {
+
+						if(weightedPlacedFeatureChance == null || weightedPlacedFeatureChance == originalChance) {
 							continue;
 						}
 
-						((WeightedPlacedFeatureMixin) weightedPlacedFeature).setChance(weightedPlacedFeatureChance);
+						((WeightedPlacedFeatureMixin) (Object) weightedPlacedFeature).setChance(weightedPlacedFeatureChance);
 					}
 				}
 			}

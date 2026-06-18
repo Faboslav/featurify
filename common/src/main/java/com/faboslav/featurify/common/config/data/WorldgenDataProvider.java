@@ -2,6 +2,7 @@ package com.faboslav.featurify.common.config.data;
 
 import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.common.util.Comparators;
+import com.faboslav.featurify.common.versions.VersionedId;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -88,19 +89,38 @@ public final class WorldgenDataProvider
 			var subFeatures = placedFeature.getFeatures();
 
 			for (var subFeatureReference : subFeatures.toList()) {
-				if (subFeatureReference.value().config() instanceof RandomFeatureConfiguration config) {
-					for (WeightedPlacedFeature weightedFeature : config.features) {
-						var configuredFeatureKey = weightedFeature.feature.value()
+				//? if >= 26.1 {
+				if (subFeatureReference.value().config() instanceof RandomFeatureConfiguration config)
+				//?} else {
+				/*if (subFeatureReference.config() instanceof RandomFeatureConfiguration config)
+				*///?}
+				{
+					//? if >= 26.2 {
+					var features = config.features();
+					//?} else {
+					/*var features = config.features;
+					*///?}
+
+					for (WeightedPlacedFeature weightedFeature : features) {
+						//? if >= 26.2 {
+						var configuredFeatureKey = weightedFeature.feature().value()
+						//?} else {
+						/*var configuredFeatureKey = weightedFeature.feature.value()
+						*///?}
 							.feature()
 							.unwrapKey()
 							.orElse(null);
 
-						if(configuredFeatureKey == null) {
+						if (configuredFeatureKey == null) {
 							continue;
 						}
 
-						var subfeatureId = configuredFeatureKey.identifier();
-						var weightedPlacedFeatureChance = weightedFeature.chance;
+						var subfeatureId = VersionedId.GetId(configuredFeatureKey);
+						//? if >= 26.2 {
+						var weightedPlacedFeatureChance = weightedFeature.chance();
+						//?} else {
+						/*var weightedPlacedFeatureChance = weightedFeature.chance;
+						*///?}
 
 						subFeaturesData.put(subfeatureId.toString(), weightedPlacedFeatureChance);
 					}
