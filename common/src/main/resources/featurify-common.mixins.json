@@ -1,27 +1,28 @@
 {
-	"required": true,
-	"package": "com.faboslav.featurify.common.mixin",
-	"refmap": "${modId}.refmap.json",
-	"compatibilityLevel": "JAVA_${javaVersion}",
-	"minVersion": "0.8",
-	"plugin": "com.faboslav.featurify.common.mixin.plugin.FeaturifyMixinPlugin",
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"mixins": [
-		"ResourcePackManagerAccessor",
-		"feature.PlacedFeatureMixin",
-		"yacl.ControllerWidgetMixin"
-	],
-	"client": [
-		"AbstractWidgetInvoker",
-		"WorldOpenFlowsMixin",
-		"yacl.CategoryTabAccessor",
-		"yacl.ElementListWidgetExtMixin",
-		"yacl.GroupSeparatorEntryAccessor",
-		"yacl.LabelControllerElementMixin",
-		"yacl.OptionImplMixin",
-		"yacl.OptionListWidgetMixin",
-		"yacl.YACLScreenMixin"
+  "required": true,
+  "package": "com.faboslav.featurify.common.mixin",
+  "refmap": "${modId}.refmap.json",
+  "compatibilityLevel": "JAVA_${javaVersion}",
+  "minVersion": "0.8",
+  "plugin": "com.faboslav.featurify.common.mixin.plugin.FeaturifyMixinPlugin",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "ResourcePackManagerAccessor",
+    "feature.PlacedFeatureMixin",
+    "feature.WeightedPlacedFeatureMixin",
+    "yacl.ControllerWidgetMixin"
+  ],
+  "client": [
+    "AbstractWidgetInvoker",
+    "WorldOpenFlowsMixin",
+    "yacl.CategoryTabAccessor",
+    "yacl.ElementListWidgetExtMixin",
+    "yacl.GroupSeparatorEntryAccessor",
+    "yacl.LabelControllerElementMixin",
+    "yacl.OptionImplMixin",
+    "yacl.OptionListWidgetMixin",
+    "yacl.YACLScreenMixin"
 	]
 }

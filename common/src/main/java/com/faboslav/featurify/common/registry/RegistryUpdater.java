@@ -3,6 +3,7 @@ package com.faboslav.featurify.common.registry;
 import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.api.FeaturifyPlacedFeature;
 import com.faboslav.featurify.common.events.common.UpdateRegistriesEvent;
+import com.faboslav.featurify.common.mixin.feature.WeightedPlacedFeatureMixin;
 import com.faboslav.featurify.common.platform.PlatformHooks;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -13,6 +14,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.feature.WeightedPlacedFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,10 +65,36 @@ public final class RegistryUpdater
 			var featurifyPlacedFeature = ((FeaturifyPlacedFeature) (Object) placedFeature);
 			featurifyPlacedFeature.featurify$setIdentifier(placedFeatureId);
 
-			var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().get(placedFeatureId.toString());
+			var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId.toString(), null);
 
 			if (placedFeatureData == null) {
 				continue;
+			}
+
+			var subFeatures = placedFeature.getFeatures();
+
+			for (var subFeatureReference : subFeatures.toList()) {
+				if (subFeatureReference.value().config() instanceof RandomFeatureConfiguration config) {
+					for (WeightedPlacedFeature weightedPlacedFeature : config.features) {
+						var configuredFeatureKey = weightedPlacedFeature.feature.value()
+							.feature()
+							.unwrapKey()
+							.orElse(null);
+
+						if(configuredFeatureKey == null) {
+							continue;
+						}
+
+						var weightedPlacedFeatureId = configuredFeatureKey.identifier();
+						var weightedPlacedFeatureChance = placedFeatureData.getWeightedPlacedFeatures().getOrDefault(weightedPlacedFeatureId.toString(), null);
+
+						if(weightedPlacedFeatureChance == null || weightedPlacedFeatureChance == weightedPlacedFeature.chance) {
+							continue;
+						}
+
+						((WeightedPlacedFeatureMixin) weightedPlacedFeature).setChance(weightedPlacedFeatureChance);
+					}
+				}
 			}
 
 			var additionalBiomes = placedFeatureData.getAdditionalBiomes();

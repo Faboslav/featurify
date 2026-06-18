@@ -20,5 +20,8 @@
 	"gui.featurify.placed_features.placed_feature.is_disabled.description": "When disabled, the placed feature will not generate.",
 	"gui.featurify.placed_features.placed_feature.biomes.title": "Biomes",
 	"gui.featurify.placed_features.placed_feature.biomes.description": "List of current biomes in which the „%s“ placed feature will be generated.",
+	"gui.featurify.placed_features.placed_feature.settings.title": "Placed feature settings",
+	"gui.featurify.placed_features.placed_feature.subfeatures.title": "Features chances",
+	"gui.featurify.placed_features.placed_feature.subfeatures.chance.description": "The probability that this sub-feature is chosen during feature generation. Values are evaluated in order from top to bottom, and the first successful chance check is selected. For example, if two sub-features both have a 100% chance, the first one will always be chosen and the second one will never generate. If no sub-feature is selected, the default feature is used.",
 	"gui.featurify.placed_features.placed_feature.detail_button.tooltip": "Opens „%s“ placed feature settings"
 }

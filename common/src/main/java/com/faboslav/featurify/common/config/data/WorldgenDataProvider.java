@@ -5,14 +5,12 @@ import com.faboslav.featurify.common.util.Comparators;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.feature.WeightedPlacedFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public final class WorldgenDataProvider
 {
@@ -69,8 +67,8 @@ public final class WorldgenDataProvider
 		Map<String, PlacedFeatureData> placedFeatures = new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
 
 		for (var placedFeatureReference : placedFeatureRegistry.listElements().toList()) {
-			var placedFeature = placedFeatureReference.value();
-			String placedFeatureId = placedFeatureReference.key()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString();
+			PlacedFeature placedFeature = placedFeatureReference.value();
+			var placedFeatureId = placedFeatureReference.key()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/;
 
 			var defaultBiomes = new ArrayList<String>();
 
@@ -86,8 +84,32 @@ public final class WorldgenDataProvider
 				}
 			}
 
-			PlacedFeatureData placedFeatureData = new PlacedFeatureData(defaultBiomes);
-			placedFeatures.put(placedFeatureId, placedFeatureData);
+			var subFeaturesData = new HashMap<String, Float>();
+			var subFeatures = placedFeature.getFeatures();
+
+			for (var subFeatureReference : subFeatures.toList()) {
+				if (subFeatureReference.value().config() instanceof RandomFeatureConfiguration config) {
+					for (WeightedPlacedFeature weightedFeature : config.features) {
+						var configuredFeatureKey = weightedFeature.feature.value()
+							.feature()
+							.unwrapKey()
+							.orElse(null);
+
+						if(configuredFeatureKey == null) {
+							continue;
+						}
+
+						var subfeatureId = configuredFeatureKey.identifier();
+						var weightedPlacedFeatureChance = weightedFeature.chance;
+
+						subFeaturesData.put(subfeatureId.toString(), weightedPlacedFeatureChance);
+					}
+				}
+			}
+
+			PlacedFeatureData placedFeatureData = new PlacedFeatureData(defaultBiomes, subFeaturesData);
+
+			placedFeatures.put(placedFeatureId.toString(), placedFeatureData);
 		}
 
 		return placedFeatures;

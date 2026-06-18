@@ -9,5 +9,4 @@ public interface FeaturifyPlacedFeature
 
 	@Nullable
 	Identifier featurify$getIdentifier();
-
 }

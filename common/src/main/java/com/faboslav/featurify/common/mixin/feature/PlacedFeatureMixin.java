@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(PlacedFeature.class)
-public class PlacedFeatureMixin implements FeaturifyPlacedFeature
+public abstract class PlacedFeatureMixin implements FeaturifyPlacedFeature
 {
 	@Unique
 	@Nullable

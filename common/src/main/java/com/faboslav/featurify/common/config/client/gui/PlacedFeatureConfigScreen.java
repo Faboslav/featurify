@@ -5,12 +5,16 @@ import com.faboslav.featurify.common.config.client.api.controller.builder.BiomeS
 import com.faboslav.featurify.common.config.client.api.option.InvisibleOptionGroup;
 import com.faboslav.featurify.common.config.data.PlacedFeatureData;
 import com.faboslav.featurify.common.util.LanguageUtil;
+import com.faboslav.featurify.common.util.YACLUtil;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
+import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+
+import java.util.Locale;
 
 public final class PlacedFeatureConfigScreen
 {
@@ -25,7 +29,9 @@ public final class PlacedFeatureConfigScreen
 			.name(Component.translatable("gui.featurify.placed_features.placed_feature.title", translatedPlacedFeatureName))
 			.tooltip(Component.translatable("gui.featurify.placed_features.placed_feature.description", translatedPlacedFeatureName));
 
-		var placedFeatureSettingsGroup = new InvisibleOptionGroup.Builder().name(Component.literal("test"));
+		var placedFeatureSettingsGroup = new InvisibleOptionGroup.Builder().name(Component.literal(""));
+
+		placedFeatureSettingsGroup.option(LabelOption.create(Component.translatable("gui.featurify.placed_features.placed_feature.settings.title").withStyle(style -> style.withBold(true))));
 
 		var isDisabledOption = Option.<Boolean>createBuilder()
 			.name(Component.translatable("gui.featurify.placed_features.placed_feature.is_disabled.title"))
@@ -55,6 +61,33 @@ public final class PlacedFeatureConfigScreen
 				.initial("").build();
 
 			placedFeatureCategoryBuilder.group(biomesOption);
+		}
+
+		var defaultWeightedPlacedFeatures = placedFeatureData.getDefaultWeightedPlacedFeatures();
+		var weightedPlacedFeatures = placedFeatureData.getWeightedPlacedFeatures();
+		if(!weightedPlacedFeatures.isEmpty()) {
+			var subFeaturesGroup = new InvisibleOptionGroup.Builder().name(Component.literal("subfeatures"));
+			subFeaturesGroup.option(YACLUtil.createEmptySmallLabelOption());
+			subFeaturesGroup.option(LabelOption.create(Component.translatable("gui.featurify.placed_features.placed_feature.subfeatures.title").withStyle(style -> style.withBold(true))));
+
+			for (var weightedPlacedFeature : weightedPlacedFeatures.entrySet()) {
+				var weightedPlacedFeatureId = weightedPlacedFeature.getKey();
+				var translatedSubFeatureName = LanguageUtil.translateId("configured_feature", weightedPlacedFeatureId);
+
+				var chanceOption = Option.<Float>createBuilder()
+					.name(translatedSubFeatureName)
+					.description(OptionDescription.of(Component.translatable("gui.featurify.placed_features.placed_feature.subfeatures.chance.description")))
+					.binding(
+						defaultWeightedPlacedFeatures.get(weightedPlacedFeatureId),
+						weightedPlacedFeature::getValue,
+						weightedPlacedFeature::setValue
+					)
+					.controller(opt -> FloatSliderControllerBuilder.create(opt).range(PlacedFeatureData.MIN_CHANCE, PlacedFeatureData.MAX_CHANCE).step(0.001F).formatValue(value -> Component.literal(String.format(Locale.ROOT, "%.2f%%", value * 100.0F)))).build();
+
+				subFeaturesGroup.option(chanceOption);
+			}
+
+			placedFeatureCategoryBuilder.group(subFeaturesGroup.build());
 		}
 
 		yacl.category(placedFeatureCategoryBuilder.build());

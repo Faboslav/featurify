@@ -24,7 +24,6 @@ public final class FeaturifyNeoForge
 		var eventBus = NeoForge.EVENT_BUS;
 
 		Featurify.init();
-		Featurify.getLogger().info("BIOME_MODIFIERS");
 		FeaturifyBiomeModifiers.BIOME_MODIFIERS.register(modEventBus);
 
 		//? if >= 1.21.9 {

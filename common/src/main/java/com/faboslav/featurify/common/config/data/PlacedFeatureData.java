@@ -1,39 +1,35 @@
 package com.faboslav.featurify.common.config.data;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-/**
- * Represents @Pla
- */
 public final class PlacedFeatureData
 {
 	public static boolean IS_DISABLED_DEFAULT_VALUE = false;
+	public static float MIN_CHANCE = 0.0F;
+	public static float MAX_CHANCE = 1.0F;
 
 	private boolean isDisabled = IS_DISABLED_DEFAULT_VALUE;
 	private final List<String> defaultBiomes;
 	private List<String> biomes;
+	private Map<String, Float> defaultWeightedPlacedFeatures;
+	private Map<String, Float> weightedPlacedFeatures;
 
 	public PlacedFeatureData(
-		List<String> biomes
+		List<String> biomes,
+		Map<String, Float> weightedPlacedFeatures
 	) {
 		this.defaultBiomes = new ArrayList<>(biomes);
 		this.biomes = new ArrayList<>(biomes);
+		this.defaultWeightedPlacedFeatures = new HashMap<>(weightedPlacedFeatures);
+		this.weightedPlacedFeatures = new HashMap<>(weightedPlacedFeatures);
 	}
 
 	public boolean isUsingDefaultIsDisabled() {
-		var biomes = new ArrayList<>(this.biomes);
-		var defaultBiomes = new ArrayList<>(this.defaultBiomes);
-
-		Collections.sort(biomes);
-		Collections.sort(defaultBiomes);
-
 		return this.isDisabled == IS_DISABLED_DEFAULT_VALUE && biomes.equals(defaultBiomes);
 	}
 
 	public boolean isUsingDefaultValues() {
-		return this.isUsingDefaultIsDisabled();
+		return this.isUsingDefaultIsDisabled() && this.isUsingDefaultBiomes() && this.isUsingDefaultWeightedPlacedFeatures();
 	}
 
 	/**
@@ -45,6 +41,16 @@ public final class PlacedFeatureData
 
 	public void setDisabled(boolean isDisabled) {
 		this.isDisabled = isDisabled;
+	}
+
+	public boolean isUsingDefaultBiomes() {
+		var biomes = new ArrayList<>(this.biomes);
+		var defaultBiomes = new ArrayList<>(this.defaultBiomes);
+
+		Collections.sort(biomes);
+		Collections.sort(defaultBiomes);
+
+		return biomes.equals(defaultBiomes);
 	}
 
 	public List<String> getDefaultBiomes() {
@@ -71,5 +77,17 @@ public final class PlacedFeatureData
 
 	public void setBiomes(List<String> biomes) {
 		this.biomes = biomes;
+	}
+
+	public boolean isUsingDefaultWeightedPlacedFeatures() {
+		return this.weightedPlacedFeatures.equals(this.defaultWeightedPlacedFeatures);
+	}
+
+	public Map<String, Float> getDefaultWeightedPlacedFeatures() {
+		return this.defaultWeightedPlacedFeatures;
+	}
+
+	public Map<String, Float> getWeightedPlacedFeatures() {
+		return this.weightedPlacedFeatures;
 	}
 }

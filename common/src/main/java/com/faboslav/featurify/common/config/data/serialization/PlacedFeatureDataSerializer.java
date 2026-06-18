@@ -1,5 +1,6 @@
 package com.faboslav.featurify.common.config.data.serialization;
 
+import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.config.data.PlacedFeatureData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -7,6 +8,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class PlacedFeatureDataSerializer
 {
@@ -14,6 +16,7 @@ public final class PlacedFeatureDataSerializer
 	private static final String IS_DISABLED_PROPERTY = "is_disabled";
 	private static final String WHITELISTED_BIOMES_PROPERTY = "whitelisted_biomes";
 	private static final String BLACKLISTED_BIOMES_PROPERTY = "blacklisted_biomes";
+	private static final String WEIGHTED_PLACED_FEATURES_PROPERTY = "weighted_placed_features";
 
 	public static void load(JsonObject placedFeatureJson, PlacedFeatureData placedFeatureData) {
 		var placedFeatureName = placedFeatureJson.get(NAME_PROPERTY).getAsString();
@@ -50,6 +53,29 @@ public final class PlacedFeatureDataSerializer
 
 			placedFeatureData.setBiomes(biomes);
 		}
+
+
+		if(placedFeatureJson.has(WEIGHTED_PLACED_FEATURES_PROPERTY)) {
+			var weightedPlacedFeatures = placedFeatureJson.get(WEIGHTED_PLACED_FEATURES_PROPERTY).getAsJsonObject();
+
+			for (Map.Entry<String, JsonElement> weightedPlacedFeatureEntry : weightedPlacedFeatures.entrySet()) {
+				String placedFeatureId = weightedPlacedFeatureEntry.getKey();
+				JsonElement placedFeatureChance = weightedPlacedFeatureEntry.getValue();
+
+				if (!placedFeatureChance.isJsonPrimitive() || !placedFeatureChance.getAsJsonPrimitive().isNumber()) {
+					continue;
+				}
+
+				float chance = placedFeatureChance.getAsFloat();
+
+				if (chance < PlacedFeatureData.MIN_CHANCE || chance > PlacedFeatureData.MAX_CHANCE) {
+					Featurify.getLogger().info("Weighted placed feature chance value for {} is currently {}, which is not in the range between {} and {}, value will be automatically corrected to 0.", placedFeatureId, chance, PlacedFeatureData.MIN_CHANCE, PlacedFeatureData.MAX_CHANCE);
+					chance = 0.0F;
+				}
+
+				placedFeatureData.getWeightedPlacedFeatures().put(placedFeatureId, chance);
+			}
+		}
 	}
 
 	public static void save(JsonArray placedFeaturesJson, String placedFeatureName, PlacedFeatureData placedFeatureData) {
@@ -61,22 +87,34 @@ public final class PlacedFeatureDataSerializer
 			placedFeature.addProperty(IS_DISABLED_PROPERTY, placedFeatureData.isDisabled());
 		}
 
-		var whitelistedBiomes = new ArrayList<>(placedFeatureData.getBiomes());
-		whitelistedBiomes.removeAll(placedFeatureData.getDefaultBiomes());
+		if(!placedFeatureData.isUsingDefaultBiomes()) {
+			var whitelistedBiomes = new ArrayList<>(placedFeatureData.getBiomes());
+			whitelistedBiomes.removeAll(placedFeatureData.getDefaultBiomes());
 
-		if (!whitelistedBiomes.isEmpty()) {
-			JsonArray whitelistedBiomesJson = new JsonArray();
-			whitelistedBiomes.stream().distinct().forEach(whitelistedBiomesJson::add);
-			placedFeature.add(WHITELISTED_BIOMES_PROPERTY, whitelistedBiomesJson);
+			if (!whitelistedBiomes.isEmpty()) {
+				JsonArray whitelistedBiomesJson = new JsonArray();
+				whitelistedBiomes.stream().distinct().forEach(whitelistedBiomesJson::add);
+				placedFeature.add(WHITELISTED_BIOMES_PROPERTY, whitelistedBiomesJson);
+			}
+
+			var blacklistedBiomes = new ArrayList<>(placedFeatureData.getDefaultBiomes());
+			blacklistedBiomes.removeAll(placedFeatureData.getBiomes());
+
+			if (!blacklistedBiomes.isEmpty()) {
+				JsonArray blacklistedBiomesJson = new JsonArray();
+				blacklistedBiomes.stream().distinct().forEach(blacklistedBiomesJson::add);
+				placedFeature.add(BLACKLISTED_BIOMES_PROPERTY, blacklistedBiomesJson);
+			}
 		}
 
-		var blacklistedBiomes = new ArrayList<>(placedFeatureData.getDefaultBiomes());
-		blacklistedBiomes.removeAll(placedFeatureData.getBiomes());
+		if(!placedFeatureData.getWeightedPlacedFeatures().isEmpty() && !placedFeatureData.isUsingDefaultWeightedPlacedFeatures()) {
+			JsonObject weightedPlacedFeatures = new JsonObject();
 
-		if(!blacklistedBiomes.isEmpty()) {
-			JsonArray blacklistedBiomesJson = new JsonArray();
-			blacklistedBiomes.stream().distinct().forEach(blacklistedBiomesJson::add);
-			placedFeature.add(BLACKLISTED_BIOMES_PROPERTY, blacklistedBiomesJson);
+			for(var weightedPlacedFeaturEntry : placedFeatureData.getWeightedPlacedFeatures().entrySet()) {
+				weightedPlacedFeatures.addProperty(weightedPlacedFeaturEntry.getKey(), weightedPlacedFeaturEntry.getValue());
+			}
+
+			placedFeature.add(WEIGHTED_PLACED_FEATURES_PROPERTY, weightedPlacedFeatures);
 		}
 
 		placedFeaturesJson.add(placedFeature);
