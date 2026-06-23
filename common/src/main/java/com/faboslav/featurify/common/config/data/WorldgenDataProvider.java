@@ -2,14 +2,11 @@ package com.faboslav.featurify.common.config.data;
 
 import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.common.util.Comparators;
+import com.faboslav.featurify.common.util.FeatureUtil;
 import com.faboslav.featurify.common.versions.VersionedId;
-import net.minecraft.core.Holder;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.WeightedPlacedFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -40,13 +37,8 @@ public final class WorldgenDataProvider
 
 		List<String> biomes = new ArrayList<>();
 
-		/*
-		for (var biomeTag : biomeRegistry.listTags().toList()) {
-			biomes.add('#' + biomeTag.unwrapKey().get().location().toString());
-		}*/
-
 		for (var biome : biomeRegistry.listElements().toList()) {
-			biomes.add(biome.unwrapKey().get()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString());
+			biomes.add(VersionedId.GetId(biome.unwrapKey().get()).toString());
 		}
 
 		return biomes;
@@ -69,94 +61,62 @@ public final class WorldgenDataProvider
 
 		for (var placedFeatureReference : placedFeatureRegistry.listElements().toList()) {
 			PlacedFeature placedFeature = placedFeatureReference.value();
-			var placedFeatureId = placedFeatureReference.key()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/;
+			var placedFeatureId = VersionedId.GetId(placedFeatureReference.key());
 
 			var defaultBiomes = new ArrayList<String>();
 
 			for (var biomeReference : biomeRegistry.listElements().toList()) {
-				if (getFeatureStep(biomeReference.value(), placedFeatureReference) == null) {
+				if (FeatureUtil.getFeatureStep(biomeReference.value(), placedFeatureReference) == null) {
 					continue;
 				}
 
-				String biomeId = biomeReference.key()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString();
+				String biomeId = VersionedId.GetId(biomeReference.key()).toString();
 
 				if (!defaultBiomes.contains(biomeId)) {
 					defaultBiomes.add(biomeId);
 				}
 			}
 
-			var subFeaturesData = new HashMap<String, Float>();
-			var subFeatures = placedFeature.getFeatures();
+			defaultBiomes.sort(Comparators.ALPHABETICALL_ID_COMPARATOR);
 
-			for (var subFeatureReference : subFeatures.toList()) {
-				//? if >= 26.1 {
-				if (subFeatureReference.value().config() instanceof RandomFeatureConfiguration config)
+			var subFeaturesData = new TreeMap<String, Float>(Comparators.ALPHABETICALL_ID_COMPARATOR);
+			var randomFeatureConfigurations = new ArrayList<RandomFeatureConfiguration>();
+
+			FeatureUtil.collectRandomFeatureConfigurations(
+				placedFeature,
+				Collections.newSetFromMap(new IdentityHashMap<>()),
+				randomFeatureConfigurations
+			);
+
+			for (RandomFeatureConfiguration config : randomFeatureConfigurations) {
+				//? if >= 26.2 {
+				var features = config.features();
 				//?} else {
-				/*if (subFeatureReference.config() instanceof RandomFeatureConfiguration config)
-				*///?}
-				{
+				/*var features = config.features;
+				 *///?}
+
+				for (WeightedPlacedFeature weightedFeature : features) {
 					//? if >= 26.2 {
-					var features = config.features();
+					var configuredFeatureKey = weightedFeature.feature().value().feature().unwrapKey().orElse(null);
+					var weightedPlacedFeatureChance = weightedFeature.chance();
 					//?} else {
-					/*var features = config.features;
+					/*var configuredFeatureKey = weightedFeature.feature.value().feature().unwrapKey().orElse(null);
+					var weightedPlacedFeatureChance = weightedFeature.chance;
 					*///?}
 
-					for (WeightedPlacedFeature weightedFeature : features) {
-						//? if >= 26.2 {
-						var configuredFeatureKey = weightedFeature.feature().value()
-						//?} else {
-						/*var configuredFeatureKey = weightedFeature.feature.value()
-						*///?}
-							.feature()
-							.unwrapKey()
-							.orElse(null);
-
-						if (configuredFeatureKey == null) {
-							continue;
-						}
-
-						var subfeatureId = VersionedId.GetId(configuredFeatureKey);
-						//? if >= 26.2 {
-						var weightedPlacedFeatureChance = weightedFeature.chance();
-						//?} else {
-						/*var weightedPlacedFeatureChance = weightedFeature.chance;
-						*///?}
-
-						subFeaturesData.put(subfeatureId.toString(), weightedPlacedFeatureChance);
+					if (configuredFeatureKey == null) {
+						continue;
 					}
+
+					var subfeatureId = VersionedId.GetId(configuredFeatureKey);
+					subFeaturesData.put(subfeatureId.toString(), weightedPlacedFeatureChance);
 				}
 			}
 
 			PlacedFeatureData placedFeatureData = new PlacedFeatureData(defaultBiomes, subFeaturesData);
-
 			placedFeatures.put(placedFeatureId.toString(), placedFeatureData);
 		}
 
 		return placedFeatures;
-	}
-
-	@Nullable
-	public static GenerationStep.Decoration getFeatureStep(Biome biome, Holder<PlacedFeature> targetFeature) {
-		var targetFeatureKey = targetFeature.unwrapKey().orElse(null);
-		if (targetFeatureKey == null) {
-			return null;
-		}
-
-		var decorations = GenerationStep.Decoration.values();
-		var features = biome.getGenerationSettings().features();
-
-		for (int stepIndex = 0; stepIndex < features.size(); stepIndex++) {
-			if (stepIndex >= decorations.length) {
-				continue;
-			}
-
-			for (Holder<PlacedFeature> feature : features.get(stepIndex)) {
-				if (feature.is(targetFeatureKey)) {
-					return decorations[stepIndex];
-				}
-			}
-		}
-
-		return null;
 	}
 }

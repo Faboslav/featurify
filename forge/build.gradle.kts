@@ -1,3 +1,5 @@
+val IS_CI = System.getenv("CI") == "true"
+
 plugins {
 	`multiloader-loader`
 	id("net.neoforged.moddev.legacyforge")
@@ -46,6 +48,22 @@ dependencies {
 			name = "OpenLoader-Forge-${commonMod.mc}",
 			version = openLoaderVersion
 		) { isTransitive = false }
+	}
+
+	if (!IS_CI) {
+
+		listOf(
+			"lithostitched",
+			"terralith",
+			"terrablender",
+			"natures-spirit"
+		).forEach { modId ->
+			fletchingTable.modrinthBundle(modId, commonMod.mc, "forge") {
+				recursive = true
+				include("required", "optional", "embedded")
+			}.forEach(::modImplementation)
+		}
+
 	}
 }
 

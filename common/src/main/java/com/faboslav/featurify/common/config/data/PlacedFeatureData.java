@@ -20,8 +20,8 @@ public final class PlacedFeatureData
 	) {
 		this.defaultBiomes = new ArrayList<>(biomes);
 		this.biomes = new ArrayList<>(biomes);
-		this.defaultWeightedPlacedFeatures = new HashMap<>(weightedPlacedFeatures);
-		this.weightedPlacedFeatures = new HashMap<>(weightedPlacedFeatures);
+		this.defaultWeightedPlacedFeatures = new TreeMap<>(weightedPlacedFeatures);
+		this.weightedPlacedFeatures = new TreeMap<>(weightedPlacedFeatures);
 	}
 
 	public boolean isUsingDefaultIsDisabled() {

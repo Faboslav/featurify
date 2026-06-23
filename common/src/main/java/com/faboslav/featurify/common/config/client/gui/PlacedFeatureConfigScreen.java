@@ -66,6 +66,7 @@ public final class PlacedFeatureConfigScreen
 
 		var defaultWeightedPlacedFeatures = placedFeatureData.getDefaultWeightedPlacedFeatures();
 		var weightedPlacedFeatures = placedFeatureData.getWeightedPlacedFeatures();
+
 		if(!weightedPlacedFeatures.isEmpty()) {
 			var subFeaturesGroup = new InvisibleOptionGroup.Builder().name(Component.literal("subfeatures"));
 			subFeaturesGroup.option(YACLUtil.createEmptySmallLabelOption());

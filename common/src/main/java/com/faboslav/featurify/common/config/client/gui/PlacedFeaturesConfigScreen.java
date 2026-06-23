@@ -11,6 +11,7 @@ import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.common.util.Comparators;
 import com.faboslav.featurify.common.util.LanguageUtil;
 import com.faboslav.featurify.common.util.YACLUtil;
+import com.faboslav.featurify.common.versions.VersionedId;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.gui.YACLScreen;
@@ -166,7 +167,7 @@ public final class PlacedFeaturesConfigScreen
 						}
 
 						for (var biomeHolder : biomeTagHolder.stream().toList()) {
-							descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", biomeHolder.unwrap().left().get()/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toLanguageKey())));
+							descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", VersionedId.GetId(biomeHolder.unwrap().left().get()).toLanguageKey())));
 						}
 					} else {
 						descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", biome)));
