@@ -1,3 +1,7 @@
+## 1.0.4
+
+- Fixed crash caused by loading non-existing or invalid world generation features
+
 ## 1.0.3
 
 - Fixed crash caused by cyclic world generation features

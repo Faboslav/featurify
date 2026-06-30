@@ -1,5 +1,6 @@
 package com.faboslav.featurify.common.util;
 
+import com.faboslav.featurify.common.Featurify;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.biome.Biome;
@@ -48,41 +49,45 @@ public final class FeatureUtil
 		Set<Object> visitedConfiguredFeatures,
 		List<RandomFeatureConfiguration> configs
 	) {
-		if (!visitedConfiguredFeatures.add(configuredFeature)) {
-			return;
-		}
-
-		var config = ((net.minecraft.world.level.levelgen.feature.ConfiguredFeature<?, ?>) configuredFeature).config();
-
-		if (config instanceof RandomFeatureConfiguration randomFeatureConfiguration) {
-			configs.add(randomFeatureConfiguration);
-
-			//? if >= 26.2 {
-			var features = randomFeatureConfiguration.features();
-			 //?} else {
-			/*var features = randomFeatureConfiguration.features;
-			*///?}
-
-			for (WeightedPlacedFeature weightedPlacedFeature : features) {
-				//? if >= 26.2 {
-				collectRandomFeatureConfigurations(weightedPlacedFeature.feature().value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
-				 //?} else {
-				/*collectRandomFeatureConfigurations(weightedPlacedFeature.feature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
-				*///?}
+		try {
+			if (!visitedConfiguredFeatures.add(configuredFeature)) {
+				return;
 			}
 
-			return;
-		}
+			var config = ((net.minecraft.world.level.levelgen.feature.ConfiguredFeature<?, ?>) configuredFeature).config();
 
-		//? if >= 26.1 {
-		config.getSubFeatures().forEach(childConfiguredFeature -> {
-			collectRandomFeatureConfigurations(childConfiguredFeature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
-		});
-		//?} else {
-		/*config.getFeatures().forEach(childConfiguredFeature -> {
-			collectRandomFeatureConfigurations(childConfiguredFeature, visitedPlacedFeatures, visitedConfiguredFeatures, configs);
-		});
-		*///?}
+			if (config instanceof RandomFeatureConfiguration randomFeatureConfiguration) {
+				configs.add(randomFeatureConfiguration);
+
+				//? if >= 26.2 {
+				var features = randomFeatureConfiguration.features();
+				 //?} else {
+				/*var features = randomFeatureConfiguration.features;
+				*///?}
+
+				for (WeightedPlacedFeature weightedPlacedFeature : features) {
+					//? if >= 26.2 {
+					collectRandomFeatureConfigurations(weightedPlacedFeature.feature().value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+					 //?} else {
+					/*collectRandomFeatureConfigurations(weightedPlacedFeature.feature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+					*///?}
+				}
+
+				return;
+			}
+
+			//? if >= 26.1 {
+			config.getSubFeatures().forEach(childConfiguredFeature -> {
+				collectRandomFeatureConfigurations(childConfiguredFeature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+			});
+			//?} else {
+			/*config.getFeatures().forEach(childConfiguredFeature -> {
+				collectRandomFeatureConfigurations(childConfiguredFeature, visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+			});
+			*///?}
+		} catch (Throwable e) {
+			Featurify.getLogger().error("Unable to collect random feature configurations", e);
+		}
 	}
 
 	@Nullable
