@@ -5,7 +5,7 @@ import com.faboslav.featurify.common.api.FeaturifyPlacedFeature;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
@@ -18,15 +18,15 @@ public abstract class PlacedFeatureMixin implements FeaturifyPlacedFeature
 {
 	@Unique
 	@Nullable
-	public Identifier featurify$resourceLocation = null;
+	public ResourceLocation featurify$resourceLocation = null;
 	
 	@Override
-	public void featurify$setIdentifier(@Nullable Identifier resourceLocation) {
+	public void featurify$setResourceLocation(@Nullable ResourceLocation resourceLocation) {
 		this.featurify$resourceLocation = resourceLocation;
 	}
 
 	@Override
-	public @Nullable Identifier featurify$getIdentifier() {
+	public @Nullable ResourceLocation featurify$getResourceLocation() {
 		return this.featurify$resourceLocation;
 	}
 
@@ -45,7 +45,7 @@ public abstract class PlacedFeatureMixin implements FeaturifyPlacedFeature
 				return false;
 			}
 
-			var placedFeatureId = this.featurify$getIdentifier();
+			var placedFeatureId = this.featurify$getResourceLocation();
 			var placedFeatureData = config.getPlacedFeatureData();
 
 			if(placedFeatureId == null || !placedFeatureData.containsKey(placedFeatureId.toString())) {

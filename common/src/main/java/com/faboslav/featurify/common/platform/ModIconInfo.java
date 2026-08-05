@@ -1,7 +1,7 @@
 package com.faboslav.featurify.common.platform;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
-public record ModIconInfo(Identifier location, int width, int height) {
+public record ModIconInfo(ResourceLocation location, int width, int height) {
 
 }

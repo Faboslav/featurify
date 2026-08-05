@@ -6,7 +6,7 @@ import com.faboslav.featurify.common.config.FeaturifyConfig;
 import com.faboslav.featurify.common.config.client.api.controller.builder.ButtonControllerBuilder;
 import com.faboslav.featurify.common.config.client.api.option.InvisibleOptionGroup;
 import com.faboslav.featurify.common.config.data.PlacedFeatureData;
-import com.faboslav.featurify.common.config.data.WorldgenDataProvider;
+import com.faboslav.featurify.common.worldgen.WorldgenDataProvider;
 import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.common.util.Comparators;
 import com.faboslav.featurify.common.util.LanguageUtil;
@@ -19,7 +19,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
@@ -70,16 +70,16 @@ public final class PlacedFeaturesConfigScreen
 
 	private static void addPlacedFeatures(ConfigCategory.Builder placedFeaturesCategoryBuilder, FeaturifyConfig config) {
 		var placedFeatures = WorldgenDataProvider.getPlacedFeatures();
-		var placedFeatureGroups = new TreeMap<String, TreeMap<Identifier, PlacedFeatureData>>(Comparators.ALPHABETICALL_NAMESPACE_COMPARATOR);
+		var placedFeatureGroups = new TreeMap<String, TreeMap<ResourceLocation, PlacedFeatureData>>(Comparators.ALPHABETICALL_NAMESPACE_COMPARATOR);
 		var biomeRegistry = RegistryManagerProvider.getBiomeRegistry();
 
 		for (Map.Entry<String, PlacedFeatureData> entry : placedFeatures.entrySet()) {
 			String placedFeatureStringId = entry.getKey();
-			Identifier placedFeatureId = Featurify.makeNamespacedId(placedFeatureStringId);
+			ResourceLocation placedFeatureId = Featurify.makeNamespacedId(placedFeatureStringId);
 			String placedFeatureNamespace = placedFeatureId.getNamespace();
 			PlacedFeatureData placedFeatureData = entry.getValue();
 			placedFeatureGroups
-				.computeIfAbsent(placedFeatureNamespace, namespace -> new TreeMap<>(Comparator.comparing(Identifier::getPath)))
+				.computeIfAbsent(placedFeatureNamespace, namespace -> new TreeMap<>(Comparator.comparing(ResourceLocation::getPath)))
 				.put(placedFeatureId, placedFeatureData);
 		}
 

@@ -3,10 +3,11 @@ package com.faboslav.featurify.common;
 import com.faboslav.featurify.common.config.FeaturifyConfig;
 import com.faboslav.featurify.common.config.FeaturifyConfigSerializer;
 import com.faboslav.featurify.common.events.common.LoadConfigEvent;
-import com.faboslav.featurify.common.events.common.UpdateRegistriesEvent;
+import com.faboslav.featurify.common.events.common.UpdateWorldgenDataEvent;
 import com.faboslav.featurify.common.modcompat.ModChecker;
-import com.faboslav.featurify.common.registry.RegistryUpdater;
-import net.minecraft.resources.Identifier;
+import com.faboslav.featurify.common.network.MessageHandler;
+import com.faboslav.featurify.common.worldgen.WorldgenDataUpdater;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,44 +26,44 @@ public final class Featurify
 		return LOGGER;
 	}
 
-	public static Identifier makeId(String path) {
+	public static ResourceLocation makeId(String path) {
 		//? if >=1.21 {
-		return Identifier.tryBuild(
+		/*return ResourceLocation.tryBuild(
 			MOD_ID,
 			path
 		);
-		//?} else {
-		/*return new Identifier(
+		*///?} else {
+		return new ResourceLocation(
 			MOD_ID,
 			path
 		);
-		*///?}
+		//?}
 	}
 
-	public static Identifier makeId(String namespace, String path) {
+	public static ResourceLocation makeId(String namespace, String path) {
 		//? if >=1.21 {
-		return Identifier.tryBuild(
+		/*return ResourceLocation.tryBuild(
 			namespace,
 			path
 		);
-		//?} else {
-		/*return new Identifier(
+		*///?} else {
+		return new ResourceLocation(
 			namespace,
 			path
 		);
-		*///?}
+		//?}
 	}
 
-	public static Identifier makeNamespacedId(String id) {
+	public static ResourceLocation makeNamespacedId(String id) {
 		//? if >=1.21 {
-		return Identifier.parse(
+		/*return ResourceLocation.parse(
 			id
 		);
-		//?} else {
-		/*return new Identifier(
+		*///?} else {
+		return new ResourceLocation(
 			id
 		);
-		*///?}
+		//?}
 	}
 
 	public static String makeStringID(String name) {
@@ -72,8 +73,9 @@ public final class Featurify
 	public static void init() {
 		Featurify.getConfig().create();
 		ModChecker.setupModCompat();
+		MessageHandler.init();
 
 		LoadConfigEvent.EVENT.addListener(FeaturifyConfigSerializer::loadConfig);
-		UpdateRegistriesEvent.EVENT.addListener(RegistryUpdater::updateRegistries);
+		UpdateWorldgenDataEvent.EVENT.addListener(WorldgenDataUpdater::updateWorldgenData);
 	}
 }

@@ -46,9 +46,9 @@ public final class PlacedFeatureConfigScreen
 
 		placedFeatureSettingsGroup.option(isDisabledOption);
 
-		placedFeatureCategoryBuilder.group(placedFeatureSettingsGroup.build());
-
 		if(!placedFeatureData.getDefaultBiomes().isEmpty()) {
+			placedFeatureCategoryBuilder.group(placedFeatureSettingsGroup.build());
+
 			var biomesOption = ListOption.<String>createBuilder()
 				.name(Component.translatable("gui.featurify.placed_features.placed_feature.biomes.title"))
 				.description(OptionDescription.of(Component.translatable("gui.featurify.placed_features.placed_feature.biomes.description", translatedPlacedFeatureName)))
@@ -62,6 +62,10 @@ public final class PlacedFeatureConfigScreen
 				.initial("").build();
 
 			placedFeatureCategoryBuilder.group(biomesOption);
+		} else {
+			placedFeatureSettingsGroup.option(YACLUtil.createEmptySmallLabelOption());
+			placedFeatureSettingsGroup.option(LabelOption.create(Component.translatable("gui.featurify.placed_features.placed_feature.no_biomes.title")));
+			placedFeatureCategoryBuilder.group(placedFeatureSettingsGroup.build());
 		}
 
 		var defaultWeightedPlacedFeatures = placedFeatureData.getDefaultWeightedPlacedFeatures();

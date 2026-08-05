@@ -7,18 +7,19 @@ import net.minecraft.core.*;
 import net.minecraft.nbt.*;
 import net.minecraft.server.WorldLoader;
 import net.minecraft.server.WorldStem;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.WorldDataConfiguration;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 //? if >= 1.21.11 {
-import net.minecraft.server.permissions.PermissionSet;
-//?}
+/*import net.minecraft.server.permissions.PermissionSet;
+*///?}
 
 public final class RegistryManagerProvider
 {
@@ -47,7 +48,17 @@ public final class RegistryManagerProvider
 	}
 
 	@Nullable
+	public static HolderLookup.RegistryLookup<LevelStem> getLevelStemRegistry() {
+		var registryManager = RegistryManagerProvider.getRegistryManager();
 
+		if (registryManager == null) {
+			return null;
+		}
+
+		return registryManager.lookup(Registries.LEVEL_STEM).orElse(null);
+	}
+
+	@Nullable
 	public static HolderLookup.RegistryLookup<PlacedFeature> getPlacedFeatureRegistry()
 	{
 		var registryManager = RegistryManagerProvider.getRegistryManager();
@@ -74,29 +85,29 @@ public final class RegistryManagerProvider
 			var resourcePackManager = ResourcePackProvider.getResourcePackRepository();
 
 			var dataPacks = new WorldLoader.PackConfig(resourcePackManager, WorldDataConfiguration.DEFAULT, false, false);
-			var serverConfig = new WorldLoader.InitConfig(dataPacks, Commands.CommandSelection.INTEGRATED, /*? if >= 1.21.11 {*/PermissionSet.ALL_PERMISSIONS/*?} else {*//*2*//*?}*/);
+			var serverConfig = new WorldLoader.InitConfig(dataPacks, Commands.CommandSelection.INTEGRATED, /*? if >= 1.21.11 {*//*PermissionSet.ALL_PERMISSIONS*//*?} else {*/2/*?}*/);
 
 			var saveLoader = Util.blockUntilDone(executor ->
 				WorldLoader.load(serverConfig, loadContextSupplierContext -> {
 					var registry = new MappedRegistry<>(Registries.LEVEL_STEM, Lifecycle.stable()).freeze();
 
 					//? if >=1.21.3 {
-					var dimensionsConfig = loadContextSupplierContext
+					/*var dimensionsConfig = loadContextSupplierContext
 						.datapackWorldgen()
 						.lookupOrThrow(Registries.WORLD_PRESET)
 						.getOrThrow(WorldPresets.FLAT)
 						.value()
 						.createWorldDimensions()
 						.bake(registry);
-					//?} else {
-					/*var dimensionsConfig = loadContextSupplierContext
+					*///?} else {
+					var dimensionsConfig = loadContextSupplierContext
 						.datapackWorldgen()
 						.registryOrThrow(Registries.WORLD_PRESET)
 						.getHolderOrThrow(WorldPresets.FLAT)
 						.value()
 						.createWorldDimensions()
 						.bake(registry);
-					*///?}
+					//?}
 
 					return new WorldLoader.DataLoadOutput<>(null, dimensionsConfig.dimensionsRegistryAccess());
 				}, WorldStem::new, Util.backgroundExecutor(), executor)

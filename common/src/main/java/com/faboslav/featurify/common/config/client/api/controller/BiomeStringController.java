@@ -1,7 +1,7 @@
 package com.faboslav.featurify.common.config.client.api.controller;
 
 import com.faboslav.featurify.common.config.client.api.controller.element.BiomeStringControllerElement;
-import com.faboslav.featurify.common.config.data.WorldgenDataProvider;
+import com.faboslav.featurify.common.worldgen.WorldgenDataProvider;
 import com.faboslav.featurify.common.util.LanguageUtil;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.utils.Dimension;
@@ -16,9 +16,10 @@ public final class BiomeStringController extends AbstractDropdownController<Stri
 {
 	private final List<String> allowedValues;
 
-	public BiomeStringController(Option<String> option) {
-		super(option, WorldgenDataProvider.getBiomes(), false, false);
-		this.allowedValues = WorldgenDataProvider.getBiomes();
+	public BiomeStringController(Option<String> option, boolean allowEmpty) {
+		super(option, WorldgenDataProvider.getBiomeIds().stream().toList(), allowEmpty, false);
+
+		this.allowedValues = WorldgenDataProvider.getBiomeIds().stream().toList();
 	}
 
 	@Override
@@ -67,6 +68,10 @@ public final class BiomeStringController extends AbstractDropdownController<Stri
 
 	@Override
 	public Component formatValue() {
+		if (getString().isEmpty()) {
+			return Component.translatable("gui.featurify.label.none");
+		}
+
 		return LanguageUtil.translateId("biome", getString()).append((" (" + getString() + ") "));
 	}
 

@@ -44,7 +44,6 @@ public final class PlacedFeaturesBiomeModifier implements BiomeModifier
 				continue;
 			}
 
-			Featurify.getLogger().info("AddPlacedFeature");
 			builder.getGenerationSettings().addFeature(placedFeatureBiomeModification.generationStep(), placedFeatureBiomeModification.placedFeatureReference());
 		}
 	}
@@ -72,7 +71,6 @@ public final class PlacedFeaturesBiomeModifier implements BiomeModifier
 				continue;
 			}
 
-			Featurify.getLogger().info("RemovePlacedFeature");
 			builder.getGenerationSettings().getFeatures(placedFeatureBiomeModification.generationStep()).remove(placedFeatureBiomeModification.placedFeatureReference());
 		}
 	}

@@ -2,13 +2,17 @@ package com.faboslav.featurify.common.config;
 
 import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.config.data.*;
+import com.faboslav.featurify.common.config.data.serialization.BiomeDataSerializer;
 import com.faboslav.featurify.common.config.data.serialization.PlacedFeatureDataSerializer;
-import com.faboslav.featurify.common.events.common.UpdateRegistriesEvent;
+import com.faboslav.featurify.common.events.common.UpdateWorldgenDataEvent;
 import com.faboslav.featurify.common.platform.PlatformHooks;
 import com.faboslav.featurify.common.registry.RegistryManagerProvider;
+import com.faboslav.featurify.common.worldgen.WorldgenDataProvider;
+import com.google.common.hash.Hashing;
 import com.google.gson.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -30,6 +34,7 @@ public final class FeaturifyConfig
 
 	public boolean disableAllPlacedFeatures = false;
 	private Map<String, PlacedFeatureData> placedFeatureData = new TreeMap<>();
+	private Map<String, BiomeData> biomeData = new TreeMap<>();
 
 	private static final String CONFIG_VERSION_PROPERTY = "config_version";
 	private static final String CONFIG_DATETIME_PROPERTY = "config_datetime";
@@ -37,9 +42,14 @@ public final class FeaturifyConfig
 	private static final String DISABLE_ALL_PLACED_FEATURES_PROPERTY = "disable_all_placed_features";
 
 	private static final String PLACED_FEATURES_PROPERTY = "placed_features";
+	private static final String BIOMES_PROPERTY = "biomes";
 
 	public Map<String, PlacedFeatureData> getPlacedFeatureData() {
 		return this.placedFeatureData;
+	}
+
+	public Map<String, BiomeData> getBiomeData() {
+		return this.biomeData;
 	}
 
 	public void create() {
@@ -61,6 +71,7 @@ public final class FeaturifyConfig
 
 			WorldgenDataProvider.loadWorldgenData();
 			this.placedFeatureData = WorldgenDataProvider.getPlacedFeatures();
+			this.biomeData = WorldgenDataProvider.getBiomes();
 
 			if (!Files.exists(configPath)) {
 				return;
@@ -69,8 +80,7 @@ public final class FeaturifyConfig
 			String jsonString = Files.readString(configPath);
 			JsonObject json = gson.fromJson(jsonString, JsonObject.class);
 
-			loadGlobal(json);
-			loadPlacedFeatures(json);
+			loadFromJson(json);
 
 			Featurify.getLogger().info("Featurify config loaded");
 			this.isLoaded = true;
@@ -80,6 +90,12 @@ public final class FeaturifyConfig
 		} finally {
 			this.isLoading = false;
 		}
+	}
+
+	public void loadFromJson(JsonObject json) {
+		loadGlobal(json);
+		loadPlacedFeatures(json);
+		loadBiomes(json);
 	}
 
 	private void loadGlobal(JsonObject json) {
@@ -124,6 +140,36 @@ public final class FeaturifyConfig
 		}
 	}
 
+	private void loadBiomes(JsonObject json) {
+		if (!json.has(BIOMES_PROPERTY)) {
+			return;
+		}
+
+		var biomes = json.getAsJsonArray(BIOMES_PROPERTY);
+
+		for (JsonElement biome : biomes) {
+			var biomeJson = biome.getAsJsonObject();
+
+			if (!biomeJson.has(BiomeDataSerializer.NAME_PROPERTY)) {
+				Featurify.getLogger().info("Found invalid biome entry, skipping.");
+				continue;
+			}
+
+			if (!this.biomeData.containsKey(biomeJson.get(BiomeDataSerializer.NAME_PROPERTY).getAsString())) {
+				Featurify.getLogger().info("Found invalid biome identifier of \"{}\", skipping.", biomeJson.get(BiomeDataSerializer.NAME_PROPERTY).getAsString());
+				continue;
+			}
+
+			BiomeData biomeData = this.biomeData.get(biomeJson.get(BiomeDataSerializer.NAME_PROPERTY).getAsString());
+
+			if (biomeData == null) {
+				continue;
+			}
+
+			BiomeDataSerializer.load(biomeJson, biomeData);
+		}
+	}
+
 	public void save() {
 		this.save(true);
 	}
@@ -145,12 +191,7 @@ public final class FeaturifyConfig
 				}
 			}
 
-			JsonObject json = new JsonObject();
-
-			json.addProperty(CONFIG_VERSION_PROPERTY, PlatformHooks.PLATFORM_HELPER.getModVersion());
-			json.addProperty(CONFIG_DATETIME_PROPERTY, LocalDateTime.now().format(DATETIME_FORMATTER));
-			this.saveGlobalData(json);
-			this.savePlacedFeaturesData(json, true);
+			JsonObject json = this.toJson(true);
 
 			Files.createDirectories(configPath.getParent());
 			Files.createFile(configPath);
@@ -160,7 +201,7 @@ public final class FeaturifyConfig
 
 			if(syncRegistries) {
 				Featurify.getLogger().info("Syncing changes to registries...");
-				UpdateRegistriesEvent.EVENT.invoke(new UpdateRegistriesEvent(RegistryManagerProvider.getRegistryManager()));
+				UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
 				Featurify.getLogger().info("Registries synced");
 			}
 		} catch (Exception e) {
@@ -193,12 +234,7 @@ public final class FeaturifyConfig
 				Files.delete(configDumpPath);
 			}
 
-			JsonObject json = new JsonObject();
-
-			json.addProperty(CONFIG_VERSION_PROPERTY, PlatformHooks.PLATFORM_HELPER.getModVersion());
-			json.addProperty(CONFIG_DATETIME_PROPERTY, LocalDateTime.now().format(DATETIME_FORMATTER));
-			this.saveGlobalData(json);
-			this.savePlacedFeaturesData(json, false);
+			JsonObject json = this.toJson(false);
 
 			Files.createDirectories(configDumpPath.getParent());
 			Files.createFile(configDumpPath);
@@ -211,13 +247,35 @@ public final class FeaturifyConfig
 		}
 	}
 
+	public JsonObject toJson(boolean saveOnlyChanged) {
+		JsonObject json = new JsonObject();
+
+		json.addProperty(CONFIG_VERSION_PROPERTY, PlatformHooks.PLATFORM_HELPER.getModVersion());
+		json.addProperty(CONFIG_DATETIME_PROPERTY, LocalDateTime.now().format(DATETIME_FORMATTER));
+		this.saveGlobalData(json);
+		this.savePlacedFeaturesData(json, saveOnlyChanged);
+		this.saveBiomes(json, saveOnlyChanged);
+
+		return json;
+	}
+
+	public String computeConfigHash() {
+		return hashConfigJson(this.toJson(true));
+	}
+
+	public static String hashConfigJson(JsonObject json) {
+		JsonObject copy = json.deepCopy();
+		copy.remove(CONFIG_VERSION_PROPERTY);
+		copy.remove(CONFIG_DATETIME_PROPERTY);
+		return Hashing.sha256().hashString(copy.toString(), StandardCharsets.UTF_8).toString();
+	}
+
 	private void saveGlobalData(JsonObject json) {
 		JsonObject general = new JsonObject();
 		general.addProperty(DISABLE_ALL_PLACED_FEATURES_PROPERTY, this.disableAllPlacedFeatures);
 
 		json.add(GLOBAL_PROPERTY, general);
 	}
-
 
 	private void savePlacedFeaturesData(JsonObject json, boolean saveOnlyChanged) {
 		JsonArray placedFeatures = new JsonArray();
@@ -229,6 +287,18 @@ public final class FeaturifyConfig
 			});
 
 		json.add(PLACED_FEATURES_PROPERTY, placedFeatures);
+	}
+
+	private void saveBiomes(JsonObject json, boolean saveOnlyChanged) {
+		JsonArray biomes = new JsonArray();
+
+		this.biomeData.entrySet().stream()
+			.filter(entry -> !saveOnlyChanged || !entry.getValue().isUsingDefaultValues())
+			.forEach(biomeDataEntry -> {
+				BiomeDataSerializer.save(biomes, biomeDataEntry.getKey(), biomeDataEntry.getValue());
+			});
+
+		json.add(BIOMES_PROPERTY, biomes);
 	}
 
 	private Path getBackupConfigPath() {

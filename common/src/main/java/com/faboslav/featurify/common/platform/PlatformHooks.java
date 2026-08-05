@@ -1,5 +1,7 @@
 package com.faboslav.featurify.common.platform;
 
+import com.faboslav.featurify.common.network.platform.NetworkPlatform;
+
 import java.util.ServiceLoader;
 
 public final class PlatformHooks
@@ -7,6 +9,7 @@ public final class PlatformHooks
 	public static final PlatformBiomeModifications PLATFORM_BIOME_MODIFICATIONS = load(PlatformBiomeModifications.class);
 	public static final PlatformCompat PLATFORM_COMPAT = load(PlatformCompat.class);
 	public static final PlatformHelper PLATFORM_HELPER = load(PlatformHelper.class);
+	public static final NetworkPlatform NETWORK_PLATFORM = load(NetworkPlatform.class);
 	public static final PlatformResourcePackProvider PLATFORM_RESOURCE_PACK_PROVIDER = load(PlatformResourcePackProvider.class);
 
 	public static <T> T load(Class<T> service) {

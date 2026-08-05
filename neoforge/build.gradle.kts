@@ -47,6 +47,15 @@ dependencies {
 				}
 			for (mod in noMansLand) implementation(mod)
 		}
+
+		listOf(
+			"tectonic"
+		).forEach { modId ->
+			fletchingTable.modrinthBundle(modId, commonMod.mc, "neoforge") {
+				recursive = true
+				include("required", "optional", "embedded")
+			}.forEach(::implementation)
+		}
 	}
 }
 

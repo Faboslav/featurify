@@ -51,7 +51,6 @@ dependencies {
 	}
 
 	if (!IS_CI) {
-
 		listOf(
 			"lithostitched",
 			"terralith",
@@ -63,7 +62,6 @@ dependencies {
 				include("required", "optional", "embedded")
 			}.forEach(::modImplementation)
 		}
-
 	}
 }
 

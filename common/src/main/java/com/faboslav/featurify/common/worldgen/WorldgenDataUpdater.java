@@ -1,31 +1,34 @@
-package com.faboslav.featurify.common.registry;
+package com.faboslav.featurify.common.worldgen;
 
 import com.faboslav.featurify.common.Featurify;
+import com.faboslav.featurify.common.api.FeaturifyMultiNoiseBiomeSource;
+import com.faboslav.featurify.common.api.FeaturifyNoiseGeneratorSettings;
 import com.faboslav.featurify.common.api.FeaturifyPlacedFeature;
-import com.faboslav.featurify.common.events.common.UpdateRegistriesEvent;
+import com.faboslav.featurify.common.events.common.UpdateWorldgenDataEvent;
 import com.faboslav.featurify.common.mixin.feature.WeightedPlacedFeatureMixin;
 import com.faboslav.featurify.common.platform.PlatformHooks;
 import com.faboslav.featurify.common.util.FeatureUtil;
 import com.faboslav.featurify.common.versions.VersionedId;
+import com.faboslav.featurify.common.worldgen.biome.BiomeReplacementData;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.FeatureSorter;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.WeightedPlacedFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public final class RegistryUpdater
+public final class WorldgenDataUpdater
 {
-	public static void updateRegistries(final UpdateRegistriesEvent event) {
+	public static void updateWorldgenData(final UpdateWorldgenDataEvent event) {
 		if (!Featurify.getConfig().isLoaded) {
 			return;
 		}
@@ -39,7 +42,13 @@ public final class RegistryUpdater
 				return;
 			}
 
+			updateBiomeReplacements();
+			WorldgenDataProvider.loadSurfaceRuleSources();
+
 			updatePlacedFeatures(registryManager);
+			updateLevelStems(registryManager);
+			updateNoiseSettings(registryManager);
+
 			Featurify.getLogger().info("Registries updated");
 		} catch (Exception e) {
 			Featurify.getLogger().error("Failed to update registries");
@@ -61,10 +70,10 @@ public final class RegistryUpdater
 		for (var placedFeatureReference : placedFeatureRegistry.listElements().toList()) {
 			PlacedFeature placedFeature = placedFeatureReference.value();
 			var placedFeatureRegistryKey = placedFeatureReference.key();
-			Identifier placedFeatureId = VersionedId.GetId(placedFeatureRegistryKey);
+			ResourceLocation placedFeatureId = VersionedId.GetId(placedFeatureRegistryKey);
 
 			var featurifyPlacedFeature = ((FeaturifyPlacedFeature) (Object) placedFeature);
-			featurifyPlacedFeature.featurify$setIdentifier(placedFeatureId);
+			featurifyPlacedFeature.featurify$setResourceLocation(placedFeatureId);
 
 			var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId.toString(), null);
 
@@ -77,19 +86,19 @@ public final class RegistryUpdater
 
 			for (RandomFeatureConfiguration config : randomFeatureConfigurations) {
 				//? if >= 26.2 {
-				var features = config.features();
-				//?} else {
-				/*var features = config.features;
-				 *///?}
+				/*var features = config.features();
+				*///?} else {
+				var features = config.features;
+				 //?}
 
 				for (WeightedPlacedFeature weightedPlacedFeature : features) {
 					//? if >= 26.2 {
-					var configuredFeatureKey = weightedPlacedFeature.feature().value().feature().unwrapKey().orElse(null);
+					/*var configuredFeatureKey = weightedPlacedFeature.feature().value().feature().unwrapKey().orElse(null);
 					var originalChance = weightedPlacedFeature.chance();
-					//?} else {
-					/*var configuredFeatureKey = weightedPlacedFeature.feature.value().feature().unwrapKey().orElse(null);
+					*///?} else {
+					var configuredFeatureKey = weightedPlacedFeature.feature.value().feature().unwrapKey().orElse(null);
 					var originalChance = weightedPlacedFeature.chance;
-					*///?}
+					//?}
 
 					if (configuredFeatureKey == null) {
 						continue;
@@ -159,6 +168,58 @@ public final class RegistryUpdater
 		}
 
 		Featurify.getLogger().info("Placed feature registries updated");
+	}
+
+	private static void updateLevelStems(HolderLookup.Provider registryManager) {
+		var levelStemRegistry = registryManager.lookup(Registries.LEVEL_STEM).orElse(null);
+
+		if (levelStemRegistry == null) {
+			return;
+		}
+
+		for (var levelStemHolder : levelStemRegistry.listElements().toList()) {
+			var levelStem = levelStemHolder.value();
+
+			if (!(levelStem.generator().getBiomeSource() instanceof MultiNoiseBiomeSource multiNoiseBiomeSource)) {
+				continue;
+			}
+
+			((FeaturifyMultiNoiseBiomeSource) multiNoiseBiomeSource).featurify$clearParameters();
+		}
+
+		Featurify.getLogger().info("Level stem registries updated");
+	}
+
+	private static void updateNoiseSettings(HolderLookup.Provider registryManager) {
+		var noiseSettingsRegistry = registryManager.lookup(Registries.NOISE_SETTINGS).orElse(null);
+
+		if (noiseSettingsRegistry == null) {
+			return;
+		}
+
+		for (var noiseGeneratorSettingsHolder : noiseSettingsRegistry.listElements().toList()) {
+			var noiseGeneratorSettings = noiseGeneratorSettingsHolder.value();
+			((FeaturifyNoiseGeneratorSettings) (Object) noiseGeneratorSettings).featurify$clearSurfaceRules();
+		}
+
+		Featurify.getLogger().info("Noise settings registries updated");
+	}
+
+	private static void updateBiomeReplacements() {
+		BiomeReplacementData.clearReplacementBiomes();
+		var biomeData = Featurify.getConfig().getBiomeData();
+
+		for(var biomeDataItem : biomeData.entrySet()) {
+			var specificBiomeData = biomeDataItem.getValue();
+
+			if(specificBiomeData.isUsingDefaultReplacementBiome()) {
+				continue;
+			}
+
+			BiomeReplacementData.addReplacementBiome(specificBiomeData.getReplacementBiome());
+		}
+
+		Featurify.getLogger().info("Biome replacements updated");
 	}
 
 	public static boolean canSafelyAddPlacedFeatureToBiome(
