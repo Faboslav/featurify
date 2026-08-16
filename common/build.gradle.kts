@@ -7,6 +7,7 @@ plugins {
 stonecutter {
 	constants["global_packs"] = rootProject.project(stonecutter.current.project).property("deps.global_packs").toString() != ""
 	constants["open_loader"] = rootProject.project(stonecutter.current.project).property("deps.open_loader").toString() != ""
+	constants["terrablender"] = rootProject.project(stonecutter.current.project).property("deps.terrablender").toString() != ""
 }
 
 fletchingTable {
@@ -44,6 +45,11 @@ dependencies {
 
 	modCompileOnly("net.fabricmc:fabric-loader:${commonMod.dep("fabric_loader")}")
 	modCompileOnly("dev.isxander:yet-another-config-lib:${commonMod.dep("yacl")}-fabric")
+
+	// TerraBlender
+	commonMod.depOrNull("terrablender")?.let { globalPacksVersion ->
+		modImplementation(commonMod.modrinth("terrablender", globalPacksVersion))
+	}
 
 	// Global Packs
 	commonMod.depOrNull("global_packs")?.let { globalPacksVersion ->

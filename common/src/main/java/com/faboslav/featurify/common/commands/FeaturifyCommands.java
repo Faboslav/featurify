@@ -4,6 +4,7 @@ import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.network.packet.ConfigStatusToClientPacket;
 import com.faboslav.featurify.common.network.packet.ConfigSyncRequestToClientPacket;
 import com.faboslav.featurify.common.network.packet.ConfigSyncToClientPacket;
+import com.faboslav.featurify.common.versions.VersionedPermission;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -11,20 +12,17 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
 //? if >= 1.21.11 {
-/*import net.minecraft.server.permissions.Permissions;
-*///?}
+import net.minecraft.server.permissions.Permissions;
+//?}
 
 public final class FeaturifyCommands
 {
 	public static void createCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
 		dispatcher.register(
 			Commands.literal("featurify")
-				//? if >= 1.21.11 {
-				/*.requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
-				*///?} else {
-				.requires(source -> source.hasPermission(2))
-				 //?}
+				.requires(source -> VersionedPermission.hasPermissions(source, VersionedPermission.PERMISSION_GAMEMASTER))
 				.then(Commands.literal("dump")
+					.requires(source -> VersionedPermission.hasPermissions(source, VersionedPermission.PERMISSION_GAMEMASTER))
 					.executes(ctx -> {
 						Featurify.getConfig().dump();
 						ctx.getSource().sendSuccess(
@@ -35,11 +33,7 @@ public final class FeaturifyCommands
 					})
 				)
 				.then(Commands.literal("config")
-					//? if >= 1.21.11 {
-					/*.requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_OWNER))
-					*///?} else {
-					.requires(source -> source.hasPermission(4))
-					 //?}
+					.requires(source -> VersionedPermission.hasPermissions(source, VersionedPermission.PERMISSION_OWNER))
 					.then(Commands.literal("sync")
 						.then(Commands.literal("toServer")
 							.executes(ctx -> syncConfigToServer(ctx.getSource()))

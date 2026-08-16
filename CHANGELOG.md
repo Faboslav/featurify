@@ -1,3 +1,14 @@
+## 2.0.0
+
+- Added "/featurify config sync toServer" command
+- Added "/featurify config sync fromServer" command
+- Added "/featurify config status" command
+- Added new biome config screen, which currently allows:
+  - disable specific biome
+  - replace specific biome with another specific biome (even from different dimension)
+
+TerraBlender compatibility is already in the mod (but it's experimental)
+
 ## 1.0.4
 
 - Fixed crash caused by loading non-existing or invalid world generation features

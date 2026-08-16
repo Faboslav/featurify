@@ -29,6 +29,7 @@
 	"gui.featurify.biomes_category.title": "Biomes settings",
 	"gui.featurify.biomes_category.description": "Biomes settings",
 	"gui.featurify.biomes.biome.detail_button.tooltip": "Opens „%s“ biome settings",
+	"gui.featurify.biomes.biome.detail_button.name": "%s (replaced with %s)",
 	"gui.featurify.biomes.biome.title": "„%s“ settings",
 	"gui.featurify.biomes.biome_group.title": "„%s“ biomes",
 	"gui.featurify.biomes.biome_group.description": "List of all biomes for the „%s“ namespace.",

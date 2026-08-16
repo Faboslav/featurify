@@ -14,7 +14,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.FeatureSorter;
@@ -70,10 +70,10 @@ public final class WorldgenDataUpdater
 		for (var placedFeatureReference : placedFeatureRegistry.listElements().toList()) {
 			PlacedFeature placedFeature = placedFeatureReference.value();
 			var placedFeatureRegistryKey = placedFeatureReference.key();
-			ResourceLocation placedFeatureId = VersionedId.GetId(placedFeatureRegistryKey);
+			Identifier placedFeatureId = VersionedId.GetId(placedFeatureRegistryKey);
 
 			var featurifyPlacedFeature = ((FeaturifyPlacedFeature) (Object) placedFeature);
-			featurifyPlacedFeature.featurify$setResourceLocation(placedFeatureId);
+			featurifyPlacedFeature.featurify$setIdentifier(placedFeatureId);
 
 			var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId.toString(), null);
 
@@ -86,19 +86,19 @@ public final class WorldgenDataUpdater
 
 			for (RandomFeatureConfiguration config : randomFeatureConfigurations) {
 				//? if >= 26.2 {
-				/*var features = config.features();
-				*///?} else {
-				var features = config.features;
-				 //?}
+				var features = config.features();
+				//?} else {
+				/*var features = config.features;
+				 *///?}
 
 				for (WeightedPlacedFeature weightedPlacedFeature : features) {
 					//? if >= 26.2 {
-					/*var configuredFeatureKey = weightedPlacedFeature.feature().value().feature().unwrapKey().orElse(null);
+					var configuredFeatureKey = weightedPlacedFeature.feature().value().feature().unwrapKey().orElse(null);
 					var originalChance = weightedPlacedFeature.chance();
-					*///?} else {
-					var configuredFeatureKey = weightedPlacedFeature.feature.value().feature().unwrapKey().orElse(null);
+					//?} else {
+					/*var configuredFeatureKey = weightedPlacedFeature.feature.value().feature().unwrapKey().orElse(null);
 					var originalChance = weightedPlacedFeature.chance;
-					//?}
+					*///?}
 
 					if (configuredFeatureKey == null) {
 						continue;

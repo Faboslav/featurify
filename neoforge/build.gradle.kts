@@ -49,12 +49,24 @@ dependencies {
 		}
 
 		listOf(
-			"tectonic"
+			"tectonic",
+			"lithostitched",
+			"terralith",
+			"terrablender",
+			"natures-spirit"
 		).forEach { modId ->
-			fletchingTable.modrinthBundle(modId, commonMod.mc, "neoforge") {
-				recursive = true
-				include("required", "optional", "embedded")
-			}.forEach(::implementation)
+			try {
+				fletchingTable.modrinthBundle(modId, commonMod.mc, "neoforge") {
+					recursive = true
+					include("required", "optional", "embedded")
+				}.forEach(::implementation)
+			} catch (e: Exception) {
+				if (e.message?.startsWith("Failed to find any results for ModQuery") != true) {
+					throw e
+				}
+
+				logger.warn("Skipping Modrinth bundle '{}': {}", modId, e.message)
+			}
 		}
 	}
 }

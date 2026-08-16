@@ -16,3 +16,5 @@ awk -v tag="$tag" '
 	}
 
 ' CHANGELOG.md | sed -e '1{/^$/d;}' > RELEASE_CHANGELOG.md
+
+cat .github/assets/socials.md >> RELEASE_CHANGELOG.md

@@ -6,7 +6,7 @@ import com.faboslav.featurify.common.network.base.PacketType;
 import com.faboslav.featurify.common.network.base.ServerboundPacketType;
 import com.faboslav.featurify.common.platform.PlatformHooks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,7 +18,7 @@ public final class NetworkChannel implements Network
 {
 	private final Network network;
 
-	public NetworkChannel(ResourceLocation channel, int protocolVersion) {
+	public NetworkChannel(Identifier channel, int protocolVersion) {
 		this.network = PlatformHooks.NETWORK_PLATFORM.create(channel, protocolVersion);
 	}
 

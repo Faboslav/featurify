@@ -4,37 +4,37 @@ import com.faboslav.featurify.common.network.Packet;
 import com.faboslav.featurify.common.network.base.*;
 import net.fabricmc.api.EnvType;
 //? if >= 1.20.2 {
-/*import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-*///?} else {
-import io.netty.buffer.Unpooled;
+//?} else {
+/*import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
-//?}
+*///?}
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public final class FabricNetwork implements Network
 {
 	private static final boolean IS_CLIENT = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
 
-	private final ResourceLocation channel;
+	private final Identifier channel;
 
-	public FabricNetwork(ResourceLocation channel, int protocolVersion) {
+	public FabricNetwork(Identifier channel, int protocolVersion) {
 		this.channel = channel.withSuffix("/v" + protocolVersion);
 	}
 
 	//? if >= 1.20.2 {
-	/*@Override
+	@Override
 	public <T extends Packet<T>> void register(ClientboundPacketType<T> type) {
 		CustomPacketPayload.Type<NetworkPacketPayload<T>> payloadType = type.type(this.channel);
 		//? if >= 26.1 {
-		/^PayloadTypeRegistry.clientboundPlay().register(payloadType, type.codec(payloadType));
-		^///?} else {
-		PayloadTypeRegistry.playS2C().register(payloadType, type.codec(payloadType));
-		 //?}
+		PayloadTypeRegistry.clientboundPlay().register(payloadType, type.codec(payloadType));
+		//?} else {
+		/*PayloadTypeRegistry.playS2C().register(payloadType, type.codec(payloadType));
+		 *///?}
 
 		if (!IS_CLIENT) {
 			return;
@@ -47,10 +47,10 @@ public final class FabricNetwork implements Network
 	public <T extends Packet<T>> void register(ServerboundPacketType<T> type) {
 		CustomPacketPayload.Type<NetworkPacketPayload<T>> payloadType = type.type(this.channel);
 		//? if >= 26.1 {
-		/^PayloadTypeRegistry.serverboundPlay().register(payloadType, type.codec(payloadType));
-		^///?} else {
-		PayloadTypeRegistry.playC2S().register(payloadType, type.codec(payloadType));
-		 //?}
+		PayloadTypeRegistry.serverboundPlay().register(payloadType, type.codec(payloadType));
+		//?} else {
+		/*PayloadTypeRegistry.playC2S().register(payloadType, type.codec(payloadType));
+		 *///?}
 
 		ServerPlayNetworking.registerGlobalReceiver(
 			payloadType,
@@ -76,8 +76,8 @@ public final class FabricNetwork implements Network
 	public boolean canSendToPlayer(ServerPlayer player, PacketType<?> type) {
 		return ServerPlayNetworking.canSend(player, type.type(this.channel));
 	}
-	*///?} else {
-	private ResourceLocation packetId(PacketType<?> type) {
+	//?} else {
+	/*private Identifier packetId(PacketType<?> type) {
 		return this.channel.withSuffix("/" + type.id().getPath());
 	}
 
@@ -125,5 +125,5 @@ public final class FabricNetwork implements Network
 	public boolean canSendToPlayer(ServerPlayer player, PacketType<?> type) {
 		return ServerPlayNetworking.canSend(player, packetId(type));
 	}
-	//?}
+	*///?}
 }

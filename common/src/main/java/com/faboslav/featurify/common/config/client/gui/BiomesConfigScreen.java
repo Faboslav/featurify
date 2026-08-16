@@ -14,7 +14,7 @@ import com.faboslav.featurify.common.util.YACLUtil;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.*;
 
@@ -35,16 +35,15 @@ public final class BiomesConfigScreen
 
 	private static void addBiomes(ConfigCategory.Builder biomesCategoryBuilder, FeaturifyConfig config) {
 		var biomes = WorldgenDataProvider.getBiomes();
-		var biomeGroups = new TreeMap<String, TreeMap<ResourceLocation, BiomeData>>(Comparators.ALPHABETICALL_NAMESPACE_COMPARATOR);
-		var biomeRegistry = RegistryManagerProvider.getBiomeRegistry();
+		var biomeGroups = new TreeMap<String, TreeMap<Identifier, BiomeData>>(Comparators.ALPHABETICALL_NAMESPACE_COMPARATOR);
 
 		for (Map.Entry<String, BiomeData> entry : biomes.entrySet()) {
 			String biomeStringId = entry.getKey();
-			ResourceLocation biomeId = Featurify.makeNamespacedId(biomeStringId);
+			Identifier biomeId = Featurify.makeNamespacedId(biomeStringId);
 			String biomeNamespace = biomeId.getNamespace();
 			BiomeData biomeData = entry.getValue();
 			biomeGroups
-				.computeIfAbsent(biomeNamespace, namespace -> new TreeMap<>(Comparator.comparing(ResourceLocation::getPath)))
+				.computeIfAbsent(biomeNamespace, namespace -> new TreeMap<>(Comparator.comparing(Identifier::getPath)))
 				.put(biomeId, biomeData);
 		}
 
@@ -81,9 +80,17 @@ public final class BiomesConfigScreen
 		String biomeId
 	) {
 		var biomeName = LanguageUtil.translateId("biome", biomeId);
+		Component name;
+
+		if(biomeData.isUsingDefaultReplacementBiome()) {
+			name = biomeName;
+		} else {
+			var replacementBiomeName = LanguageUtil.translateId("biome", biomeData.getReplacementBiome());
+			name = Component.translatable("gui.featurify.biomes.biome.detail_button.name", biomeName, replacementBiomeName);
+		}
 
 		var biomeOptionBuilder = Option.<Boolean>createBuilder()
-			.name(biomeName)
+			.name(name)
 			.binding(
 				true,
 				() -> !biomeData.isDisabled(),

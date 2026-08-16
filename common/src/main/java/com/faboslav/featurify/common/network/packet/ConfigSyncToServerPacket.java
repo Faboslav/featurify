@@ -10,12 +10,12 @@ import com.faboslav.featurify.common.versions.VersionedPlayer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 //? if >= 1.20.2 {
-/*import net.minecraft.network.RegistryFriendlyByteBuf;
- *///?} else {
-import net.minecraft.network.FriendlyByteBuf;
-//?}
+import net.minecraft.network.RegistryFriendlyByteBuf;
+ //?} else {
+/*import net.minecraft.network.FriendlyByteBuf;
+*///?}
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.function.Consumer;
@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 public record ConfigSyncToServerPacket(String config) implements Packet<ConfigSyncToServerPacket>
 {
 	private static final Gson GSON = new Gson();
-	public static final ResourceLocation ID = Featurify.makeId("config_sync_to_server_packet");
+	public static final Identifier ID = Featurify.makeId("config_sync_to_server_packet");
 	public static final ServerboundPacketType<ConfigSyncToServerPacket> TYPE = new Handler();
 
 	public static void sendToServer(FeaturifyConfig config) {
@@ -38,7 +38,7 @@ public record ConfigSyncToServerPacket(String config) implements Packet<ConfigSy
 	public static class Handler implements ServerboundPacketType<ConfigSyncToServerPacket>
 	{
 		@Override
-		public ResourceLocation id() {
+		public Identifier id() {
 			return ID;
 		}
 
@@ -59,15 +59,15 @@ public record ConfigSyncToServerPacket(String config) implements Packet<ConfigSy
 		}
 
 		//? if >= 1.20.2 {
-		/*public ConfigSyncToServerPacket decode(final RegistryFriendlyByteBuf buf) {
+		public ConfigSyncToServerPacket decode(final RegistryFriendlyByteBuf buf) {
 			return new ConfigSyncToServerPacket(buf.readUtf());
 		}
 
 		public void encode(final ConfigSyncToServerPacket packet, final RegistryFriendlyByteBuf buf) {
 			buf.writeUtf(packet.config());
 		}
-		*///?} else {
-		public ConfigSyncToServerPacket decode(final FriendlyByteBuf buf) {
+		//?} else {
+		/*public ConfigSyncToServerPacket decode(final FriendlyByteBuf buf) {
 			return new ConfigSyncToServerPacket(buf.readUtf());
 		}
 
@@ -79,6 +79,6 @@ public record ConfigSyncToServerPacket(String config) implements Packet<ConfigSy
 		public Class<ConfigSyncToServerPacket> messageClass() {
 			return ConfigSyncToServerPacket.class;
 		}
-		//?}
+		*///?}
 	}
 }

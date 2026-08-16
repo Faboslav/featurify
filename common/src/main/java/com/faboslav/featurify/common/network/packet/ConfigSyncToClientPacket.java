@@ -11,20 +11,20 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import java.util.UUID;
 
 //? if >= 1.20.2 {
-/*import net.minecraft.network.RegistryFriendlyByteBuf;
- *///?} else {
-import net.minecraft.network.FriendlyByteBuf;
-//?}
+import net.minecraft.network.RegistryFriendlyByteBuf;
+ //?} else {
+/*import net.minecraft.network.FriendlyByteBuf;
+*///?}
 
 public record ConfigSyncToClientPacket(String config, boolean save, UUID playerId) implements Packet<ConfigSyncToClientPacket>
 {
 	private static final Gson GSON = new Gson();
-	public static final ResourceLocation ID = Featurify.makeId("config_sync_to_client_packet");
+	public static final Identifier ID = Featurify.makeId("config_sync_to_client_packet");
 	public static final ClientboundPacketType<ConfigSyncToClientPacket> TYPE = new Handler();
 
 	public static void sendToClient(FeaturifyConfig config, Player player, boolean save) {
@@ -46,7 +46,7 @@ public record ConfigSyncToClientPacket(String config, boolean save, UUID playerI
 	public static class Handler implements ClientboundPacketType<ConfigSyncToClientPacket>
 	{
 		@Override
-		public ResourceLocation id() {
+		public Identifier id() {
 			return ID;
 		}
 
@@ -78,7 +78,7 @@ public record ConfigSyncToClientPacket(String config, boolean save, UUID playerI
 		}
 
 		//? if >= 1.20.2 {
-		/*public ConfigSyncToClientPacket decode(final RegistryFriendlyByteBuf buf) {
+		public ConfigSyncToClientPacket decode(final RegistryFriendlyByteBuf buf) {
 			return new ConfigSyncToClientPacket(buf.readUtf(), buf.readBoolean(), buf.readUUID());
 		}
 
@@ -87,8 +87,8 @@ public record ConfigSyncToClientPacket(String config, boolean save, UUID playerI
 			buf.writeBoolean(packet.save());
 			buf.writeUUID(packet.playerId());
 		}
-		*///?} else {
-		public ConfigSyncToClientPacket decode(final FriendlyByteBuf buf) {
+		//?} else {
+		/*public ConfigSyncToClientPacket decode(final FriendlyByteBuf buf) {
 			return new ConfigSyncToClientPacket(buf.readUtf(), buf.readBoolean(), buf.readUUID());
 		}
 
@@ -102,6 +102,6 @@ public record ConfigSyncToClientPacket(String config, boolean save, UUID playerI
 		public Class<ConfigSyncToClientPacket> messageClass() {
 			return ConfigSyncToClientPacket.class;
 		}
-		//?}
+		*///?}
 	}
 }

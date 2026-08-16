@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 //? if >= 26.2 {
-/*import com.faboslav.featurify.common.registry.RegistryManagerProvider;
-*///?}
+import com.faboslav.featurify.common.registry.RegistryManagerProvider;
+//?}
 
 public final class FeaturifySurfaceRuleSources
 {
@@ -71,10 +71,10 @@ public final class FeaturifySurfaceRuleSources
 	) {
 		return SurfaceRules.ifTrue(
 			//? >= 26.2 {
-			/*SurfaceRules.isBiome(RegistryManagerProvider.getBiomeRegistry(), biome),
-			*///?} else {
-			SurfaceRules.isBiome(biome),
-			//?}
+			SurfaceRules.isBiome(RegistryManagerProvider.getBiomeRegistry(), biome),
+			//?} else {
+			/*SurfaceRules.isBiome(biome),
+			*///?}
 			sourceRule
 		);
 	}

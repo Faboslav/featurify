@@ -27,10 +27,10 @@ public class FileUtil
 			var width = image.getWidth();
 			var height = image.getHeight();
 			//? if >= 1.21.5 {
-			/*var texture = new DynamicTexture(() -> "mod_icon/" + id, image);
-			*///?} else {
-			var texture = new DynamicTexture(image);
-			 //?}
+			var texture = new DynamicTexture(() -> "mod_icon/" + id, image);
+			//?} else {
+			/*var texture = new DynamicTexture(image);
+			 *///?}
 			var textureId = Featurify.makeId(id, iconPath.get());
 			Minecraft.getInstance()
 				.getTextureManager()

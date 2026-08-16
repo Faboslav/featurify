@@ -6,16 +6,16 @@ import com.faboslav.featurify.common.network.Packet;
 import com.faboslav.featurify.common.network.base.ClientboundPacketType;
 import com.faboslav.featurify.common.network.base.PacketType;
 //? if >= 1.20.2 {
-/*import net.minecraft.network.RegistryFriendlyByteBuf;
- *///?} else {
-import net.minecraft.network.FriendlyByteBuf;
-//?}
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+ //?} else {
+/*import net.minecraft.network.FriendlyByteBuf;
+*///?}
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public record ConfigSyncRequestToClientPacket() implements Packet<ConfigSyncRequestToClientPacket>
 {
-	public static final ResourceLocation ID = Featurify.makeId("config_sync_request_to_client_packet");
+	public static final Identifier ID = Featurify.makeId("config_sync_request_to_client_packet");
 	public static final ClientboundPacketType<ConfigSyncRequestToClientPacket> TYPE = new Handler();
 
 	public static void sendToClient(Player player) {
@@ -30,7 +30,7 @@ public record ConfigSyncRequestToClientPacket() implements Packet<ConfigSyncRequ
 	public static class Handler implements ClientboundPacketType<ConfigSyncRequestToClientPacket>
 	{
 		@Override
-		public ResourceLocation id() {
+		public Identifier id() {
 			return ID;
 		}
 
@@ -40,14 +40,14 @@ public record ConfigSyncRequestToClientPacket() implements Packet<ConfigSyncRequ
 		}
 
 		//? if >= 1.20.2 {
-		/*public ConfigSyncRequestToClientPacket decode(final RegistryFriendlyByteBuf buf) {
+		public ConfigSyncRequestToClientPacket decode(final RegistryFriendlyByteBuf buf) {
 			return new ConfigSyncRequestToClientPacket();
 		}
 
 		public void encode(final ConfigSyncRequestToClientPacket packet, final RegistryFriendlyByteBuf buf) {
 		}
-		*///?} else {
-		public ConfigSyncRequestToClientPacket decode(final FriendlyByteBuf buf) {
+		//?} else {
+		/*public ConfigSyncRequestToClientPacket decode(final FriendlyByteBuf buf) {
 			return new ConfigSyncRequestToClientPacket();
 		}
 
@@ -58,6 +58,6 @@ public record ConfigSyncRequestToClientPacket() implements Packet<ConfigSyncRequ
 		public Class<ConfigSyncRequestToClientPacket> messageClass() {
 			return ConfigSyncRequestToClientPacket.class;
 		}
-		//?}
+		*///?}
 	}
 }

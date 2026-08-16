@@ -220,19 +220,19 @@ public final class WorldgenDataProvider
 
 			for (RandomFeatureConfiguration config : randomFeatureConfigurations) {
 				//? if >= 26.2 {
-				/*var features = config.features();
-				*///?} else {
-				var features = config.features;
-				 //?}
+				var features = config.features();
+				//?} else {
+				/*var features = config.features;
+				 *///?}
 
 				for (WeightedPlacedFeature weightedFeature : features) {
 					//? if >= 26.2 {
-					/*var configuredFeatureKey = weightedFeature.feature().value().feature().unwrapKey().orElse(null);
+					var configuredFeatureKey = weightedFeature.feature().value().feature().unwrapKey().orElse(null);
 					var weightedPlacedFeatureChance = weightedFeature.chance();
-					*///?} else {
-					var configuredFeatureKey = weightedFeature.feature.value().feature().unwrapKey().orElse(null);
+					//?} else {
+					/*var configuredFeatureKey = weightedFeature.feature.value().feature().unwrapKey().orElse(null);
 					var weightedPlacedFeatureChance = weightedFeature.chance;
-					//?}
+					*///?}
 
 					if (configuredFeatureKey == null) {
 						continue;

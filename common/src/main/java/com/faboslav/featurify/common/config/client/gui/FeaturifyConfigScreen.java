@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 //? if <= 1.20.1 {
-import com.faboslav.featurify.common.mixin.yacl.ElementListWidgetExtMixin;
-//?}
+/*import com.faboslav.featurify.common.mixin.yacl.ElementListWidgetExtMixin;
+*///?}
 
 public class FeaturifyConfigScreen
 {
@@ -63,10 +63,10 @@ public class FeaturifyConfigScreen
 			this.screenStates.put(yaclScreen.getTitle().getString(), new FeaturifyConfigScreenState(
 				categoryTab.getSearchField().getValue(),
 				//? if >= 1.21.4 {
-				/*optionListWidget.scrollAmount(),
-				*///?} else {
-				optionListWidget.getScrollAmount(),
-				 //?}
+				optionListWidget.scrollAmount(),
+				//?} else {
+				/*optionListWidget.getScrollAmount(),
+				 *///?}
 				collapsedGroups
 			));
 		}
@@ -84,8 +84,8 @@ public class FeaturifyConfigScreen
 				categoryTab.getSearchField().setValue(screenState.lastSearchText());
 				optionListWidget.setScrollAmount(screenState.lastScrollAmount());
 				//? if <= 1.20.1 {
-				((ElementListWidgetExtMixin) optionListWidget).featurify$resetSmoothScrolling();
-				//?}
+				/*((ElementListWidgetExtMixin) optionListWidget).featurify$resetSmoothScrolling();
+				*///?}
 
 				for (OptionListWidget.Entry entry : optionListWidget.children()) {
 					if (entry instanceof OptionListWidget.GroupSeparatorEntry groupSeparatorEntry) {

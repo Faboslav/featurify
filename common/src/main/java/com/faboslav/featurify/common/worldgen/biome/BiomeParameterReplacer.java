@@ -9,7 +9,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 
@@ -21,7 +20,6 @@ public final class BiomeParameterReplacer
 	public static Climate.ParameterList<Holder<Biome>> createReplacementList(
 		Climate.ParameterList<Holder<Biome>> originalParameters
 	) {
-		Featurify.getLogger().info("createReplacementList");
 		List<Pair<Climate.ParameterPoint, Holder<Biome>>> originalEntries =
 			originalParameters.values();
 
@@ -145,10 +143,10 @@ public final class BiomeParameterReplacer
 		Climate.TargetPoint targetPoint = createCenterTarget(disabledPoint);
 
 		//? if >= 1.21.1 {
-		/*Holder<Biome> closestBiome = enabledEntries.getFirst().getSecond();
-		*///?} else {
-		Holder<Biome> closestBiome = enabledEntries.get(0).getSecond();
-		//?}
+		Holder<Biome> closestBiome = enabledEntries.getFirst().getSecond();
+		//?} else {
+		/*Holder<Biome> closestBiome = enabledEntries.get(0).getSecond();
+		*///?}
 		long closestFitness = Long.MAX_VALUE;
 
 		for (Pair<Climate.ParameterPoint, Holder<Biome>> enabledEntry : enabledEntries) {

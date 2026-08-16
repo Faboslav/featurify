@@ -7,16 +7,16 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import org.jetbrains.annotations.Nullable;
 
 //? if >=1.21.9 {
-/*import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-*///?}
+//?}
 
 //? if >= 26.1 {
-/*import net.minecraft.client.gui.GuiGraphicsExtractor;
-*///?} else {
-import net.minecraft.client.gui.GuiGraphics;
- //?}
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+//?} else {
+/*import net.minecraft.client.gui.GuiGraphics;
+ *///?}
 
 public final class DualControllerElement extends AbstractWidget
 {
@@ -46,7 +46,7 @@ public final class DualControllerElement extends AbstractWidget
 	}
 
 	//? if >=1.21.9 {
-	/*@Override
+	@Override
 	public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
 		firstElement.setFocused(false);
 		secondElement.setFocused(false);
@@ -88,8 +88,8 @@ public final class DualControllerElement extends AbstractWidget
 	public boolean charTyped(CharacterEvent characterEvent) {
 		return firstElement.charTyped(characterEvent) || secondElement.charTyped(characterEvent) || secondElement.charTyped(characterEvent);
 	}
-	*///?} else {
-	@Override
+	//?} else {
+	/*@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		firstElement.setFocused(false);
 		secondElement.setFocused(false);
@@ -131,14 +131,14 @@ public final class DualControllerElement extends AbstractWidget
 	public boolean charTyped(char chr, int modifiers) {
 		return firstElement.charTyped(chr, modifiers) || secondElement.charTyped(chr, modifiers);
 	}
-	//?}
+	*///?}
 
 	//? if >=1.20.4 {
-	/*@Override
+	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
 		return this.firstElement.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount) || this.secondElement.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
-	*///?}
+	//?}
 
 	@Override
 	public void setFocused(boolean focused) {
@@ -172,7 +172,7 @@ public final class DualControllerElement extends AbstractWidget
 	}
 
 	//? if >= 21.6 {
-	/*@Override
+	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		firstElement.extractRenderState(graphics, mouseX, mouseY, a);
 		secondElement.extractRenderState(graphics, mouseX, mouseY, a);
@@ -182,8 +182,8 @@ public final class DualControllerElement extends AbstractWidget
 			resetButton.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 	}
-	*///?} else {
-	@Override
+	//?} else {
+	/*@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
 		firstElement.render(graphics, mouseX, mouseY, tickDelta);
 		secondElement.render(graphics, mouseX, mouseY, tickDelta);
@@ -193,7 +193,7 @@ public final class DualControllerElement extends AbstractWidget
 			resetButton.render(graphics, mouseX, mouseY, tickDelta);
 		}
 	}
-	//?}
+	*///?}
 
 	@Override
 	public NarrationPriority narrationPriority() {

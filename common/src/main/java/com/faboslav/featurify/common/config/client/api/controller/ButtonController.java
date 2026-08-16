@@ -14,16 +14,16 @@ import net.minecraft.network.chat.Component;
 import java.util.function.Function;
 
 //? if >= 1.21.9 {
-/*import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-*///?}
+//?}
 
 //? if >= 26.1 {
-/*import net.minecraft.client.gui.GuiGraphicsExtractor;
- *///?} else {
-import net.minecraft.client.gui.GuiGraphics;
-	//?}
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+ //?} else {
+/*import net.minecraft.client.gui.GuiGraphics;
+	*///?}
 
 public class ButtonController extends BooleanController
 {
@@ -125,7 +125,7 @@ public class ButtonController extends BooleanController
 		}
 
 		//? if >= 21.6 {
-		/*@Override
+		@Override
 		public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickDelta) {
 			this.booleanElement.extractRenderState(graphics, mouseX, mouseY, tickDelta);
 
@@ -133,8 +133,8 @@ public class ButtonController extends BooleanController
 			this.configurationButton.setY(getDimension().y());
 			this.configurationButton.extractRenderState(graphics, mouseX, mouseY, tickDelta);
 		}
-		*///?} else {
-		@Override
+		//?} else {
+		/*@Override
 		public void render(GuiGraphics graphics, int mouseX, int mouseY, float tickDelta) {
 			this.booleanElement.render(graphics, mouseX, mouseY, tickDelta);
 
@@ -142,7 +142,7 @@ public class ButtonController extends BooleanController
 			this.configurationButton.setY(getDimension().y());
 			this.configurationButton.render(graphics, mouseX, mouseY, tickDelta);
 		}
-		//?}
+		*///?}
 
 		@Override
 		public boolean canReset() {
@@ -207,7 +207,7 @@ public class ButtonController extends BooleanController
 		}
 
 		//? if >= 1.21.9 {
-		/*@Override
+		@Override
 		public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
 			this.configurationButton.active = this.booleanElement.isActive();
 
@@ -273,8 +273,8 @@ public class ButtonController extends BooleanController
 
 			return this.booleanElement.charTyped(characterEvent);
 		}
-		*///?} else {
-		@Override
+		//?} else {
+		/*@Override
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
 			this.configurationButton.active = this.booleanElement.isActive();
 
@@ -340,10 +340,10 @@ public class ButtonController extends BooleanController
 
 			return this.booleanElement.charTyped(chr, modifiers);
 		}
-		//?}
+		*///?}
 
 		//? if >= 1.20.4 {
-		/*@Override
+		@Override
 		public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
 			if (this.configurationButton.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) {
 				return true;
@@ -351,6 +351,6 @@ public class ButtonController extends BooleanController
 
 			return this.booleanElement.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 		}
-		*///?}
+		//?}
 	}
 }

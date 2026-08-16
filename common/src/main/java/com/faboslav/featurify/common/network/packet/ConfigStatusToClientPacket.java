@@ -12,21 +12,21 @@ import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.client.Minecraft;
 import java.util.UUID;
 
 //? if >= 1.20.2 {
-/*import net.minecraft.network.RegistryFriendlyByteBuf;
- *///?} else {
-import net.minecraft.network.FriendlyByteBuf;
-//?}
+import net.minecraft.network.RegistryFriendlyByteBuf;
+ //?} else {
+/*import net.minecraft.network.FriendlyByteBuf;
+*///?}
 
 public record ConfigStatusToClientPacket(String config, UUID playerId) implements Packet<ConfigStatusToClientPacket>
 {
 	private static final Gson GSON = new Gson();
-	public static final ResourceLocation ID = Featurify.makeId("config_status_to_client_packet");
+	public static final Identifier ID = Featurify.makeId("config_status_to_client_packet");
 	public static final ClientboundPacketType<ConfigStatusToClientPacket> TYPE = new Handler();
 
 	public static void sendToClient(FeaturifyConfig config, Player player) {
@@ -47,7 +47,7 @@ public record ConfigStatusToClientPacket(String config, UUID playerId) implement
 	public static class Handler implements ClientboundPacketType<ConfigStatusToClientPacket>
 	{
 		@Override
-		public ResourceLocation id() {
+		public Identifier id() {
 			return ID;
 		}
 
@@ -83,7 +83,7 @@ public record ConfigStatusToClientPacket(String config, UUID playerId) implement
 		}
 
 		//? if >= 1.20.2 {
-		/*public ConfigStatusToClientPacket decode(final RegistryFriendlyByteBuf buf) {
+		public ConfigStatusToClientPacket decode(final RegistryFriendlyByteBuf buf) {
 			return new ConfigStatusToClientPacket(buf.readUtf(), buf.readUUID());
 		}
 
@@ -94,8 +94,8 @@ public record ConfigStatusToClientPacket(String config, UUID playerId) implement
 			buf.writeUtf(packet.config());
 			buf.writeUUID(packet.playerId());
 		}
-		*///?} else {
-		public ConfigStatusToClientPacket decode(final FriendlyByteBuf buf) {
+		//?} else {
+		/*public ConfigStatusToClientPacket decode(final FriendlyByteBuf buf) {
 			return new ConfigStatusToClientPacket(buf.readUtf(), buf.readUUID());
 		}
 
@@ -111,7 +111,7 @@ public record ConfigStatusToClientPacket(String config, UUID playerId) implement
 		public Class<ConfigStatusToClientPacket> messageClass() {
 			return ConfigStatusToClientPacket.class;
 		}
-		//?}
+		*///?}
 	}
 
 	private static Component describeConfigStatus(

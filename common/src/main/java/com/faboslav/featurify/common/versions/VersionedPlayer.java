@@ -7,9 +7,9 @@ public final class VersionedPlayer
 {
 	public static void sendSystemMessage(Player player, Component message) {
 		//? if >= 26.1 {
-		/*player.sendSystemMessage(message);
-		*///?} else {
-		player.displayClientMessage(message, false);
-		//?}
+		player.sendSystemMessage(message);
+		//?} else {
+		/*player.displayClientMessage(message, false);
+		*///?}
 	}
 }

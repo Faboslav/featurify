@@ -24,6 +24,15 @@ public class FeaturifyMixinPlugin implements IMixinConfigPlugin
 			return this.isClassAvailable("me.earth.mc_runtime_test.McRuntimeTest");
 		}
 
+		// TerraBlender
+		if (mixinClassName.equals("com.faboslav.featurify.common.mixin.compat.terrablender.LevelUtilsMixin")) {
+			return this.isClassAvailable("terrablender.util.LevelUtils");
+		}
+
+		if (mixinClassName.equals("com.faboslav.featurify.common.mixin.compat.terrablender.ParameterListMixin")) {
+			return this.isClassAvailable("terrablender.core.TerraBlender");
+		}
+
 		return true;
 	}
 

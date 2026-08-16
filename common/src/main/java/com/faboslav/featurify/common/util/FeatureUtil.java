@@ -60,31 +60,31 @@ public final class FeatureUtil
 				configs.add(randomFeatureConfiguration);
 
 				//? if >= 26.2 {
-				/*var features = randomFeatureConfiguration.features();
-				 *///?} else {
-				var features = randomFeatureConfiguration.features;
-				//?}
+				var features = randomFeatureConfiguration.features();
+				 //?} else {
+				/*var features = randomFeatureConfiguration.features;
+				*///?}
 
 				for (WeightedPlacedFeature weightedPlacedFeature : features) {
 					//? if >= 26.2 {
-					/*collectRandomFeatureConfigurations(weightedPlacedFeature.feature().value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
-					 *///?} else {
-					collectRandomFeatureConfigurations(weightedPlacedFeature.feature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
-					//?}
+					collectRandomFeatureConfigurations(weightedPlacedFeature.feature().value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+					 //?} else {
+					/*collectRandomFeatureConfigurations(weightedPlacedFeature.feature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+					*///?}
 				}
 
 				return;
 			}
 
 			//? if >= 26.1 {
-			/*config.getSubFeatures().forEach(childConfiguredFeature -> {
+			config.getSubFeatures().forEach(childConfiguredFeature -> {
 				collectRandomFeatureConfigurations(childConfiguredFeature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
 			});
-			*///?} else {
-			config.getFeatures().forEach(childConfiguredFeature -> {
+			//?} else {
+			/*config.getFeatures().forEach(childConfiguredFeature -> {
 				collectRandomFeatureConfigurations(childConfiguredFeature, visitedPlacedFeatures, visitedConfiguredFeatures, configs);
 			});
-			//?}
+			*///?}
 		} catch (Throwable e) {
 			Featurify.getLogger().error("Unable to collect random feature configurations", e);
 		}

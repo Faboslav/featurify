@@ -1,6 +1,5 @@
 package com.faboslav.featurify.common.mixin.biome;
 
-import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.api.FeaturifyNoiseGeneratorSettings;
 import com.faboslav.featurify.common.worldgen.biome.FeaturifySurfaceRuleSources;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
@@ -18,7 +17,6 @@ public abstract class NoiseGeneratorSettingsMixin implements FeaturifyNoiseGener
 	@Nullable
 	private volatile SurfaceRules.RuleSource featurify$cachedSurfaceRules;
 
-
 	@WrapMethod(method = "surfaceRule")
 	private SurfaceRules.RuleSource featurify$addReplacementSurfaceRules(
 		Operation<SurfaceRules.RuleSource> original
@@ -30,7 +28,6 @@ public abstract class NoiseGeneratorSettingsMixin implements FeaturifyNoiseGener
 		}
 
 		synchronized (this) {
-			Featurify.getLogger().info("surfaceRule");
 			cachedSurfaceRules = this.featurify$cachedSurfaceRules;
 
 			if (cachedSurfaceRules == null) {

@@ -14,7 +14,7 @@
 		<img src="https://img.shields.io/static/v1?label=&message=Become a Patron&color=5b9c51&labelColor=5b9c51&logoColor=ffffff&style=for-the-badge&logo=patreon" alt="Become a Patreon">
 	</a>
 	<a style="text-decoration: none;" href="https://discord.com/invite/QGwFvvMQCn">
-		<img src="https://img.shields.io/discord/924964658169913404?style=for-the-badge&logo=discord&logoColor=ffffff&label=Join Our Discord&labelColor=5b9c51&color=5b9c51" alt="Join Our Discord">
+		<img src="https://img.shields.io/discord/924964658169913404?style=for-the-badge&logo=discord&logoColor=ffffff&label=Join the Community&labelColor=5b9c51&color=5b9c51" alt="Join the Community">
 	</a>
 </center>
 
