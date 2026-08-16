@@ -1,3 +1,7 @@
+## 2.0.1
+
+- Fixed TerraBlender compat mixin related crash
+
 ## 2.0.0
 
 - Added "/featurify config sync toServer" command
