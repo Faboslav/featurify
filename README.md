@@ -1,12 +1,12 @@
 <br>
 
-<center>
+<p align="center">
 	<img title="Featurify" src="https://raw.githubusercontent.com/Faboslav/featurify/master/.github/assets/images/logo/logo.png" alt="Featurify" width="743">
-</center>
+</p>
 
 <br>
 
-<center>
+<p align="center">
 	<a style="text-decoration: none;" href="https://ko-fi.com/faboslav">
 		<img src="https://img.shields.io/static/v1?label=&message=Buy%20Me%20a%20Coffee&color=5b9c51&labelColor=5b9c51&logoColor=ffffff&style=for-the-badge&logo=ko-fi" alt="Buy Me a Coffee" style="display: inline-block">
 	</a>
@@ -16,7 +16,9 @@
 	<a style="text-decoration: none;" href="https://discord.com/invite/QGwFvvMQCn">
 		<img src="https://img.shields.io/static/v1?label=&amp;message=Join%20the%20community&amp;color=5b9c51&amp;labelColor=5b9c51&amp;logoColor=ffffff&amp;style=for-the-badge&amp;logo=discord" alt="Join the Community" title="Join the Community" style="display: inline-block">
 	</a>
-</center>
+</p>
+
+<hr>
 
 <br>
 
