@@ -1,11 +1,11 @@
 package com.faboslav.featurify.common.versions;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.permissions.Permission;
-import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
 
 //? if >= 1.21.11 {
+import net.minecraft.server.permissions.Permissions;
+import net.minecraft.server.permissions.Permission;
 //?}
 
 public final class VersionedPermission
