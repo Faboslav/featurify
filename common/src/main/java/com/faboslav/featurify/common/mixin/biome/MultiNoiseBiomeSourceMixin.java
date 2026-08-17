@@ -23,7 +23,9 @@ public abstract class MultiNoiseBiomeSourceMixin implements FeaturifyMultiNoiseB
 
 	@Unique
 	public void featurify$clearParameters() {
-		this.featurify$parameters.clear();
+		synchronized (this.featurify$parameters) {
+			this.featurify$parameters.clear();
+		}
 	}
 
 	@ModifyReturnValue(
@@ -33,6 +35,8 @@ public abstract class MultiNoiseBiomeSourceMixin implements FeaturifyMultiNoiseB
 	private Climate.ParameterList<Holder<Biome>> featurify$replaceBiomeParameters(
 		Climate.ParameterList<Holder<Biome>> originalParameters
 	) {
-		return this.featurify$parameters.computeIfAbsent(originalParameters, BiomeParameterReplacer::createReplacementList);
+		synchronized (this.featurify$parameters) {
+			return this.featurify$parameters.computeIfAbsent(originalParameters, BiomeParameterReplacer::createReplacementList);
+		}
 	}
 }

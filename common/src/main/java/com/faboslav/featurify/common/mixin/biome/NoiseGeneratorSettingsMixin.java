@@ -14,43 +14,40 @@ import org.spongepowered.asm.mixin.Unique;
 public abstract class NoiseGeneratorSettingsMixin implements FeaturifyNoiseGeneratorSettings
 {
 	@Unique
+	private volatile boolean featurify$replacementRulesComputed;
+
+	@Unique
 	@Nullable
-	private volatile SurfaceRules.RuleSource featurify$cachedSurfaceRules;
+	private volatile SurfaceRules.RuleSource featurify$cachedReplacementRules;
 
 	@WrapMethod(method = "surfaceRule")
 	private SurfaceRules.RuleSource featurify$addReplacementSurfaceRules(
 		Operation<SurfaceRules.RuleSource> original
 	) {
-		SurfaceRules.RuleSource cachedSurfaceRules = this.featurify$cachedSurfaceRules;
-
-		if (cachedSurfaceRules != null) {
-			return cachedSurfaceRules;
-		}
-
-		synchronized (this) {
-			cachedSurfaceRules = this.featurify$cachedSurfaceRules;
-
-			if (cachedSurfaceRules == null) {
-				SurfaceRules.RuleSource originalRules = original.call();
-				SurfaceRules.RuleSource replacementRules =
-					FeaturifySurfaceRuleSources.createReplacementRules();
-
-				cachedSurfaceRules = replacementRules == null
-					? originalRules
-					: SurfaceRules.sequence(
-					replacementRules,
-					originalRules
-				);
-
-				this.featurify$cachedSurfaceRules = cachedSurfaceRules;
+		if (!this.featurify$replacementRulesComputed) {
+			synchronized (this) {
+				if (!this.featurify$replacementRulesComputed) {
+					this.featurify$cachedReplacementRules = FeaturifySurfaceRuleSources.createReplacementRules();
+					this.featurify$replacementRulesComputed = true;
+				}
 			}
 		}
 
-		return cachedSurfaceRules;
+		SurfaceRules.RuleSource originalRules = original.call();
+		SurfaceRules.RuleSource replacementRules = this.featurify$cachedReplacementRules;
+
+		if(replacementRules == null) {
+			return originalRules;
+		}
+
+		return SurfaceRules.sequence(replacementRules, originalRules);
 	}
 
 	@Override
 	public void featurify$clearSurfaceRules() {
-		this.featurify$cachedSurfaceRules = null;
+		synchronized (this) {
+			this.featurify$replacementRulesComputed = false;
+			this.featurify$cachedReplacementRules = null;
+		}
 	}
 }

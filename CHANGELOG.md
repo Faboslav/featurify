@@ -1,3 +1,7 @@
+## 2.0.3
+
+- Fixed bug when modded biomes (like Enderscape biomes) generated as plain vanilla biomes
+
 ## 2.0.2
 
 - Added lithostitched compat
