@@ -64,6 +64,18 @@ dependencies {
 			)
 		}
 	}
+
+	// TerraBlender
+	commonMod.depOrNull("terrablender")?.let { terablenderVersion ->
+		modImplementation(fletchingTable.modrinth("terrablender", minecraft = commonMod.mc, loaders = "fabric"))
+	}
+
+	// Litostitched
+	commonMod.depOrNull("lithostitched_minecraft")?.let { lithostitchedMcVersion ->
+		commonMod.depOrNull("lithostitched")?.let { lithostitchedVersion ->
+			modImplementation(fletchingTable.modrinth("lithostitched", minecraft = commonMod.mc, loaders = "fabric"))
+		}
+	}
 }
 
 loom {

@@ -38,6 +38,18 @@ dependencies {
 		}
 	}
 
+	// TerraBlender
+	commonMod.depOrNull("terrablender")?.let { terablenderVersion ->
+		implementation(fletchingTable.modrinth("terrablender", minecraft = commonMod.mc, loaders = "neoforge"))
+	}
+
+	// Litostitched
+	commonMod.depOrNull("lithostitched_minecraft")?.let { lithostitchedMcVersion ->
+		commonMod.depOrNull("lithostitched")?.let { lithostitchedVersion ->
+			implementation(fletchingTable.modrinth("lithostitched", minecraft = commonMod.mc, loaders = "neoforge"))
+		}
+	}
+
 	if(!IS_CI) {
 		if (commonMod.mc == "1.21.1") {
 			val noMansLand: List<Dependency> =
@@ -50,9 +62,7 @@ dependencies {
 
 		listOf(
 			"tectonic",
-			"lithostitched",
 			"terralith",
-			"terrablender",
 			"natures-spirit",
 			"regions-unexplored"
 		).forEach { modId ->

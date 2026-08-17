@@ -1,40 +1,58 @@
 package com.faboslav.featurify.common.mixin.compat.terrablender;
 
-import net.minecraft.world.level.biome.Climate;
 import org.spongepowered.asm.mixin.Mixin;
 
 //? if terrablender {
-import com.faboslav.featurify.common.worldgen.biome.compat.TerraBlenderBiomeFilter;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Climate;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-
+import terrablender.api.Region;
+import terrablender.util.LevelUtils;
 import java.util.function.Consumer;
+import com.faboslav.featurify.common.worldgen.biome.compat.TerraBlenderBiomeFilter;
 
-@Mixin(targets = "terrablender.util.LevelUtils", remap = false)
+@Mixin(value = LevelUtils.class, remap = false)
 public abstract class LevelUtilsMixin
 {
-	@ModifyArg(
-		method = "lambda$initializeBiomes$1",
+	@WrapOperation(
+		//? if >=26.2 {
+		method = "lambda$initializeBiomes$0",
+		//?} else {
+		/*method = "lambda$initializeBiomes$1",
+		*///?}
 		at = @At(
 			value = "INVOKE",
 			target = "Lterrablender/api/Region;addBiomes(Lnet/minecraft/core/Registry;Ljava/util/function/Consumer;)V"
 		)
 	)
-	private static Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> featurify$filterPossibleBiomes(
-		Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> mapper
+	private static void featurify$filterPossibleBiomes(
+		Region region,
+		Registry<Biome> biomeRegistry,
+		Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> mapper,
+		Operation<Void> original
 	) {
-		return pair -> {
-			ResourceKey<Biome> replacementBiome = TerraBlenderBiomeFilter.getReplacementBiomeKey(pair.getSecond());
+		original.call(
+			region,
+			biomeRegistry,
+			(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>) pair -> {
+				ResourceKey<Biome> replacementBiome =
+					TerraBlenderBiomeFilter.getReplacementBiomeKey(pair.getSecond());
 
-			if (replacementBiome == null) {
-				return;
+				if (replacementBiome == null) {
+					return;
+				}
+
+				mapper.accept(Pair.of(
+					pair.getFirst(),
+					replacementBiome
+				));
 			}
-
-			mapper.accept(Pair.of(pair.getFirst(), replacementBiome));
-		};
+		);
 	}
 }
 //?} else {
