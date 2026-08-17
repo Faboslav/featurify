@@ -38,6 +38,7 @@ Since this is the initial update, you can expect a lot of more features in the f
 **Available Commands:**
 
 * **/featurify dump:** Dumps complete config file with default settings to the file.
+* **/featurify dump:** Dumps complete config file with default settings to the file.
 
 <br>
 
@@ -84,6 +85,11 @@ offers enhanced compatibility with the following:
 * [Open Loader](https://modrinth.com/mod/open-loader)
 * [Global Packs](https://modrinth.com/mod/globalpacks)
 * [Global Datapacks](https://modrinth.com/mod/datapacks)
+
+### WorldGen mods:
+* [Lithostitched](https://modrinth.com/mod/lithostitched)
+* [TerraBlender](https://modrinth.com/mod/terrablender)
+
 
 Since feature generation is a complex system, things can occasionally break, especially with mods that implement their own custom feature generation logic or heavily alter vanilla generation behavior.
 

@@ -46,6 +46,7 @@ dependencies {
 
 	modCompileOnly("net.fabricmc:fabric-loader:${commonMod.dep("fabric_loader")}")
 	modCompileOnly("dev.isxander:yet-another-config-lib:${commonMod.dep("yacl")}-fabric")
+
 	// Global Packs
 	commonMod.depOrNull("global_packs")?.let { globalPacksVersion ->
 		modImplementation(commonMod.modrinth("globalpacks", globalPacksVersion))
@@ -70,13 +71,13 @@ dependencies {
 
 	// TerraBlender
 	commonMod.depOrNull("terrablender")?.let { terablenderVersion ->
-		modImplementation(fletchingTable.modrinth("terrablender", minecraft = commonMod.mc, loaders = "fabric"))
+		modCompileOnly(fletchingTable.modrinth("terrablender", minecraft = commonMod.mc, loaders = "fabric"))
 	}
 
 	// Litostitched
 	commonMod.depOrNull("lithostitched_minecraft")?.let { lithostitchedMcVersion ->
 		commonMod.depOrNull("lithostitched")?.let { lithostitchedVersion ->
-			modImplementation(fletchingTable.modrinth("lithostitched", minecraft = commonMod.mc, loaders = "fabric"))
+			modCompileOnly(fletchingTable.modrinth("lithostitched", minecraft = commonMod.mc, loaders = "fabric"))
 		}
 	}
 }
