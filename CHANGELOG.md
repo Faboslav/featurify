@@ -1,3 +1,8 @@
+## 2.0.2
+
+- Added lithostitched compat
+- Fixed TerraBlender compat (again)
+
 ## 2.0.1
 
 - Fixed TerraBlender compat mixin related crash
