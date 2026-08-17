@@ -50,11 +50,21 @@ dependencies {
 		) { isTransitive = false }
 	}
 
+	// TerraBlender
+	commonMod.depOrNull("terrablender")?.let { terablenderVersion ->
+		modImplementation(fletchingTable.modrinth("terrablender", minecraft = commonMod.mc, loaders = "forge"))
+	}
+
+	// Litostitched
+	commonMod.depOrNull("lithostitched_minecraft")?.let { lithostitchedMcVersion ->
+		commonMod.depOrNull("lithostitched")?.let { lithostitchedVersion ->
+			modImplementation(fletchingTable.modrinth("lithostitched", minecraft = commonMod.mc, loaders = "forge"))
+		}
+	}
+
 	if (!IS_CI) {
 		listOf(
-			"lithostitched",
 			"terralith",
-			"terrablender",
 			"natures-spirit"
 		).forEach { modId ->
 			fletchingTable.modrinthBundle(modId, commonMod.mc, "forge") {
