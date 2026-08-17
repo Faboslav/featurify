@@ -53,7 +53,8 @@ dependencies {
 			"lithostitched",
 			"terralith",
 			"terrablender",
-			"natures-spirit"
+			"natures-spirit",
+			"regions-unexplored"
 		).forEach { modId ->
 			try {
 				fletchingTable.modrinthBundle(modId, commonMod.mc, "neoforge") {

@@ -1,4 +1,4 @@
-package com.faboslav.featurify.common.worldgen.biome;
+package com.faboslav.featurify.common.worldgen.biome.compat;
 
 import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.config.data.BiomeData;

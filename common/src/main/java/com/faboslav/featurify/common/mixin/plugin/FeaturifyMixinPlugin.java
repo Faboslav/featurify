@@ -33,6 +33,11 @@ public class FeaturifyMixinPlugin implements IMixinConfigPlugin
 			return this.isClassAvailable("terrablender.core.TerraBlender");
 		}
 
+		// Lithostitched
+		if (mixinClassName.equals("com.faboslav.featurify.common.mixin.compat.lithostitched.InjectorBiomeSourceMixin")) {
+			return this.isClassAvailable("dev.worldgen.lithostitched.impl.worldgen.biomeinjector.internal.InjectorBiomeSource");
+		}
+
 		return true;
 	}
 

@@ -8,6 +8,7 @@ stonecutter {
 	constants["global_packs"] = rootProject.project(stonecutter.current.project).property("deps.global_packs").toString() != ""
 	constants["open_loader"] = rootProject.project(stonecutter.current.project).property("deps.open_loader").toString() != ""
 	constants["terrablender"] = rootProject.project(stonecutter.current.project).property("deps.terrablender").toString() != ""
+	constants["lithostitched"] = rootProject.project(stonecutter.current.project).property("deps.lithostitched").toString() != ""
 }
 
 fletchingTable {
@@ -49,6 +50,17 @@ dependencies {
 	// TerraBlender
 	commonMod.depOrNull("terrablender")?.let { globalPacksVersion ->
 		modImplementation(commonMod.modrinth("terrablender", globalPacksVersion))
+	}
+
+	// Litostitched
+	commonMod.depOrNull("lithostitched_minecraft")?.let { lithostitchedMcVersion ->
+		commonMod.depOrNull("lithostitched")?.let { lithostitchedVersion ->
+			if (commonMod.mc == "1.21.3") {
+				modImplementation(commonMod.modrinth("lithostitched", "${lithostitchedVersion}"))
+			}  else {
+				modImplementation(commonMod.modrinth("lithostitched", "${lithostitchedVersion}-fabric-${lithostitchedMcVersion}"))
+			}
+		}
 	}
 
 	// Global Packs

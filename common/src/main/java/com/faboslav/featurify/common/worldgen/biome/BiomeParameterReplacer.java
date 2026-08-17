@@ -80,23 +80,6 @@ public final class BiomeParameterReplacer
 		return enabledEntries;
 	}
 
-	private static Holder<Biome> getReplacementBiome(
-		Climate.ParameterPoint parameterPoint,
-		BiomeData biomeData,
-		List<Pair<Climate.ParameterPoint, Holder<Biome>>> enabledEntries
-	) {
-		if (!biomeData.isUsingDefaultReplacementBiome()) {
-			return getConfiguredReplacementBiome(
-				biomeData.getReplacementBiome()
-			);
-		}
-
-		return findClosestEnabledBiome(
-			parameterPoint,
-			enabledEntries
-		);
-	}
-
 	private static BiomeData getBiomeData(Holder<Biome> biome) {
 		String biomeId = VersionedId.GetId(biome.unwrapKey().get()).toString();
 
