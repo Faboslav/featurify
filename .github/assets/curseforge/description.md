@@ -28,16 +28,21 @@ Featurify is a worldgen feature configuration mod that eliminates the need for d
 
 **Currently, it is possible to:**
 
-* **Globally disable all placed features:** Easily disable all placed features across your world with a single setting, simplifying your world generation process.
-* **Disable individual placed features:** Disable specific features individually, giving you precise control over which ones generate in your world.
-* **Manage biomes for specific features:** Customize the list of biomes for individual features, add new.
+* **Globally disable all placed features:** Disable all placed features across your world with a single setting.
+* **Disable individual placed features:** Disable specific placed features individually, preventing them from generating in your world.
+* **Manage biomes for specific features:** Add or remove biomes for individual placed features to control where they generate.
+* **Disable specific biomes:** Disable specific biomes individually, preventing them from generating in your world.
+* **Replace specific biomes:** Replace specific biomes with another biome
 
-Since this is the initial update, you can expect a lot of more features in the future.
+Since mod is still in the early development phase, you can expect a lot of more features in the future.
 <br>
 
 **Available Commands:**
 
-* **/featurify dump:** Dumps complete config file with default settings to the file.
+* **/featurify dump:** Dumps the complete config file with all available settings to JSON file.
+* **/featurify config status:** Prints version (hash) of both the client and server config files in chat.
+* **/featurify config sync fromServer:** Synchronizes the config file from the server to the client.
+* **/featurify config sync toServer:** Synchronizes the config file from the client to the server.
 
 <br>
 <br>
@@ -96,6 +101,10 @@ offers enhanced compatibility with the following:
 * [Open Loader](https://www.curseforge.com/minecraft/mc-mods/open-loader)
 * [Global Packs](https://www.curseforge.com/minecraft/mc-mods/drp-global-datapack)
 * [Global Datapacks](https://www.curseforge.com/minecraft/mc-mods/global-datapacks)
+
+### WorldGen mods:
+* [Lithostitched](https://www.curseforge.com/minecraft/mc-mods/lithostitched)
+* [TerraBlender](https://www.curseforge.com/minecraft/mc-mods/terrablender-fabric)
 
 Since feature generation is a complex system, things can occasionally break, especially with mods that implement their own custom feature generation logic or heavily alter vanilla generation behavior.
 

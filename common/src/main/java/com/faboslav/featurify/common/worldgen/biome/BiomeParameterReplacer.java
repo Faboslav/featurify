@@ -89,11 +89,7 @@ public final class BiomeParameterReplacer
 	}
 
 	private static boolean shouldKeepOriginalBiome(BiomeData biomeData) {
-		return biomeData == null
-			   || (
-				   biomeData.isUsingDefaultIsDisabled()
-				   && biomeData.isUsingDefaultReplacementBiome()
-			   );
+		return biomeData == null || biomeData.isUsingDefaultValues();
 	}
 
 	private static Holder<Biome> getConfiguredReplacementBiome(
