@@ -58,7 +58,7 @@ public final class PlacedFeatureConfigScreen
 					placedFeatureData::getBiomes,
 					placedFeatureData::setBiomes
 				)
-				.controller(BiomeStringControllerBuilder::create)
+				.controller(opt -> BiomeStringControllerBuilder.create(opt).allowTags())
 				.initial("").build();
 
 			placedFeatureCategoryBuilder.group(biomesOption);

@@ -24,12 +24,17 @@ import java.util.*;
 public final class WorldgenDataProvider
 {
 	private static Set<String> biomeIds = new HashSet<>();
+	private static Set<String> biomeTags = new HashSet<>();
 	private static Map<String, Map<String, SurfaceRules.RuleSource>> surfaceRuleSources = new TreeMap<>();
 	private static Map<String, BiomeData> biomes = new TreeMap<>();
 	private static Map<String, PlacedFeatureData> placedFeatures = new TreeMap<>();
 
 	public static Set<String> getBiomeIds() {
 		return biomeIds;
+	}
+
+	public static Set<String> getBiomeTags() {
+		return biomeTags;
 	}
 
 	public static Map<String, Map<String, SurfaceRules.RuleSource>> getSurfaceRuleSources() {
@@ -46,6 +51,7 @@ public final class WorldgenDataProvider
 
 	public static void loadWorldgenData() {
 		biomeIds = loadBiomeIds();
+		biomeTags = loadBiomeTags();
 		biomes = loadBiomes();
 		placedFeatures = loadPlacedFeatures();
 	}
@@ -64,6 +70,22 @@ public final class WorldgenDataProvider
 		}
 
 		return biomeIds;
+	}
+
+	public static Set<String> loadBiomeTags() {
+		var biomeRegistry = RegistryManagerProvider.getBiomeRegistry();
+
+		if (biomeRegistry == null) {
+			return Collections.emptySet();
+		}
+
+		Set<String> biomeTags = new HashSet<>();
+
+		for (var biomeTag : biomeRegistry.listTags().toList()) {
+			biomeTags.add('#' + biomeTag.unwrapKey().get().location().toString());
+		}
+
+		return biomeTags;
 	}
 
 	public static Map<String, Map<String, SurfaceRules.RuleSource>> loadSurfaceRuleSources() {

@@ -16,10 +16,17 @@ public final class BiomeStringController extends AbstractDropdownController<Stri
 {
 	private final List<String> allowedValues;
 
-	public BiomeStringController(Option<String> option, boolean allowEmpty) {
+	public BiomeStringController(Option<String> option, boolean allowEmpty, boolean allowTags) {
 		super(option, WorldgenDataProvider.getBiomeIds().stream().toList(), allowEmpty, false);
 
-		this.allowedValues = WorldgenDataProvider.getBiomeIds().stream().toList();
+		var biomeIds = WorldgenDataProvider.getBiomeIds().stream().toList();
+
+		this.allowedValues = biomeIds;
+
+		if(allowTags) {
+			var biomeTags = WorldgenDataProvider.getBiomeIds().stream().toList();
+			this.allowedValues.addAll(biomeTags);
+		}
 	}
 
 	@Override
