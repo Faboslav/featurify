@@ -24,20 +24,22 @@ public final class FeaturifySurfaceRuleSources
 			return null;
 		}
 
-		List<SurfaceRules.RuleSource> rules = new ArrayList<>();
+		List<SurfaceRules.RuleSource> replacementRules = new ArrayList<>();
 
 		for (ResourceKey<Biome> biome : BiomeReplacementData.getReplacementBiomes()) {
 			SurfaceRules.RuleSource sourceRule =
 				findUniqueSurfaceRule(surfaceRulesByDimension, biome);
 
 			if (sourceRule != null) {
-				rules.add(createBiomeRule(biome, sourceRule));
+				replacementRules.add(createBiomeRule(biome, sourceRule));
 			}
 		}
 
-		return rules.isEmpty()
-			? null
-			: SurfaceRules.sequence(rules.toArray(SurfaceRules.RuleSource[]::new));
+		if(replacementRules.isEmpty()) {
+			return null;
+		}
+
+		return SurfaceRules.sequence(replacementRules.toArray(SurfaceRules.RuleSource[]::new));
 	}
 
 	private static SurfaceRules.RuleSource findUniqueSurfaceRule(
@@ -45,24 +47,23 @@ public final class FeaturifySurfaceRuleSources
 		ResourceKey<Biome> biome
 	) {
 		String biomeId = VersionedId.GetId(biome).toString();
-		SurfaceRules.RuleSource result = null;
+		SurfaceRules.RuleSource foundRuleSource = null;
 
-		for (Map<String, SurfaceRules.RuleSource> dimensionRules
-			: surfaceRulesByDimension.values()) {
-			SurfaceRules.RuleSource candidate = dimensionRules.get(biomeId);
+		for (var dimensionRules : surfaceRulesByDimension.values()) {
+			SurfaceRules.RuleSource possibleRuleSource = dimensionRules.get(biomeId);
 
-			if (candidate == null) {
+			if (possibleRuleSource == null) {
 				continue;
 			}
 
-			if (result != null) {
+			if (foundRuleSource != null) {
 				return null;
 			}
 
-			result = candidate;
+			foundRuleSource = possibleRuleSource;
 		}
 
-		return result;
+		return foundRuleSource;
 	}
 
 	private static SurfaceRules.RuleSource createBiomeRule(

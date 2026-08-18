@@ -20,46 +20,47 @@ public final class BiomeParameterReplacer
 	public static Climate.ParameterList<Holder<Biome>> createReplacementList(
 		Climate.ParameterList<Holder<Biome>> originalParameters
 	) {
-		List<Pair<Climate.ParameterPoint, Holder<Biome>>> originalEntries =
-			originalParameters.values();
+		List<Pair<Climate.ParameterPoint, Holder<Biome>>> originalEntries = originalParameters.values();
+		List<Pair<Climate.ParameterPoint, Holder<Biome>>> replacedEntries = null;
+		List<Pair<Climate.ParameterPoint, Holder<Biome>>> enabledEntries = null;
 
-		if (originalEntries.isEmpty()) {
-			return originalParameters;
-		}
-
-		List<Pair<Climate.ParameterPoint, Holder<Biome>>> enabledEntries =
-			getEnabledEntries(originalEntries);
-
-		List<Pair<Climate.ParameterPoint, Holder<Biome>>> replacedEntries =
-			new ArrayList<>(originalEntries.size());
-
-		for (Pair<Climate.ParameterPoint, Holder<Biome>> entry : originalEntries) {
-			var parameterPoint = entry.getFirst();
-			var biomeHolder = entry.getSecond();
-			BiomeData biomeData = getBiomeData(biomeHolder);
+		for (int i = 0; i < originalEntries.size(); i++) {
+			var entry = originalEntries.get(i);
+			var biomeData = getBiomeData(entry.getSecond());
 
 			if (shouldKeepOriginalBiome(biomeData)) {
-				replacedEntries.add(entry);
+				if (replacedEntries != null) {
+					replacedEntries.add(entry);
+				}
+
 				continue;
+			}
+
+			if (replacedEntries == null) {
+				replacedEntries = new ArrayList<>(originalEntries.size());
+				replacedEntries.addAll(originalEntries.subList(0, i));
 			}
 
 			Holder<Biome> replacementBiome;
 
-			if (!biomeData.isUsingDefaultReplacementBiome()) {
-				replacementBiome = getConfiguredReplacementBiome(
-					biomeData.getReplacementBiome()
-				);
+			if (biomeData.isUsingDefaultReplacementBiome()) {
+				if (enabledEntries == null) {
+					enabledEntries = getEnabledEntries(originalEntries);
+				}
+
+				replacementBiome = findClosestEnabledBiome(entry.getFirst(), enabledEntries);
 			} else {
-				replacementBiome = findClosestEnabledBiome(
-					parameterPoint,
-					enabledEntries
-				);
+				replacementBiome = getConfiguredReplacementBiome(biomeData.getReplacementBiome());
 			}
 
 			replacedEntries.add(Pair.of(
-				parameterPoint,
+				entry.getFirst(),
 				replacementBiome
 			));
+		}
+
+		if(replacedEntries == null) {
+			return originalParameters;
 		}
 
 		return new Climate.ParameterList<>(replacedEntries);
@@ -68,8 +69,7 @@ public final class BiomeParameterReplacer
 	private static List<Pair<Climate.ParameterPoint, Holder<Biome>>> getEnabledEntries(
 		List<Pair<Climate.ParameterPoint, Holder<Biome>>> entries
 	) {
-		List<Pair<Climate.ParameterPoint, Holder<Biome>>> enabledEntries =
-			new ArrayList<>(entries.size());
+		List<Pair<Climate.ParameterPoint, Holder<Biome>>> enabledEntries = new ArrayList<>(entries.size());
 
 		for (Pair<Climate.ParameterPoint, Holder<Biome>> entry : entries) {
 			if (shouldKeepOriginalBiome(getBiomeData(entry.getSecond()))) {
@@ -83,9 +83,7 @@ public final class BiomeParameterReplacer
 	private static BiomeData getBiomeData(Holder<Biome> biome) {
 		String biomeId = VersionedId.GetId(biome.unwrapKey().get()).toString();
 
-		return Featurify.getConfig()
-			.getBiomeData()
-			.get(biomeId);
+		return Featurify.getConfig().getBiomeData().get(biomeId);
 	}
 
 	private static boolean shouldKeepOriginalBiome(BiomeData biomeData) {
@@ -129,9 +127,7 @@ public final class BiomeParameterReplacer
 		long closestFitness = Long.MAX_VALUE;
 
 		for (Pair<Climate.ParameterPoint, Holder<Biome>> enabledEntry : enabledEntries) {
-			long fitness =
-				((ClimateParameterPointAccessor) (Object) enabledEntry.getFirst())
-					.featurify$fitness(targetPoint);
+			long fitness = ((ClimateParameterPointAccessor) (Object) enabledEntry.getFirst()).featurify$fitness(targetPoint);
 
 			if (fitness < closestFitness) {
 				closestFitness = fitness;
@@ -156,7 +152,6 @@ public final class BiomeParameterReplacer
 	}
 
 	private static long center(Climate.Parameter parameter) {
-		return parameter.min()
-			   + (parameter.max() - parameter.min()) / 2L;
+		return parameter.min() + (parameter.max() - parameter.min()) / 2L;
 	}
 }

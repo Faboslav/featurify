@@ -61,11 +61,12 @@ dependencies {
 		}
 
 		listOf(
-			"tectonic",
-			"terralith",
-			"natures-spirit",
-			"regions-unexplored",
-			"enderscape"
+			//"tectonic",
+			//"terralith",
+			//"natures-spirit",
+			"biomes-o-plenty",
+			//"regions-unexplored",
+			//"enderscape"
 		).forEach { modId ->
 			try {
 				fletchingTable.modrinthBundle(modId, commonMod.mc, "neoforge") {
