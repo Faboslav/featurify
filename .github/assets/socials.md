@@ -1,5 +1,5 @@
 <hr>
-<p align="center" style="align-text: center;">
+<p style="align-text: center;" align="center">
 	<a style="text-decoration: none;" href="https://ko-fi.com/faboslav">
 		<img src="https://img.shields.io/static/v1?label=&message=Buy%20Me%20a%20Coffee&color=5b9c51&labelColor=5b9c51&logoColor=ffffff&style=for-the-badge&logo=ko-fi" alt="Buy Me a Coffee" style="display: inline-block">
 	</a>
