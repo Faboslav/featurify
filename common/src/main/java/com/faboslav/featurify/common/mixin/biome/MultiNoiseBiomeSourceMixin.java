@@ -1,6 +1,5 @@
 package com.faboslav.featurify.common.mixin.biome;
 
-import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.api.FeaturifyMultiNoiseBiomeSource;
 import com.faboslav.featurify.common.worldgen.biome.BiomeParameterReplacer;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;

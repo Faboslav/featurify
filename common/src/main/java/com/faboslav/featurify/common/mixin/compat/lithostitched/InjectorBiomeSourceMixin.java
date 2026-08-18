@@ -9,11 +9,13 @@ import com.faboslav.featurify.common.worldgen.biome.compat.LithostitchedBiomeFil
 import dev.worldgen.lithostitched.impl.worldgen.biomeinjector.internal.InjectorBiomeSource;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.world.level.biome.Climate;
 import org.spongepowered.asm.mixin.Shadow;
 
+@Pseudo
 @Mixin(value = InjectorBiomeSource.class, remap = false)
 public abstract class InjectorBiomeSourceMixin
 {
@@ -23,7 +25,8 @@ public abstract class InjectorBiomeSourceMixin
 
 	@ModifyReturnValue(
 		method = "getNoiseBiome",
-		at = @At("RETURN")
+		at = @At("RETURN"),
+		require = 0
 	)
 	private Holder<Biome> featurify$filterInjectedBiome(
 		Holder<Biome> original,

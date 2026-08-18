@@ -10,12 +10,14 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import terrablender.api.Region;
 import terrablender.util.LevelUtils;
 import java.util.function.Consumer;
 import com.faboslav.featurify.common.worldgen.biome.compat.TerraBlenderBiomeFilter;
 
+@Pseudo
 @Mixin(value = LevelUtils.class, remap = false)
 public abstract class LevelUtilsMixin
 {
@@ -28,7 +30,8 @@ public abstract class LevelUtilsMixin
 		at = @At(
 			value = "INVOKE",
 			target = "Lterrablender/api/Region;addBiomes(Lnet/minecraft/core/Registry;Ljava/util/function/Consumer;)V"
-		)
+		),
+		require = 0
 	)
 	private static void featurify$filterPossibleBiomes(
 		Region region,
