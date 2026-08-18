@@ -6,14 +6,14 @@ import org.spongepowered.asm.mixin.Mixin;
 
 //? if lithostitched {
 import com.faboslav.featurify.common.worldgen.biome.compat.LithostitchedBiomeFilter;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.worldgen.lithostitched.impl.worldgen.biomeinjector.internal.InjectorBiomeSource;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
-import org.spongepowered.asm.mixin.Pseudo;
-import org.spongepowered.asm.mixin.injection.At;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.world.level.biome.Climate;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Pseudo
 @Mixin(value = InjectorBiomeSource.class, remap = false)
@@ -35,7 +35,7 @@ public abstract class InjectorBiomeSourceMixin
 		int quartZ,
 		Climate.Sampler sampler
 	) {
-		return LithostitchedBiomeFilter.filter(
+		return LithostitchedBiomeFilter.getReplacementBiome(
 			original,
 			quartX,
 			quartY,

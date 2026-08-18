@@ -3,6 +3,7 @@ package com.faboslav.featurify.common.mixin.compat.terrablender;
 import org.spongepowered.asm.mixin.Mixin;
 
 //? if terrablender {
+import com.faboslav.featurify.common.worldgen.biome.compat.TerraBlenderBiomeFilter;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.datafixers.util.Pair;
@@ -14,8 +15,8 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import terrablender.api.Region;
 import terrablender.util.LevelUtils;
+
 import java.util.function.Consumer;
-import com.faboslav.featurify.common.worldgen.biome.compat.TerraBlenderBiomeFilter;
 
 @Pseudo
 @Mixin(value = LevelUtils.class, remap = false)

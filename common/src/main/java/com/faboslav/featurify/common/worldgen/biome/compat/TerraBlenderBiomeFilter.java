@@ -28,10 +28,6 @@ public final class TerraBlenderBiomeFilter
 	}
 
 	private static boolean shouldKeepOriginalBiome(BiomeData biomeData) {
-		return biomeData == null
-			   || (
-				   biomeData.isUsingDefaultIsDisabled()
-				   && biomeData.isUsingDefaultReplacementBiome()
-			   );
+		return biomeData == null || biomeData.isUsingDefaultValues();
 	}
 }

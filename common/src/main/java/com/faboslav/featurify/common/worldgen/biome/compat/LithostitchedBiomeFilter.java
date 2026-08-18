@@ -13,7 +13,7 @@ import net.minecraft.world.level.biome.Climate;
 
 public final class LithostitchedBiomeFilter
 {
-	public static Holder<Biome> filter(
+	public static Holder<Biome> getReplacementBiome(
 		Holder<Biome> biome,
 		int quartX,
 		int quartY,
@@ -30,7 +30,7 @@ public final class LithostitchedBiomeFilter
 		String biomeId = VersionedId.GetId(biomeKey).toString();
 		BiomeData biomeData = Featurify.getConfig().getBiomeData().get(biomeId);
 
-		if (biomeData == null || biomeData.isUsingDefaultValues()) {
+		if (shouldKeepOriginalBiome(biomeData)) {
 			return biome;
 		}
 
@@ -39,6 +39,10 @@ public final class LithostitchedBiomeFilter
 		}
 
 		return baseResolver.getNoiseBiome(quartX, quartY, quartZ, sampler);
+	}
+
+	private static boolean shouldKeepOriginalBiome(BiomeData biomeData) {
+		return biomeData == null || biomeData.isUsingDefaultValues();
 	}
 
 	private static Holder<Biome> getConfiguredReplacementBiome(String replacementBiomeId) {
