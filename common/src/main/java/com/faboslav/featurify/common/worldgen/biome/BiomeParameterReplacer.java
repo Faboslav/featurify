@@ -90,9 +90,7 @@ public final class BiomeParameterReplacer
 		return biomeData == null || biomeData.isUsingDefaultValues();
 	}
 
-	private static Holder<Biome> getConfiguredReplacementBiome(
-		String replacementBiomeId
-	) {
+	private static Holder<Biome> getConfiguredReplacementBiome(String replacementBiomeId) {
 		ResourceKey<Biome> replacementBiomeKey = ResourceKey.create(
 			Registries.BIOME,
 			Featurify.makeNamespacedId(replacementBiomeId.replace("#", ""))

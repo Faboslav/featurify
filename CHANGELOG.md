@@ -1,3 +1,8 @@
+## 2.0.4
+
+- Fixed bug when modded biomes (like Biomes O' Plenty biomes) generated as plain vanilla biomes
+
+
 ## 2.0.3
 
 - Fixed bug when modded biomes (like Enderscape biomes) generated as plain vanilla biomes
