@@ -11,8 +11,26 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.Climate;
 
-public final class LithostitchedBiomeFilter
+public final class FeaturifyBiomeFilter
 {
+	public static ResourceKey<Biome> getReplacementBiomeKey(ResourceKey<Biome> biomeKey) {
+		String biomeId = VersionedId.GetId(biomeKey).toString();
+		BiomeData biomeData = Featurify.getConfig().getBiomeData().get(biomeId);
+
+		if (shouldKeepOriginalBiome(biomeData)) {
+			return biomeKey;
+		}
+
+		if (!biomeData.isUsingDefaultReplacementBiome()) {
+			return ResourceKey.create(
+				Registries.BIOME,
+				Featurify.makeNamespacedId(biomeData.getReplacementBiome().replace("#", ""))
+			);
+		}
+
+		return null;
+	}
+
 	public static Holder<Biome> getReplacementBiome(
 		Holder<Biome> biome,
 		int quartX,

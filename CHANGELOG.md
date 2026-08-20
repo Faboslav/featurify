@@ -1,7 +1,10 @@
+## 2.0.5
+
+- Added Blueprint compat
+
 ## 2.0.4
 
 - Fixed bug when modded biomes (like Biomes O' Plenty biomes) generated as plain vanilla biomes
-
 
 ## 2.0.3
 

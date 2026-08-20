@@ -95,6 +95,7 @@ offers enhanced compatibility with the following:
 ### WorldGen mods:
 * [Lithostitched](https://modrinth.com/mod/lithostitched)
 * [TerraBlender](https://modrinth.com/mod/terrablender)
+* [Blueprint](https://modrinth.com/mod/blueprint)
 
 Since feature generation is a complex system, things can occasionally break, especially with mods that implement their own custom feature generation logic or heavily alter vanilla generation behavior.
 

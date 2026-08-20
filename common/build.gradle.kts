@@ -9,6 +9,7 @@ stonecutter {
 	constants["open_loader"] = rootProject.project(stonecutter.current.project).property("deps.open_loader").toString() != ""
 	constants["terrablender"] = rootProject.project(stonecutter.current.project).property("deps.terrablender").toString() != ""
 	constants["lithostitched"] = rootProject.project(stonecutter.current.project).property("deps.lithostitched").toString() != ""
+	constants["blueprint"] = rootProject.project(stonecutter.current.project).property("deps.lithostitched").toString() != ""
 }
 
 fletchingTable {

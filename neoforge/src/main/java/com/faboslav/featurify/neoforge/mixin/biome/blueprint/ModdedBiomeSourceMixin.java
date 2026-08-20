@@ -1,33 +1,33 @@
-//? if lithostitched {
-package com.faboslav.featurify.common.mixin.compat.lithostitched;
+//? if blueprint {
+/*package com.faboslav.featurify.neoforge.mixin.biome.blueprint;
 
-import net.minecraft.world.level.biome.BiomeSource;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
 import com.faboslav.featurify.common.worldgen.biome.compat.FeaturifyBiomeFilter;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import dev.worldgen.lithostitched.impl.worldgen.biomeinjector.internal.InjectorBiomeSource;
+import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Pseudo
-@Mixin(value = InjectorBiomeSource.class, remap = false)
-public abstract class InjectorBiomeSourceMixin
+@Mixin(value = ModdedBiomeSource.class, remap = false)
+public abstract class ModdedBiomeSourceMixin
 {
 	@Shadow
 	@Final
-	private BiomeSource directDelegate;
+	private BiomeSource originalSource;
 
 	@ModifyReturnValue(
 		method = "getNoiseBiome",
 		at = @At("RETURN"),
 		require = 0
 	)
-	private Holder<Biome> featurify$filterInjectedBiome(
+	private Holder<Biome> featurify$filterModdedBiome(
 		Holder<Biome> original,
 		int quartX,
 		int quartY,
@@ -40,8 +40,8 @@ public abstract class InjectorBiomeSourceMixin
 			quartY,
 			quartZ,
 			sampler,
-			this.directDelegate
+			this.originalSource
 		);
 	}
 }
-//?}
+*///?}

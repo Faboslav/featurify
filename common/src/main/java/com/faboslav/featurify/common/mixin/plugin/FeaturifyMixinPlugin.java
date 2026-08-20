@@ -4,13 +4,17 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class FeaturifyMixinPlugin implements IMixinConfigPlugin
 {
+	private String mixinPackage;
+
 	@Override
 	public void onLoad(String mixinPackage) {
+		this.mixinPackage = mixinPackage;
 	}
 
 	@Override
@@ -24,20 +28,6 @@ public class FeaturifyMixinPlugin implements IMixinConfigPlugin
 			return this.isClassAvailable("me.earth.mc_runtime_test.McRuntimeTest");
 		}
 
-		// TerraBlender
-		if (mixinClassName.equals("com.faboslav.featurify.common.mixin.compat.terrablender.LevelUtilsMixin")) {
-			return this.isClassAvailable("terrablender.util.LevelUtils");
-		}
-
-		if (mixinClassName.equals("com.faboslav.featurify.common.mixin.compat.terrablender.ParameterListMixin")) {
-			return this.isClassAvailable("terrablender.core.TerraBlender");
-		}
-
-		// Lithostitched
-		if (mixinClassName.equals("com.faboslav.featurify.common.mixin.compat.lithostitched.InjectorBiomeSourceMixin")) {
-			return this.isClassAvailable("dev.worldgen.lithostitched.impl.worldgen.biomeinjector.internal.InjectorBiomeSource");
-		}
-
 		return true;
 	}
 
@@ -47,7 +37,42 @@ public class FeaturifyMixinPlugin implements IMixinConfigPlugin
 
 	@Override
 	public List<String> getMixins() {
-		return null;
+		List<String> mixins = new ArrayList<>();
+
+		if (this.mixinPackage.equals("com.faboslav.featurify.common.mixin")) {
+			// TerraBlender
+			if (this.isClassAvailable("terrablender.util.LevelUtils")) {
+				mixins.add("compat.terrablender.LevelUtilsMixin");
+			}
+
+			// TerraBlender
+			if (this.isClassAvailable("terrablender.core.TerraBlender")) {
+				mixins.add("compat.terrablender.ParameterListMixin");
+			}
+
+			// Lithostitched
+			if (this.isClassAvailable("dev.worldgen.lithostitched.impl.worldgen.biomeinjector.internal.InjectorBiomeSource")) {
+				mixins.add("compat.lithostitched.InjectorBiomeSourceMixin");
+			}
+		}
+
+		// Blueprint
+		if (this.mixinPackage.equals("com.faboslav.featurify.neoforge.mixin")
+			&& this.isClassAvailable("com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource")
+			&& this.isClassAvailable("com.faboslav.featurify.neoforge.mixin.biome.blueprint.ModdedBiomeSourceMixin"))
+		{
+			mixins.add("biome.blueprint.ModdedBiomeSourceMixin");
+		}
+
+		// Blueprint
+		if (this.mixinPackage.equals("com.faboslav.featurify.forge.mixin")
+			&& this.isClassAvailable("com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource")
+			&& this.isClassAvailable("com.faboslav.featurify.forge.mixin.biome.blueprint.ModdedBiomeSourceMixin"))
+		{
+			mixins.add("biome.blueprint.ModdedBiomeSourceMixin");
+		}
+
+		return mixins;
 	}
 
 	@Override

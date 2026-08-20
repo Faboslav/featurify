@@ -1,10 +1,9 @@
+//? if terrablender {
 package com.faboslav.featurify.common.mixin.compat.terrablender;
 
 import net.minecraft.world.level.biome.Climate;
 import org.spongepowered.asm.mixin.Mixin;
-
-//? if terrablender {
-import com.faboslav.featurify.common.worldgen.biome.compat.TerraBlenderBiomeFilter;
+import com.faboslav.featurify.common.worldgen.biome.compat.FeaturifyBiomeFilter;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
@@ -30,7 +29,7 @@ public abstract class ParameterListMixin
 		Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> mapper
 	) {
 		return pair -> {
-			ResourceKey<Biome> replacementBiome = TerraBlenderBiomeFilter.getReplacementBiomeKey(pair.getSecond());
+			ResourceKey<Biome> replacementBiome = FeaturifyBiomeFilter.getReplacementBiomeKey(pair.getSecond());
 
 			if (replacementBiome == null) {
 				return;

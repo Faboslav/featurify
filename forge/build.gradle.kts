@@ -6,6 +6,10 @@ plugins {
 	id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
 }
 
+stonecutter {
+	constants["blueprint"] = rootProject.project(stonecutter.current.project).property("deps.blueprint").toString() != ""
+}
+
 mixin {
 	add(sourceSets.main.get(), "${mod.id}.refmap.json")
 
@@ -60,6 +64,11 @@ dependencies {
 		commonMod.depOrNull("lithostitched")?.let { lithostitchedVersion ->
 			modImplementation(fletchingTable.modrinth("lithostitched", minecraft = commonMod.mc, loaders = "forge"))
 		}
+	}
+
+	// Blueprint
+	commonMod.depOrNull("blueprint")?.let { blueprintVersion ->
+		modImplementation(fletchingTable.modrinth("blueprint", minecraft = commonMod.mc, loaders = "forge"))
 	}
 
 	if (!IS_CI) {

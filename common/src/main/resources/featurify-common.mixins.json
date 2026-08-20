@@ -16,9 +16,6 @@
 		"biome.NoiseGeneratorSettingsMixin",
 		"feature.PlacedFeatureMixin",
 		"feature.WeightedPlacedFeatureMixin",
-		"compat.terrablender.LevelUtilsMixin",
-		"compat.terrablender.ParameterListMixin",
-		"compat.lithostitched.InjectorBiomeSourceMixin",
 		"yacl.ControllerWidgetMixin"
 	],
 	"client": [

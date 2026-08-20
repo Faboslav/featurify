@@ -6,6 +6,10 @@ plugins {
 	id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
 }
 
+stonecutter {
+	constants["blueprint"] = rootProject.project(stonecutter.current.project).property("deps.blueprint").toString() != ""
+}
+
 neoForge {
 	enable {
 		version = commonMod.dep("neoforge")
@@ -50,6 +54,11 @@ dependencies {
 		}
 	}
 
+	// Blueprint
+	commonMod.depOrNull("blueprint")?.let { blueprintVersion ->
+		implementation(fletchingTable.modrinth("blueprint", minecraft = commonMod.mc, loaders = "neoforge"))
+	}
+
 	if(!IS_CI) {
 		if (commonMod.mc == "1.21.1") {
 			val noMansLand: List<Dependency> =
@@ -64,7 +73,8 @@ dependencies {
 			//"tectonic",
 			//"terralith",
 			//"natures-spirit",
-			"biomes-o-plenty",
+			//"biomes-o-plenty",
+			"windswept",
 			//"regions-unexplored",
 			//"enderscape"
 		).forEach { modId ->

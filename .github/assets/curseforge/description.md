@@ -105,6 +105,7 @@ offers enhanced compatibility with the following:
 ### WorldGen mods:
 * [Lithostitched](https://www.curseforge.com/minecraft/mc-mods/lithostitched)
 * [TerraBlender](https://www.curseforge.com/minecraft/mc-mods/terrablender-fabric)
+* [Blueprint](https://www.curseforge.com/minecraft/mc-mods/blueprint)
 
 Since feature generation is a complex system, things can occasionally break, especially with mods that implement their own custom feature generation logic or heavily alter vanilla generation behavior.
 

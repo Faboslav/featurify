@@ -1,9 +1,8 @@
+//? if terrablender {
 package com.faboslav.featurify.common.mixin.compat.terrablender;
 
 import org.spongepowered.asm.mixin.Mixin;
-
-//? if terrablender {
-import com.faboslav.featurify.common.worldgen.biome.compat.TerraBlenderBiomeFilter;
+import com.faboslav.featurify.common.worldgen.biome.compat.FeaturifyBiomeFilter;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.datafixers.util.Pair;
@@ -45,7 +44,7 @@ public abstract class LevelUtilsMixin
 			biomeRegistry,
 			(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>) pair -> {
 				ResourceKey<Biome> replacementBiome =
-					TerraBlenderBiomeFilter.getReplacementBiomeKey(pair.getSecond());
+					FeaturifyBiomeFilter.getReplacementBiomeKey(pair.getSecond());
 
 				if (replacementBiome == null) {
 					return;
@@ -59,9 +58,4 @@ public abstract class LevelUtilsMixin
 		);
 	}
 }
-//?} else {
-/*@Mixin(value = Climate.ParameterList.class)
-/*public abstract class LevelUtilsMixin
-{
-
-}*///?}
+//?}
