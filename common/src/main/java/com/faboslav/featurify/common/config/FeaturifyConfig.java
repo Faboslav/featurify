@@ -57,7 +57,7 @@ public final class FeaturifyConfig
 			return;
 		}
 
-		this.save();
+		this.save(false);
 	}
 
 	public void load() {

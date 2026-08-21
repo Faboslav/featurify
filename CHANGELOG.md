@@ -1,3 +1,7 @@
+## 2.0.6
+
+- Fixed crash that occurred when mod ran for the first time without an existing config file and attempted to sync all things to the registries
+
 ## 2.0.5
 
 - Added Blueprint compat
