@@ -1,3 +1,7 @@
+## 2.0.7
+
+- A lot of other quality of life fixes both in the UI and config serialization
+
 ## 2.0.6
 
 - Fixed crash that occurred when mod ran for the first time without an existing config file and attempted to sync all things to the registries

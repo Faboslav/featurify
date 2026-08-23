@@ -4,9 +4,9 @@ import java.util.*;
 
 public final class PlacedFeatureData
 {
-	public static boolean IS_DISABLED_DEFAULT_VALUE = false;
-	public static float MIN_CHANCE = 0.0F;
-	public static float MAX_CHANCE = 1.0F;
+	public static final boolean IS_DISABLED_DEFAULT_VALUE = false;
+	public static final float MIN_CHANCE = 0.0F;
+	public static final float MAX_CHANCE = 1.0F;
 
 	private boolean isDisabled = IS_DISABLED_DEFAULT_VALUE;
 	private final List<String> defaultBiomes;

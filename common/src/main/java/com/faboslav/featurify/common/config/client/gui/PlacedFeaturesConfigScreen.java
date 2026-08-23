@@ -31,6 +31,8 @@ public final class PlacedFeaturesConfigScreen
 	private final static List<Option<Boolean>> placedFeaturesOptions = new ArrayList<>();
 
 	public static void createPlacedFeaturesTab(YetAnotherConfigLib.Builder yacl, FeaturifyConfig config) {
+		placedFeaturesOptions.clear();
+
 		var placedFeaturesCategoryBuilder = ConfigCategory.createBuilder()
 			.name(Component.translatable("gui.featurify.placed_features_category.title"))
 			.tooltip(Component.translatable("gui.featurify.placed_features_category.description"));
@@ -133,17 +135,11 @@ public final class PlacedFeaturesConfigScreen
 				.openConfigCallback((screen, id) -> {
 					var configScreen = FeaturifyClient.getConfigScreen();
 
-					if (configScreen == null) {
-						return;
-					}
-
-					screen.finishOrSave();
+					configScreen.savePendingChanges(screen);
 
 					YACLScreen placedFeatureScreen = PlacedFeatureConfigScreen.create(Featurify.getConfig(), id, screen);
 
-					configScreen.saveScreenState(screen);
 					configScreen.switchScreen(screen, placedFeatureScreen);
-					configScreen.loadScreenState(placedFeatureScreen);
 				}).buttonTooltip("gui.featurify.placed_features.placed_feature.detail_button.tooltip")
 			);
 

@@ -75,7 +75,7 @@ public final class FeaturifyCommands
 			return 0;
 		}
 
-		ConfigSyncToClientPacket.sendToClient(Featurify.getConfig(), player, true);
+		ConfigSyncToClientPacket.sendToClient(Featurify.getConfig(), player);
 
 		return 1;
 	}

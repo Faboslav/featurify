@@ -24,11 +24,7 @@ public abstract class YACLScreenMixin extends Screen
 	public void featurify$onCloseHead(CallbackInfo ci) {
 		if (this.minecraft != null) {
 			if (VersionedGui.getScreen(this.minecraft) instanceof YACLScreen yaclsScreen) {
-				var configScreen = FeaturifyClient.getConfigScreen();
-
-				if (configScreen != null) {
-					configScreen.saveScreenState(yaclsScreen);
-				}
+				FeaturifyClient.getConfigScreen().saveScreenState(yaclsScreen);
 			}
 		}
 	}
@@ -40,11 +36,7 @@ public abstract class YACLScreenMixin extends Screen
 	public void featurify$onCloseTail(CallbackInfo ci) {
 		if (this.minecraft != null) {
 			if (VersionedGui.getScreen(this.minecraft) instanceof YACLScreen yaclsScreen) {
-				var configScreen = FeaturifyClient.getConfigScreen();
-
-				if (configScreen != null) {
-					configScreen.loadScreenState(yaclsScreen);
-				}
+				FeaturifyClient.getConfigScreen().loadScreenState(yaclsScreen);
 			}
 		}
 	}

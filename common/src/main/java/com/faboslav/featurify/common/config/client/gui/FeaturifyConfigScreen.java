@@ -11,6 +11,7 @@ import dev.isxander.yacl3.gui.OptionListWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +23,6 @@ import java.util.Map;
 public class FeaturifyConfigScreen
 {
 	public Map<String, FeaturifyConfigScreenState> screenStates = new HashMap<>();
-	public YACLScreen previousScreen = null;
-	public YACLScreen currentScreen = null;
 
 	public Screen generateScreen(Screen parent) {
 		var config = Featurify.getConfig();
@@ -100,9 +99,26 @@ public class FeaturifyConfigScreen
 		}
 	}
 
+	@Nullable
+	public YACLScreen getOpenedScreen() {
+		if (VersionedGui.getScreen() instanceof YACLScreen yaclScreen) {
+			return yaclScreen;
+		}
+
+		return null;
+	}
+
+	public void savePendingChanges(@Nullable YACLScreen screen) {
+		if (screen == null || !screen.pendingChanges()) {
+			return;
+		}
+
+		screen.finishOrSave();
+	}
+
 	public void switchScreen(YACLScreen from, YACLScreen to) {
-		this.previousScreen = from;
+		this.saveScreenState(from);
 		VersionedGui.getGui().setScreen(to);
-		this.currentScreen = to;
+		this.loadScreenState(to);
 	}
 }

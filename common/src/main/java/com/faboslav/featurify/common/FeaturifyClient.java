@@ -2,7 +2,6 @@ package com.faboslav.featurify.common;
 
 import com.faboslav.featurify.common.config.client.gui.FeaturifyConfigScreen;
 import net.minecraft.client.gui.screens.Screen;
-import org.jetbrains.annotations.Nullable;
 
 public final class FeaturifyClient
 {
@@ -15,7 +14,6 @@ public final class FeaturifyClient
 		return CONFIG_SCREEN.generateScreen(screen);
 	}
 
-	@Nullable
 	public static FeaturifyConfigScreen getConfigScreen() {
 		return CONFIG_SCREEN;
 	}

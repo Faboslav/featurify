@@ -21,17 +21,16 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 /*import net.minecraft.network.FriendlyByteBuf;
 *///?}
 
-public record ConfigSyncToClientPacket(String config, boolean save, UUID playerId) implements Packet<ConfigSyncToClientPacket>
+public record ConfigSyncToClientPacket(String config, UUID playerId) implements Packet<ConfigSyncToClientPacket>
 {
 	private static final Gson GSON = new Gson();
 	public static final Identifier ID = Featurify.makeId("config_sync_to_client_packet");
 	public static final ClientboundPacketType<ConfigSyncToClientPacket> TYPE = new Handler();
 
-	public static void sendToClient(FeaturifyConfig config, Player player, boolean save) {
+	public static void sendToClient(FeaturifyConfig config, Player player) {
 		MessageHandler.DEFAULT_CHANNEL.sendToPlayer(
 			new ConfigSyncToClientPacket(
 				GSON.toJson(config.toJson(true)),
-				save,
 				player.getUUID()
 			),
 			player
@@ -57,10 +56,7 @@ public record ConfigSyncToClientPacket(String config, boolean save, UUID playerI
 
 				try {
 					Featurify.getConfig().loadFromJson(GSON.fromJson(packet.config(), JsonObject.class));
-
-					if (packet.save()) {
-						Featurify.getConfig().save();
-					}
+					Featurify.getConfig().save();
 				} catch (Throwable e) {
 					Featurify.getLogger().error("Failed to load config from server.", e);
 
@@ -71,7 +67,7 @@ public record ConfigSyncToClientPacket(String config, boolean save, UUID playerI
 					return;
 				}
 
-				if (packet.save() && player != null) {
+				if (player != null) {
 					VersionedPlayer.sendSystemMessage(player, Component.literal("Featurify config synced from the server."));
 				}
 			};
@@ -79,22 +75,20 @@ public record ConfigSyncToClientPacket(String config, boolean save, UUID playerI
 
 		//? if >= 1.20.2 {
 		public ConfigSyncToClientPacket decode(final RegistryFriendlyByteBuf buf) {
-			return new ConfigSyncToClientPacket(buf.readUtf(), buf.readBoolean(), buf.readUUID());
+			return new ConfigSyncToClientPacket(buf.readUtf(), buf.readUUID());
 		}
 
 		public void encode(final ConfigSyncToClientPacket packet, final RegistryFriendlyByteBuf buf) {
 			buf.writeUtf(packet.config());
-			buf.writeBoolean(packet.save());
 			buf.writeUUID(packet.playerId());
 		}
 		//?} else {
 		/*public ConfigSyncToClientPacket decode(final FriendlyByteBuf buf) {
-			return new ConfigSyncToClientPacket(buf.readUtf(), buf.readBoolean(), buf.readUUID());
+			return new ConfigSyncToClientPacket(buf.readUtf(), buf.readUUID());
 		}
 
 		public void encode(final ConfigSyncToClientPacket packet, final FriendlyByteBuf buf) {
 			buf.writeUtf(packet.config());
-			buf.writeBoolean(packet.save());
 			buf.writeUUID(packet.playerId());
 		}
 

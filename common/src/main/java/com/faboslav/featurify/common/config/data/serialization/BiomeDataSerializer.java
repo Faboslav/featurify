@@ -22,16 +22,16 @@ public final class BiomeDataSerializer
 		}
 	}
 
-	public static void save(JsonArray biomesJson, String biomeName, BiomeData biomeData) {
+	public static void save(JsonArray biomesJson, String biomeName, BiomeData biomeData, boolean saveOnlyChanged) {
 		JsonObject biome = new JsonObject();
 
 		biome.addProperty(NAME_PROPERTY, biomeName);
 
-		if(!biomeData.isUsingDefaultIsDisabled()) {
+		if(!biomeData.isUsingDefaultIsDisabled() || !saveOnlyChanged) {
 			biome.addProperty(IS_DISABLED_PROPERTY, biomeData.isDisabled());
 		}
 
-		if(!biomeData.isUsingDefaultReplacementBiome()) {
+		if(!biomeData.isUsingDefaultReplacementBiome() || !saveOnlyChanged) {
 			biome.addProperty(REPLACEMENT_BIOME_PROPERTY, biomeData.getReplacementBiome());
 		}
 

@@ -24,6 +24,8 @@ public final class BiomesConfigScreen
 	private final static List<Option<Boolean>> biomesOptions = new ArrayList<>();
 
 	public static void createBiomesTab(YetAnotherConfigLib.Builder yacl, FeaturifyConfig config) {
+		biomesOptions.clear();
+
 		var biomesCategoryBuilder = ConfigCategory.createBuilder()
 			.name(Component.translatable("gui.featurify.biomes_category.title"))
 			.tooltip(Component.translatable("gui.featurify.biomes_category.description"));
@@ -102,17 +104,11 @@ public final class BiomesConfigScreen
 				.openConfigCallback((screen, id) -> {
 					var configScreen = FeaturifyClient.getConfigScreen();
 
-					if (configScreen == null) {
-						return;
-					}
-
-					screen.finishOrSave();
+					configScreen.savePendingChanges(screen);
 
 					YACLScreen biomeScreen = BiomeConfigScreen.create(Featurify.getConfig(), id, screen);
 
-					configScreen.saveScreenState(screen);
 					configScreen.switchScreen(screen, biomeScreen);
-					configScreen.loadScreenState(biomeScreen);
 				}).buttonTooltip("gui.featurify.biomes.biome.detail_button.tooltip")
 			);
 

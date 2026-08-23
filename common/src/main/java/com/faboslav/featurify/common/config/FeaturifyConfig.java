@@ -32,9 +32,11 @@ public final class FeaturifyConfig
 	public final Path configDumpPath = Path.of("config", Featurify.MOD_ID + "_dump.json");
 	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-	public boolean disableAllPlacedFeatures = false;
+	public boolean disableAllPlacedFeatures = DISABLE_ALL_PLACED_FEATURES_DEFAULT_VALUE;
 	private Map<String, PlacedFeatureData> placedFeatureData = new TreeMap<>();
 	private Map<String, BiomeData> biomeData = new TreeMap<>();
+
+	public static final boolean DISABLE_ALL_PLACED_FEATURES_DEFAULT_VALUE = false;
 
 	private static final String CONFIG_VERSION_PROPERTY = "config_version";
 	private static final String CONFIG_DATETIME_PROPERTY = "config_datetime";
@@ -80,7 +82,9 @@ public final class FeaturifyConfig
 			String jsonString = Files.readString(configPath);
 			JsonObject json = gson.fromJson(jsonString, JsonObject.class);
 
-			loadFromJson(json);
+			loadGlobal(json);
+			loadPlacedFeatures(json);
+			loadBiomes(json);
 
 			Featurify.getLogger().info("Featurify config loaded");
 			this.isLoaded = true;
@@ -93,9 +97,29 @@ public final class FeaturifyConfig
 	}
 
 	public void loadFromJson(JsonObject json) {
-		loadGlobal(json);
-		loadPlacedFeatures(json);
-		loadBiomes(json);
+		if (this.isLoading) {
+			return;
+		}
+
+		try {
+			Featurify.getLogger().info("Loading received Featurify config...");
+			this.isLoading = true;
+
+			WorldgenDataProvider.loadWorldgenData();
+			this.placedFeatureData = WorldgenDataProvider.getPlacedFeatures();
+			this.biomeData = WorldgenDataProvider.getBiomes();
+
+			this.disableAllPlacedFeatures = DISABLE_ALL_PLACED_FEATURES_DEFAULT_VALUE;
+
+			loadGlobal(json);
+			loadPlacedFeatures(json);
+			loadBiomes(json);
+
+			Featurify.getLogger().info("Received Featurify config loaded");
+			this.isLoaded = true;
+		} finally {
+			this.isLoading = false;
+		}
 	}
 
 	private void loadGlobal(JsonObject json) {
@@ -230,14 +254,9 @@ public final class FeaturifyConfig
 		Featurify.getLogger().info("Dumping Featurify config...");
 
 		try {
-			if (Files.exists(configDumpPath)) {
-				Files.delete(configDumpPath);
-			}
-
 			JsonObject json = this.toJson(false);
 
 			Files.createDirectories(configDumpPath.getParent());
-			Files.createFile(configDumpPath);
 			Files.writeString(configDumpPath, gson.toJson(json));
 
 			Featurify.getLogger().info("Featurify config successfully dumped");
@@ -283,7 +302,7 @@ public final class FeaturifyConfig
 		this.placedFeatureData.entrySet().stream()
 			.filter(entry -> !saveOnlyChanged || !entry.getValue().isUsingDefaultValues())
 			.forEach(placedFeatureDataEntry -> {
-				PlacedFeatureDataSerializer.save(placedFeatures, placedFeatureDataEntry.getKey(), placedFeatureDataEntry.getValue());
+				PlacedFeatureDataSerializer.save(placedFeatures, placedFeatureDataEntry.getKey(), placedFeatureDataEntry.getValue(), saveOnlyChanged);
 			});
 
 		json.add(PLACED_FEATURES_PROPERTY, placedFeatures);
@@ -295,7 +314,7 @@ public final class FeaturifyConfig
 		this.biomeData.entrySet().stream()
 			.filter(entry -> !saveOnlyChanged || !entry.getValue().isUsingDefaultValues())
 			.forEach(biomeDataEntry -> {
-				BiomeDataSerializer.save(biomes, biomeDataEntry.getKey(), biomeDataEntry.getValue());
+				BiomeDataSerializer.save(biomes, biomeDataEntry.getKey(), biomeDataEntry.getValue(), saveOnlyChanged);
 			});
 
 		json.add(BIOMES_PROPERTY, biomes);

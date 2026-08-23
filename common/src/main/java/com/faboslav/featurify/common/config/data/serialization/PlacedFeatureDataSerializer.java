@@ -5,6 +5,7 @@ import com.faboslav.featurify.common.config.data.PlacedFeatureData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,11 @@ public final class PlacedFeatureDataSerializer
 				String placedFeatureId = weightedPlacedFeatureEntry.getKey();
 				JsonElement placedFeatureChance = weightedPlacedFeatureEntry.getValue();
 
+				if (!placedFeatureData.getDefaultWeightedPlacedFeatures().containsKey(placedFeatureId)) {
+					Featurify.getLogger().info("Found invalid weighted placed feature identifier of \"{}\" in the weighted placed features of the {} placed feature, skipping.", placedFeatureId, placedFeatureName);
+					continue;
+				}
+
 				if (!placedFeatureChance.isJsonPrimitive() || !placedFeatureChance.getAsJsonPrimitive().isNumber()) {
 					continue;
 				}
@@ -69,8 +75,9 @@ public final class PlacedFeatureDataSerializer
 				float chance = placedFeatureChance.getAsFloat();
 
 				if (chance < PlacedFeatureData.MIN_CHANCE || chance > PlacedFeatureData.MAX_CHANCE) {
-					Featurify.getLogger().info("Weighted placed feature chance value for {} is currently {}, which is not in the range between {} and {}, value will be automatically corrected to 0.", placedFeatureId, chance, PlacedFeatureData.MIN_CHANCE, PlacedFeatureData.MAX_CHANCE);
-					chance = 0.0F;
+					float correctedChance = Mth.clamp(chance, PlacedFeatureData.MIN_CHANCE, PlacedFeatureData.MAX_CHANCE);
+					Featurify.getLogger().info("Weighted placed feature chance value of {} for {} is currently {}, which is outside of the range of {} to {}, value will be automatically corrected to {}.", placedFeatureId, placedFeatureName, chance, PlacedFeatureData.MIN_CHANCE, PlacedFeatureData.MAX_CHANCE, correctedChance);
+					chance = correctedChance;
 				}
 
 				placedFeatureData.getWeightedPlacedFeatures().put(placedFeatureId, chance);
@@ -78,36 +85,42 @@ public final class PlacedFeatureDataSerializer
 		}
 	}
 
-	public static void save(JsonArray placedFeaturesJson, String placedFeatureName, PlacedFeatureData placedFeatureData) {
+	public static void save(JsonArray placedFeaturesJson, String placedFeatureName, PlacedFeatureData placedFeatureData, boolean saveOnlyChanged) {
 		JsonObject placedFeature = new JsonObject();
 
 		placedFeature.addProperty(NAME_PROPERTY, placedFeatureName);
 
-		if(!placedFeatureData.isUsingDefaultIsDisabled()) {
+		if(!placedFeatureData.isUsingDefaultIsDisabled() || !saveOnlyChanged) {
 			placedFeature.addProperty(IS_DISABLED_PROPERTY, placedFeatureData.isDisabled());
 		}
 
-		if(!placedFeatureData.isUsingDefaultBiomes()) {
+		if(!placedFeatureData.isUsingDefaultBiomes() || !saveOnlyChanged) {
 			var whitelistedBiomes = new ArrayList<>(placedFeatureData.getBiomes());
-			whitelistedBiomes.removeAll(placedFeatureData.getDefaultBiomes());
+			var defaultBiomes = placedFeatureData.getDefaultBiomes();
 
-			if (!whitelistedBiomes.isEmpty()) {
+			if (!saveOnlyChanged) {
+				whitelistedBiomes.addAll(defaultBiomes);
+			} else {
+				whitelistedBiomes.removeAll(defaultBiomes);
+			}
+
+			if (!whitelistedBiomes.isEmpty() || !saveOnlyChanged) {
 				JsonArray whitelistedBiomesJson = new JsonArray();
 				whitelistedBiomes.stream().distinct().forEach(whitelistedBiomesJson::add);
 				placedFeature.add(WHITELISTED_BIOMES_PROPERTY, whitelistedBiomesJson);
 			}
 
-			var blacklistedBiomes = new ArrayList<>(placedFeatureData.getDefaultBiomes());
+			var blacklistedBiomes = new ArrayList<>(defaultBiomes);
 			blacklistedBiomes.removeAll(placedFeatureData.getBiomes());
 
-			if (!blacklistedBiomes.isEmpty()) {
+			if (!blacklistedBiomes.isEmpty() || !saveOnlyChanged) {
 				JsonArray blacklistedBiomesJson = new JsonArray();
 				blacklistedBiomes.stream().distinct().forEach(blacklistedBiomesJson::add);
 				placedFeature.add(BLACKLISTED_BIOMES_PROPERTY, blacklistedBiomesJson);
 			}
 		}
 
-		if(!placedFeatureData.getWeightedPlacedFeatures().isEmpty() && !placedFeatureData.isUsingDefaultWeightedPlacedFeatures()) {
+		if (!placedFeatureData.getWeightedPlacedFeatures().isEmpty() && (!placedFeatureData.isUsingDefaultWeightedPlacedFeatures() || !saveOnlyChanged)) {
 			JsonObject weightedPlacedFeatures = new JsonObject();
 
 			for(var weightedPlacedFeaturEntry : placedFeatureData.getWeightedPlacedFeatures().entrySet()) {
