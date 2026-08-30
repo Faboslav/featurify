@@ -60,28 +60,38 @@ dependencies {
 	}
 
 	if(!IS_CI) {
-		if (commonMod.mc == "1.21.1") {
-			val noMansLand: List<Dependency> =
-				fletchingTable.modrinthBundle("no-mans-land", commonMod.mc, "neoforge") {
-					recursive = true
-					include("required", "optional", "embedded")
-				}
-			for (mod in noMansLand) implementation(mod)
-		}
-
 		listOf(
 			//"tectonic",
 			//"terralith",
 			//"natures-spirit",
 			//"biomes-o-plenty",
-			"windswept",
+			//"windswept",
+			"no-mans-land",
 			//"regions-unexplored",
 			//"enderscape"
 		).forEach { modId ->
 			try {
 				fletchingTable.modrinthBundle(modId, commonMod.mc, "neoforge") {
 					recursive = true
-					include("required", "optional", "embedded")
+					include("required")
+				}.forEach(::implementation)
+			} catch (e: Exception) {
+				if (e.message?.startsWith("Failed to find any results for ModQuery") != true) {
+					throw e
+				}
+
+				logger.warn("Skipping Modrinth bundle '{}': {}", modId, e.message)
+			}
+		}
+
+		listOf(
+			"oh-the-biomes-weve-gone",
+			"badpackets"
+		).forEach { modId ->
+			try {
+				fletchingTable.modrinthBundle(modId, commonMod.mc, "neoforge") {
+					recursive = false
+					include("required")
 				}.forEach(::implementation)
 			} catch (e: Exception) {
 				if (e.message?.startsWith("Failed to find any results for ModQuery") != true) {

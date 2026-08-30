@@ -18,8 +18,18 @@ import java.util.List;
 public final class BiomeParameterReplacer
 {
 	public static Climate.ParameterList<Holder<Biome>> createReplacementList(
-		Climate.ParameterList<Holder<Biome>> originalParameters
+		Climate.ParameterList<Holder<Biome>> originalParameters,
+		Climate.ParameterList<Holder<Biome>> previousReplacementList
 	) {
+		// TODO maybe, do this as a proper compat layer instead
+		// TerraBlender builds and stores its region trees on the replacement instance.
+		// Once initialized, we need to keep returning it or region biomes won’t work.
+		//? if terrablender {
+		if (previousReplacementList instanceof terrablender.worldgen.IExtendedParameterList<?> extendedParameterList && extendedParameterList.isInitialized()) {
+			return previousReplacementList;
+		}
+		//?}
+
 		List<Pair<Climate.ParameterPoint, Holder<Biome>>> originalEntries = originalParameters.values();
 		List<Pair<Climate.ParameterPoint, Holder<Biome>>> replacedEntries = null;
 		List<Pair<Climate.ParameterPoint, Holder<Biome>>> enabledEntries = null;

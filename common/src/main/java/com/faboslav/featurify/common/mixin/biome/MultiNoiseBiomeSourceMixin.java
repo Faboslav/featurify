@@ -23,7 +23,7 @@ public abstract class MultiNoiseBiomeSourceMixin implements FeaturifyMultiNoiseB
 	@Unique
 	public void featurify$clearParameters() {
 		synchronized (this.featurify$parameters) {
-			this.featurify$parameters.clear();
+			this.featurify$parameters.replaceAll(BiomeParameterReplacer::createReplacementList);
 		}
 	}
 
@@ -35,7 +35,10 @@ public abstract class MultiNoiseBiomeSourceMixin implements FeaturifyMultiNoiseB
 		Climate.ParameterList<Holder<Biome>> originalParameters
 	) {
 		synchronized (this.featurify$parameters) {
-			return this.featurify$parameters.computeIfAbsent(originalParameters, BiomeParameterReplacer::createReplacementList);
+			return this.featurify$parameters.computeIfAbsent(
+				originalParameters,
+				key -> BiomeParameterReplacer.createReplacementList(key, null)
+			);
 		}
 	}
 }

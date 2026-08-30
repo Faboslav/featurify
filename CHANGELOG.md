@@ -1,6 +1,7 @@
 ## 2.0.7
 
 - A lot of other quality of life fixes both in the UI and config serialization
+- Fixed "Oh The Biomes We've Gone" compat
 
 ## 2.0.6
 
