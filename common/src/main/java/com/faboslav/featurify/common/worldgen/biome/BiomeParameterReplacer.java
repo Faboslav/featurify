@@ -3,6 +3,8 @@ package com.faboslav.featurify.common.worldgen.biome;
 import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.config.data.BiomeData;
 import com.faboslav.featurify.common.mixin.biome.ClimateParameterPointAccessor;
+import com.faboslav.featurify.common.modcompat.ModChecker;
+import com.faboslav.featurify.common.modcompat.ModCompat;
 import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.common.versions.VersionedId;
 import com.mojang.datafixers.util.Pair;
@@ -21,14 +23,11 @@ public final class BiomeParameterReplacer
 		Climate.ParameterList<Holder<Biome>> originalParameters,
 		Climate.ParameterList<Holder<Biome>> previousReplacementList
 	) {
-		// TODO maybe, do this as a proper compat layer instead
-		// TerraBlender builds and stores its region trees on the replacement instance.
-		// Once initialized, we need to keep returning it or region biomes won’t work.
-		//? if terrablender {
-		if (previousReplacementList instanceof terrablender.worldgen.IExtendedParameterList<?> extendedParameterList && extendedParameterList.isInitialized()) {
-			return previousReplacementList;
+		var compatReplacementList = getCompatReplacementList(originalParameters, previousReplacementList);
+
+		if (compatReplacementList != null) {
+			return compatReplacementList;
 		}
-		//?}
 
 		List<Pair<Climate.ParameterPoint, Holder<Biome>>> originalEntries = originalParameters.values();
 		List<Pair<Climate.ParameterPoint, Holder<Biome>>> replacedEntries = null;
@@ -74,6 +73,26 @@ public final class BiomeParameterReplacer
 		}
 
 		return new Climate.ParameterList<>(replacedEntries);
+	}
+
+	private static Climate.ParameterList<Holder<Biome>> getCompatReplacementList(
+		Climate.ParameterList<Holder<Biome>> originalParameters,
+		Climate.ParameterList<Holder<Biome>> previousReplacementList
+	) {
+		for (ModCompat compat : ModChecker.BIOME_PARAMETER_LIST_PROVIDER_COMPATS) {
+			try {
+				var replacementList = compat.getBiomeParameterListReplacement(originalParameters, previousReplacementList);
+
+				if (replacementList != null) {
+					return replacementList;
+				}
+			} catch (Throwable e) {
+				Featurify.getLogger().error("Failed to get biome parameter list replacement from mod compat");
+				e.printStackTrace();
+			}
+		}
+
+		return null;
 	}
 
 	private static List<Pair<Climate.ParameterPoint, Holder<Biome>>> getEnabledEntries(

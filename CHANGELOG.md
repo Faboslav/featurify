@@ -1,3 +1,7 @@
+## 2.0.8
+
+- Fixed TerraBlender compat (again, it's hard :/)
+
 ## 2.0.7
 
 - A lot of other quality of life fixes both in the UI and config serialization

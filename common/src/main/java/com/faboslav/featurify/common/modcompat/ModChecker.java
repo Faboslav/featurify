@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 public final class ModChecker
 {
 	public static final List<ModCompat> CUSTOM_RESOURCE_PACK_PROVIDER_COMPATS = new ArrayList<>();
+	public static final List<ModCompat> BIOME_PARAMETER_LIST_PROVIDER_COMPATS = new ArrayList<>();
 
 	public static void setupModCompat() {
 		try {
@@ -28,6 +29,10 @@ public final class ModChecker
 			//? if open_loader {
 			/*loadModCompat("openloader", () -> new OpenLoaderCompat());
 			 *///?}
+
+			//? if terrablender {
+			loadModCompat("terrablender", () -> new TerraBlenderCompat());
+			//?}
 
 			PlatformHooks.PLATFORM_COMPAT.setupPlatformModCompat();
 		} catch (Throwable e) {
@@ -40,8 +45,13 @@ public final class ModChecker
 		try {
 			if (PlatformHooks.PLATFORM_HELPER.isModLoaded(modId)) {
 				ModCompat compat = loader.get();
+
 				if (compat.compatTypes().contains(ModCompat.Type.CUSTOM_RESOURCE_PACK_PROVIDERS)) {
 					CUSTOM_RESOURCE_PACK_PROVIDER_COMPATS.add(compat);
+				}
+
+				if (compat.compatTypes().contains(ModCompat.Type.BIOME_PARAMETER_LIST_PROVIDER)) {
+					BIOME_PARAMETER_LIST_PROVIDER_COMPATS.add(compat);
 				}
 			}
 		} catch (Throwable e) {

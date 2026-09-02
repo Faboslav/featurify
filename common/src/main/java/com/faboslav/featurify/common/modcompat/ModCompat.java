@@ -1,6 +1,9 @@
 package com.faboslav.featurify.common.modcompat;
 
+import net.minecraft.core.Holder;
 import net.minecraft.server.packs.repository.RepositorySource;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Climate;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -22,9 +25,17 @@ public interface ModCompat
 	default ArrayList<RepositorySource> getResourcePackProviders() {
 		return new ArrayList<>();
 	}
+	
+	default Climate.ParameterList<Holder<Biome>> getBiomeParameterListReplacement(
+		Climate.ParameterList<Holder<Biome>> originalParameters,
+		Climate.ParameterList<Holder<Biome>> previousReplacementList
+	) {
+		return null;
+	}
 
 	enum Type
 	{
-		CUSTOM_RESOURCE_PACK_PROVIDERS
+		CUSTOM_RESOURCE_PACK_PROVIDERS,
+		BIOME_PARAMETER_LIST_PROVIDER
 	}
 }
