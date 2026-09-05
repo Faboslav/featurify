@@ -1,3 +1,7 @@
+## 2.0.9
+
+- Fixed Blueprint compat
+
 ## 2.0.8
 
 - Fixed TerraBlender compat (again, it's hard :/)

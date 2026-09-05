@@ -73,8 +73,10 @@ dependencies {
 
 	if (!IS_CI) {
 		listOf(
-			"terralith",
-			"natures-spirit"
+			//"terralith",
+			//"natures-spirit"
+			"environmental",
+			"atmospheric"
 		).forEach { modId ->
 			fletchingTable.modrinthBundle(modId, commonMod.mc, "forge") {
 				recursive = true

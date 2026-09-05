@@ -25,7 +25,7 @@ public interface ModCompat
 	default ArrayList<RepositorySource> getResourcePackProviders() {
 		return new ArrayList<>();
 	}
-	
+
 	default Climate.ParameterList<Holder<Biome>> getBiomeParameterListReplacement(
 		Climate.ParameterList<Holder<Biome>> originalParameters,
 		Climate.ParameterList<Holder<Biome>> previousReplacementList

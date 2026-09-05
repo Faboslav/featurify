@@ -23,9 +23,9 @@ public abstract class ModdedBiomeSourceMixin
 	private BiomeSource originalSource;
 
 	@ModifyReturnValue(
-		method = "getNoiseBiome",
+		method = {"getNoiseBiome", "m_203407_"},
 		at = @At("RETURN"),
-		require = 0
+		require = 1
 	)
 	private Holder<Biome> featurify$filterModdedBiome(
 		Holder<Biome> original,
