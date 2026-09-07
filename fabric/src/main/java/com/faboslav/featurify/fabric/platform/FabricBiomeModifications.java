@@ -33,7 +33,7 @@ public final class FabricBiomeModifications implements PlatformBiomeModification
 
 		BiomeModifications.create(modificationId)
 			.add(
-				ModificationPhase.ADDITIONS,
+				ModificationPhase.POST_PROCESSING,
 				context -> context.getBiomeKey().equals(biomeKey),
 				context -> {
 					var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId, null);
@@ -42,8 +42,6 @@ public final class FabricBiomeModifications implements PlatformBiomeModification
 						return;
 					}
 
-
-					Featurify.getLogger().info("Adding: " + biomeModificationId);
 					context.getGenerationSettings().addFeature(generationStep, placedFeatureKey);
 				}
 			);
@@ -62,7 +60,7 @@ public final class FabricBiomeModifications implements PlatformBiomeModification
 
 		BiomeModifications.create(modificationId)
 			.add(
-				ModificationPhase.REMOVALS,
+				ModificationPhase.POST_PROCESSING,
 				context -> true,
 				context -> {
 					var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId, null);

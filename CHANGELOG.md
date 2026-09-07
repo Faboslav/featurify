@@ -1,3 +1,7 @@
+## 2.0.10
+
+- Improved feature change injection logic by running it after all of the other mods
+
 ## 2.0.9
 
 - Fixed Blueprint compat

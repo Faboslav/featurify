@@ -15,14 +15,13 @@ public final class PlacedFeaturesBiomeModifier implements BiomeModifier
 
 	@Override
 	public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
-		if (phase == Phase.ADD) {
-			AddPlacedFeature(biome, builder);
-		} else if(phase == Phase.REMOVE) {
-			RemovePlacedFeature(biome, builder);
+		if (phase == Phase.AFTER_EVERYTHING) {
+			AddPlacedFeatures(biome, builder);
+			RemovePlacedFeatures(biome, builder);
 		}
 	}
 
-	private void AddPlacedFeature(Holder<Biome> biome, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+	private void AddPlacedFeatures(Holder<Biome> biome, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
 		var currentBiomeKey = biome.unwrapKey().orElse(null);
 
 		if (currentBiomeKey == null) {
@@ -49,7 +48,7 @@ public final class PlacedFeaturesBiomeModifier implements BiomeModifier
 	}
 
 
-	private void RemovePlacedFeature(Holder<Biome> biome, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+	private void RemovePlacedFeatures(Holder<Biome> biome, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
 		var currentBiomeKey = biome.unwrapKey().orElse(null);
 
 		if (currentBiomeKey == null) {
