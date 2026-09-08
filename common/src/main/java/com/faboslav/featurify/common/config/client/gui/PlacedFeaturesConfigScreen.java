@@ -171,6 +171,16 @@ public final class PlacedFeaturesConfigScreen
 				}
 			}
 
+			var usedByPlacedFeatureIds = WorldgenDataProvider.getUsedByPlacedFeatures().getOrDefault(placedFeatureId, Collections.emptySet());
+
+			if(!usedByPlacedFeatureIds.isEmpty()) {
+				descriptionBuilder.text(Component.translatable("gui.featurify.placed_features.placed_features_description").append(Component.literal("\n")));
+
+				for (var usedByPlacedFeatureId : usedByPlacedFeatureIds) {
+					descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translatePlacedFeatureId(usedByPlacedFeatureId)));
+				}
+			}
+
 			return descriptionBuilder.build();
 		});
 

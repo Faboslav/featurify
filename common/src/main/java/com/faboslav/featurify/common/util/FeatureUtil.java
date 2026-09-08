@@ -22,11 +22,21 @@ public final class FeatureUtil
 		Set<PlacedFeature> visitedPlacedFeatures,
 		List<RandomFeatureConfiguration> configs
 	) {
+		collectRandomFeatureConfigurations(placedFeature, visitedPlacedFeatures, configs, null);
+	}
+
+	public static void collectRandomFeatureConfigurations(
+		PlacedFeature placedFeature,
+		Set<PlacedFeature> visitedPlacedFeatures,
+		List<RandomFeatureConfiguration> configs,
+		@Nullable List<Holder<PlacedFeature>> usedPlacedFeatures
+	) {
 		collectRandomFeatureConfigurations(
 			placedFeature,
 			visitedPlacedFeatures,
 			Collections.newSetFromMap(new IdentityHashMap<>()),
-			configs
+			configs,
+			usedPlacedFeatures
 		);
 	}
 
@@ -34,20 +44,22 @@ public final class FeatureUtil
 		PlacedFeature placedFeature,
 		Set<PlacedFeature> visitedPlacedFeatures,
 		Set<Object> visitedConfiguredFeatures,
-		List<RandomFeatureConfiguration> configs
+		List<RandomFeatureConfiguration> configs,
+		@Nullable List<Holder<PlacedFeature>> usedPlacedFeatures
 	) {
 		if (!visitedPlacedFeatures.add(placedFeature)) {
 			return;
 		}
 
-		collectRandomFeatureConfigurations(placedFeature.feature().value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+		collectRandomFeatureConfigurations(placedFeature.feature().value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs, usedPlacedFeatures);
 	}
 
 	private static void collectRandomFeatureConfigurations(
 		Object configuredFeature,
 		Set<PlacedFeature> visitedPlacedFeatures,
 		Set<Object> visitedConfiguredFeatures,
-		List<RandomFeatureConfiguration> configs
+		List<RandomFeatureConfiguration> configs,
+		@Nullable List<Holder<PlacedFeature>> usedPlacedFeatures
 	) {
 		try {
 			if (!visitedConfiguredFeatures.add(configuredFeature)) {
@@ -61,28 +73,42 @@ public final class FeatureUtil
 
 				//? if >= 26.2 {
 				var features = randomFeatureConfiguration.features();
+				var defaultFeature = randomFeatureConfiguration.defaultFeature();
 				 //?} else {
 				/*var features = randomFeatureConfiguration.features;
+				var defaultFeature = randomFeatureConfiguration.defaultFeature;
 				*///?}
 
 				for (WeightedPlacedFeature weightedPlacedFeature : features) {
 					//? if >= 26.2 {
-					collectRandomFeatureConfigurations(weightedPlacedFeature.feature().value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+					var subPlacedFeature = weightedPlacedFeature.feature();
 					 //?} else {
-					/*collectRandomFeatureConfigurations(weightedPlacedFeature.feature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+					/*var subPlacedFeature = weightedPlacedFeature.feature;
 					*///?}
+
+					if (usedPlacedFeatures != null) {
+						usedPlacedFeatures.add(subPlacedFeature);
+					}
+
+					collectRandomFeatureConfigurations(subPlacedFeature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs, usedPlacedFeatures);
 				}
+
+				if (usedPlacedFeatures != null) {
+					usedPlacedFeatures.add(defaultFeature);
+				}
+
+				collectRandomFeatureConfigurations(defaultFeature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs, usedPlacedFeatures);
 
 				return;
 			}
 
 			//? if >= 26.1 {
 			config.getSubFeatures().forEach(childConfiguredFeature -> {
-				collectRandomFeatureConfigurations(childConfiguredFeature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+				collectRandomFeatureConfigurations(childConfiguredFeature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs, usedPlacedFeatures);
 			});
 			//?} else {
 			/*config.getFeatures().forEach(childConfiguredFeature -> {
-				collectRandomFeatureConfigurations(childConfiguredFeature, visitedPlacedFeatures, visitedConfiguredFeatures, configs);
+				collectRandomFeatureConfigurations(childConfiguredFeature, visitedPlacedFeatures, visitedConfiguredFeatures, configs, usedPlacedFeatures);
 			});
 			*///?}
 		} catch (Throwable e) {

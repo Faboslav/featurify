@@ -28,6 +28,7 @@ public final class WorldgenDataProvider
 	private static Map<String, Map<String, SurfaceRules.RuleSource>> surfaceRuleSources = new TreeMap<>();
 	private static Map<String, BiomeData> biomes = new TreeMap<>();
 	private static Map<String, PlacedFeatureData> placedFeatures = new TreeMap<>();
+	private static Map<String, Set<String>> usedByPlacedFeatures = new TreeMap<>();
 
 	public static Set<String> getBiomeIds() {
 		return biomeIds;
@@ -47,6 +48,10 @@ public final class WorldgenDataProvider
 
 	public static Map<String, PlacedFeatureData> getPlacedFeatures() {
 		return placedFeatures;
+	}
+
+	public static Map<String, Set<String>> getUsedByPlacedFeatures() {
+		return usedByPlacedFeatures;
 	}
 
 	public static void loadWorldgenData() {
@@ -200,16 +205,19 @@ public final class WorldgenDataProvider
 		var placedFeatureRegistry = RegistryManagerProvider.getPlacedFeatureRegistry();
 
 		if (placedFeatureRegistry == null) {
+			WorldgenDataProvider.usedByPlacedFeatures = Collections.emptyMap();
 			return Collections.emptyMap();
 		}
 
 		var biomeRegistry = RegistryManagerProvider.getBiomeRegistry();
 
 		if (biomeRegistry == null) {
+			WorldgenDataProvider.usedByPlacedFeatures = Collections.emptyMap();
 			return Collections.emptyMap();
 		}
 
 		Map<String, PlacedFeatureData> placedFeatures = new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
+		Map<String, Set<String>> usedByPlacedFeatures = new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
 
 		for (var placedFeatureReference : placedFeatureRegistry.listElements().toList()) {
 			PlacedFeature placedFeature = placedFeatureReference.value();
@@ -233,12 +241,28 @@ public final class WorldgenDataProvider
 
 			var subFeaturesData = new TreeMap<String, Float>(Comparators.ALPHABETICALL_ID_COMPARATOR);
 			var randomFeatureConfigurations = new ArrayList<RandomFeatureConfiguration>();
+			var usedPlacedFeatures = new ArrayList<Holder<PlacedFeature>>();
 
 			FeatureUtil.collectRandomFeatureConfigurations(
 				placedFeature,
 				Collections.newSetFromMap(new IdentityHashMap<>()),
-				randomFeatureConfigurations
+				randomFeatureConfigurations,
+				usedPlacedFeatures
 			);
+
+			for (var usedPlacedFeature : usedPlacedFeatures) {
+				var usedPlacedFeatureKey = usedPlacedFeature.unwrapKey().orElse(null);
+
+				if (usedPlacedFeatureKey == null) {
+					continue;
+				}
+
+				var usedPlacedFeatureId = VersionedId.GetId(usedPlacedFeatureKey).toString();
+
+				usedByPlacedFeatures
+					.computeIfAbsent(usedPlacedFeatureId, key -> new TreeSet<>(Comparators.ALPHABETICALL_ID_COMPARATOR))
+					.add(placedFeatureId.toString());
+			}
 
 			for (RandomFeatureConfiguration config : randomFeatureConfigurations) {
 				//? if >= 26.2 {
@@ -268,6 +292,8 @@ public final class WorldgenDataProvider
 			PlacedFeatureData placedFeatureData = new PlacedFeatureData(defaultBiomes, subFeaturesData);
 			placedFeatures.put(placedFeatureId.toString(), placedFeatureData);
 		}
+
+		WorldgenDataProvider.usedByPlacedFeatures = usedByPlacedFeatures;
 
 		return placedFeatures;
 	}

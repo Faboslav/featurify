@@ -6,6 +6,7 @@ import com.faboslav.featurify.common.config.client.api.option.InvisibleOptionGro
 import com.faboslav.featurify.common.config.data.PlacedFeatureData;
 import com.faboslav.featurify.common.util.LanguageUtil;
 import com.faboslav.featurify.common.util.YACLUtil;
+import com.faboslav.featurify.common.worldgen.WorldgenDataProvider;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
@@ -14,6 +15,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+import java.util.Collections;
 import java.util.Locale;
 
 @SuppressWarnings({"all", "deprecated", "removal"})
@@ -63,8 +65,21 @@ public final class PlacedFeatureConfigScreen
 
 			placedFeatureCategoryBuilder.group(biomesOption);
 		} else {
+			var usedByPlacedFeatureIds = WorldgenDataProvider.getUsedByPlacedFeatures().getOrDefault(placedFeatureId, Collections.emptySet());
+
 			placedFeatureSettingsGroup.option(YACLUtil.createEmptySmallLabelOption());
-			placedFeatureSettingsGroup.option(LabelOption.create(Component.translatable("gui.featurify.placed_features.placed_feature.no_biomes.title")));
+
+			if (usedByPlacedFeatureIds.isEmpty()) {
+				placedFeatureSettingsGroup.option(LabelOption.create(Component.translatable("gui.featurify.placed_features.placed_feature.no_biomes.title")));
+			} else {
+				placedFeatureSettingsGroup.option(LabelOption.create(Component.translatable("gui.featurify.placed_features.placed_feature.used_by.title")));
+
+				for (var usedByPlacedFeatureId : usedByPlacedFeatureIds) {
+					var translatedUsedByPlacedFeatureName = LanguageUtil.translatePlacedFeatureId(usedByPlacedFeatureId);
+					placedFeatureSettingsGroup.option(LabelOption.create(Component.literal(" - ").append(translatedUsedByPlacedFeatureName)));
+				}
+			}
+
 			placedFeatureCategoryBuilder.group(placedFeatureSettingsGroup.build());
 		}
 
