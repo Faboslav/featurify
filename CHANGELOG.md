@@ -1,3 +1,7 @@
+## 2.0.11
+
+- Fixed case, when featurify config was incorrectly loaded before the biome modifications
+
 ## 2.0.10
 
 - Added Biolith compat
