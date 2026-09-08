@@ -1,6 +1,7 @@
 package com.faboslav.featurify.common.registry;
 
 import com.faboslav.featurify.common.Featurify;
+import com.faboslav.featurify.common.platform.PlatformHooks;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.*;
@@ -118,9 +119,20 @@ public final class RegistryManagerProvider
 				return;
 			}
 
-			setRegistryManager(saveLoader.registries().compositeAccess());
+			var registryAccess = saveLoader.registries().compositeAccess();
+
+			try {
+				PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.setShouldApplyFeaturifyBiomeModifiers(false);
+				PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.applyBiomeModifiers(registryAccess);
+			} catch (Throwable exception) {
+				Featurify.getLogger().error("Failed to load mod loader's biome modifications", exception);
+			} finally {
+				PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.setShouldApplyFeaturifyBiomeModifiers(true);
+			}
+
+			setRegistryManager(registryAccess);
 			Featurify.getLogger().info("Finished loading registry manager");
-		} catch (Exception exception) {
+		} catch (Throwable exception) {
 			Featurify.getLogger().error("Failed to load registry manager.", exception);
 		} finally {
 			isLoading = false;

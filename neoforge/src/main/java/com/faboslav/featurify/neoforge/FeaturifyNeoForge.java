@@ -20,6 +20,7 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 @Mod(Featurify.MOD_ID)
+@SuppressWarnings({"all", "deprecated", "removal"})
 public final class FeaturifyNeoForge
 {
 	public FeaturifyNeoForge(ModContainer modContainer, IEventBus modEventBus) {
@@ -64,12 +65,12 @@ public final class FeaturifyNeoForge
 		 *///?}
 
 		RegistryManagerProvider.setRegistryManager(registryAccess);
-		LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
 		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
 	}
 
 	private static void onServerAboutToStart(ServerAboutToStartEvent event) {
 		RegistryManagerProvider.setRegistryManager(event.getServer().registryAccess());
+		LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
 		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
 	}
 }

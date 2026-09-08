@@ -2,10 +2,13 @@ package com.faboslav.featurify.fabric.platform;
 
 import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.platform.PlatformBiomeModifications;
+import com.faboslav.featurify.common.platform.PlatformHooks;
 import com.faboslav.featurify.common.versions.VersionedId;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
+import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -18,6 +21,7 @@ public final class FabricBiomeModifications implements PlatformBiomeModification
 {
 	private static final Set<Identifier> ADDED_MODIFICATIONS = new HashSet<>();
 	private static final Set<Identifier> REMOVED_MODIFICATIONS = new HashSet<>();
+	private boolean shouldApplyFeaturifyBiomeModifiers = true;
 
 	@Override
 	public void addPlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biomeReference, GenerationStep.Decoration generationStep) {
@@ -36,6 +40,10 @@ public final class FabricBiomeModifications implements PlatformBiomeModification
 				ModificationPhase.POST_PROCESSING,
 				context -> context.getBiomeKey().equals(biomeKey),
 				context -> {
+					if(!PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.shouldApplyFeaturifyBiomeModifiers()) {
+						return;
+					}
+
 					var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId, null);
 
 					if(placedFeatureData == null || !placedFeatureData.getAdditionalBiomes().contains(VersionedId.GetId(biomeKey).toString())) {
@@ -63,6 +71,10 @@ public final class FabricBiomeModifications implements PlatformBiomeModification
 				ModificationPhase.POST_PROCESSING,
 				context -> true,
 				context -> {
+					if(!this.shouldApplyFeaturifyBiomeModifiers()) {
+						return;
+					}
+
 					var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId, null);
 
 					if(placedFeatureData == null || !placedFeatureData.getRemovedBiomes().contains(VersionedId.GetId(biomeKey).toString())) {
@@ -72,5 +84,20 @@ public final class FabricBiomeModifications implements PlatformBiomeModification
 					context.getGenerationSettings().removeFeature(generationStep, placedFeatureKey);
 				}
 			);
+	}
+
+	@Override
+	public void applyBiomeModifiers(RegistryAccess registryAccess) {
+		BiomeModificationImpl.INSTANCE.finalizeWorldGen(registryAccess);
+	}
+
+	@Override
+	public boolean shouldApplyFeaturifyBiomeModifiers() {
+		return shouldApplyFeaturifyBiomeModifiers;
+	}
+
+	@Override
+	public void setShouldApplyFeaturifyBiomeModifiers(boolean shouldApplyBiomeModifiers) {
+		shouldApplyFeaturifyBiomeModifiers = shouldApplyBiomeModifiers;
 	}
 }

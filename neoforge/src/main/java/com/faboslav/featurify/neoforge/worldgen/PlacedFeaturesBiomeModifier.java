@@ -1,6 +1,7 @@
 package com.faboslav.featurify.neoforge.worldgen;
 
 import com.faboslav.featurify.common.Featurify;
+import com.faboslav.featurify.common.platform.PlatformHooks;
 import com.faboslav.featurify.neoforge.platform.NeoForgeBiomeModifications;
 import com.faboslav.featurify.neoforge.registry.FeaturifyBiomeModifiers;
 import com.mojang.serialization.MapCodec;
@@ -15,7 +16,7 @@ public final class PlacedFeaturesBiomeModifier implements BiomeModifier
 
 	@Override
 	public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
-		if (phase == Phase.AFTER_EVERYTHING) {
+		if (phase == Phase.AFTER_EVERYTHING && PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.shouldApplyFeaturifyBiomeModifiers()) {
 			AddPlacedFeatures(biome, builder);
 			RemovePlacedFeatures(biome, builder);
 		}
