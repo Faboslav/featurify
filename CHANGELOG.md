@@ -1,3 +1,7 @@
+## 2.0.12
+
+- Fixed crash related to loading biolit compat, when biolit is loaded, but compat should be disabled
+
 ## 2.0.11
 
 - Fixed case, when featurify config was incorrectly loaded before the biome modifications

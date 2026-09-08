@@ -32,9 +32,9 @@ Featurify is a worldgen feature configuration mod that eliminates the need for d
 * **Disable individual placed features:** Disable specific placed features individually, preventing them from generating in your world.
 * **Manage biomes for specific features:** Add or remove biomes for individual placed features to control where they generate.
 * **Disable specific biomes:** Disable specific biomes individually, preventing them from generating in your world.
-* **Replace specific biomes:** Replace specific biomes with another biome
+* **Replace specific biomes:** Replace specific biomes with another biome.
 
-Since mod is still in the early development phase, you can expect a lot of more features in the future.
+Since the mod is still in the early development phase, you can expect a lot of more features in the future.
 <br>
 
 **Available Commands:**
@@ -73,7 +73,7 @@ All placed feature settings can be configured directly in game through intuitive
 
 ![Placed features settings](https://raw.githubusercontent.com/Faboslav/featurify/master/.github/assets/images/wiki/placed_features/placed_feature_settings.webp)
 
-TBD biome disable/replacement description
+The same goes for biomes, you can disable specific biomes or replace them with another biome directly in game, and changes are applied immediately.
 
 ![Biomes settings](https://raw.githubusercontent.com/Faboslav/featurify/master/.github/assets/images/wiki/biomes/biomes_settings.webp)
 

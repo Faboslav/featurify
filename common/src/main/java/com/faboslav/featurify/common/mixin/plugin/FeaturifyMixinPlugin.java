@@ -56,7 +56,9 @@ public class FeaturifyMixinPlugin implements IMixinConfigPlugin
 			}
 
 			// Biolith
-			if (this.isClassAvailable("com.terraformersmc.biolith.impl.biome.DimensionBiomePlacement")) {
+			if (this.isClassAvailable("com.terraformersmc.biolith.impl.biome.DimensionBiomePlacement")
+				&& this.isClassAvailable("com.faboslav.featurify.common.mixin.compat.biolith.DimensionBiomePlacementMixin"))
+			{
 				mixins.add("compat.biolith.DimensionBiomePlacementMixin");
 			}
 		}

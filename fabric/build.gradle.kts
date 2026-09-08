@@ -87,6 +87,26 @@ dependencies {
 	commonMod.depOrNull("biolith")?.let { biolithVersion ->
 		modCompileOnly(fletchingTable.modrinth("biolith", minecraft = commonMod.mc, loaders = "fabric"))
 	}
+
+	/*
+	if(!IS_CI) {
+		listOf(
+			"serene-shrubbery-fabric",
+		).forEach { modId ->
+			try {
+				fletchingTable.modrinthBundle(modId, commonMod.mc, "fabric") {
+					recursive = true
+					include("required")
+				}.forEach(::implementation)
+			} catch (e: Exception) {
+				if (e.message?.startsWith("Failed to find any results for ModQuery") != true) {
+					throw e
+				}
+
+				logger.warn("Skipping Modrinth bundle '{}': {}", modId, e.message)
+			}
+		}
+	}*/
 }
 
 loom {
