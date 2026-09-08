@@ -10,6 +10,7 @@ stonecutter {
 	constants["terrablender"] = rootProject.project(stonecutter.current.project).property("deps.terrablender").toString() != ""
 	constants["lithostitched"] = rootProject.project(stonecutter.current.project).property("deps.lithostitched").toString() != ""
 	constants["blueprint"] = rootProject.project(stonecutter.current.project).property("deps.lithostitched").toString() != ""
+	constants["biolith"] = rootProject.project(stonecutter.current.project).property("deps.biolith").toString() != ""
 }
 
 fletchingTable {
@@ -80,6 +81,11 @@ dependencies {
 		commonMod.depOrNull("lithostitched")?.let { lithostitchedVersion ->
 			modCompileOnly(fletchingTable.modrinth("lithostitched", minecraft = commonMod.mc, loaders = "fabric"))
 		}
+	}
+
+	// Biolith
+	commonMod.depOrNull("biolith")?.let { biolithVersion ->
+		modCompileOnly(fletchingTable.modrinth("biolith", minecraft = commonMod.mc, loaders = "fabric"))
 	}
 }
 

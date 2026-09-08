@@ -11,6 +11,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.Climate;
 
+import java.util.function.Supplier;
+
 public final class FeaturifyBiomeFilter
 {
 	public static ResourceKey<Biome> getReplacementBiomeKey(ResourceKey<Biome> biomeKey) {
@@ -39,6 +41,13 @@ public final class FeaturifyBiomeFilter
 		Climate.Sampler sampler,
 		BiomeResolver baseResolver
 	) {
+		return getReplacementBiome(biome, () -> baseResolver.getNoiseBiome(quartX, quartY, quartZ, sampler));
+	}
+
+	public static Holder<Biome> getReplacementBiome(
+		Holder<Biome> biome,
+		Supplier<Holder<Biome>> baseBiomeSupplier
+	) {
 		var biomeKey = biome.unwrapKey().orElse(null);
 
 		if (biomeKey == null) {
@@ -56,7 +65,7 @@ public final class FeaturifyBiomeFilter
 			return getConfiguredReplacementBiome(biomeData.getReplacementBiome());
 		}
 
-		return baseResolver.getNoiseBiome(quartX, quartY, quartZ, sampler);
+		return baseBiomeSupplier.get();
 	}
 
 	private static boolean shouldKeepOriginalBiome(BiomeData biomeData) {

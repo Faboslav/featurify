@@ -77,6 +77,11 @@ dependencies {
 			modCompileOnly(fletchingTable.modrinth("lithostitched", minecraft = commonMod.mc, loaders = "fabric"))
 		}
 	}
+
+	// Biolith
+	commonMod.depOrNull("biolith")?.let { biolithVersion ->
+		modCompileOnly(fletchingTable.modrinth("biolith", minecraft = commonMod.mc, loaders = "fabric"))
+	}
 }
 
 loom {

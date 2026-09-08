@@ -11,6 +11,7 @@
 	"mixins": [
 		"ResourcePackManagerAccessor",
 		"biome.ClimateParameterPointAccessor",
+		"biome.ClimateRTreeLeafAccessor",
 		"biome.MultiNoiseBiomeSourceAccessor",
 		"biome.MultiNoiseBiomeSourceMixin",
 		"biome.NoiseGeneratorSettingsMixin",

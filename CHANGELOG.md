@@ -1,6 +1,8 @@
 ## 2.0.10
 
-- Improved feature change injection logic by running it after all of the other mods
+- Added Biolith compat
+- Greatly improved compat with all the mods using biome modifications, Featurify now recognizes runtime biome modifications and can do tweaks on top of them
+- Improved feature change injection logic by running it after all the other mods
 
 ## 2.0.9
 

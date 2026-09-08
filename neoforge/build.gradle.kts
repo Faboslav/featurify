@@ -59,6 +59,11 @@ dependencies {
 		implementation(fletchingTable.modrinth("blueprint", minecraft = commonMod.mc, loaders = "neoforge"))
 	}
 
+	// Biolith
+	commonMod.depOrNull("biolith")?.let { biolithVersion ->
+		implementation(fletchingTable.modrinth("biolith", minecraft = commonMod.mc, loaders = "neoforge"))
+	}
+
 	if(!IS_CI) {
 		listOf(
 			//"tectonic",

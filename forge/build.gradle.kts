@@ -71,6 +71,11 @@ dependencies {
 		modImplementation(fletchingTable.modrinth("blueprint", minecraft = commonMod.mc, loaders = "forge"))
 	}
 
+	// Biolith
+	commonMod.depOrNull("biolith")?.let { biolithVersion ->
+		modImplementation(fletchingTable.modrinth("biolith", minecraft = commonMod.mc, loaders = "forge"))
+	}
+
 	if (!IS_CI) {
 		listOf(
 			//"terralith",

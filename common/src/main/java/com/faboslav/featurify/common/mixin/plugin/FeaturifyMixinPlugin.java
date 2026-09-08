@@ -54,6 +54,11 @@ public class FeaturifyMixinPlugin implements IMixinConfigPlugin
 			if (this.isClassAvailable("dev.worldgen.lithostitched.impl.worldgen.biomeinjector.internal.InjectorBiomeSource")) {
 				mixins.add("compat.lithostitched.InjectorBiomeSourceMixin");
 			}
+
+			// Biolith
+			if (this.isClassAvailable("com.terraformersmc.biolith.impl.biome.DimensionBiomePlacement")) {
+				mixins.add("compat.biolith.DimensionBiomePlacementMixin");
+			}
 		}
 
 		// Blueprint
