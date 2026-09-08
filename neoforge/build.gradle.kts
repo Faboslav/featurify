@@ -124,10 +124,12 @@ neoForge {
 		}
 	}
 
-	parchment {
-		commonMod.depOrNull("parchment")?.let {
-			mappingsVersion = it
-			minecraftVersion = commonMod.mc
+	if(!IS_CI) {
+		parchment {
+			commonMod.depOrNull("parchment")?.let {
+				mappingsVersion = it
+				minecraftVersion = commonMod.mc
+			}
 		}
 	}
 

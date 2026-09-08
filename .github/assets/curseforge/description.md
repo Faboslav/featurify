@@ -73,6 +73,10 @@ All placed feature settings can be configured directly in game through intuitive
 
 ![Placed features settings](https://raw.githubusercontent.com/Faboslav/featurify/master/.github/assets/images/wiki/placed_features/placed_feature_settings.webp)
 
+TBD biome disable/replacement description
+
+![Biomes settings](https://raw.githubusercontent.com/Faboslav/featurify/master/.github/assets/images/wiki/biomes/biomes_settings.webp)
+
 <br>
 <br>
 
@@ -106,6 +110,7 @@ offers enhanced compatibility with the following:
 * [Lithostitched](https://www.curseforge.com/minecraft/mc-mods/lithostitched)
 * [TerraBlender](https://www.curseforge.com/minecraft/mc-mods/terrablender-fabric)
 * [Blueprint](https://www.curseforge.com/minecraft/mc-mods/blueprint)
+* [Biolith](https://www.curseforge.com/minecraft/mc-mods/biolith)
 
 Since feature generation is a complex system, things can occasionally break, especially with mods that implement their own custom feature generation logic or heavily alter vanilla generation behavior.
 

@@ -96,6 +96,7 @@ offers enhanced compatibility with the following:
 * [Lithostitched](https://modrinth.com/mod/lithostitched)
 * [TerraBlender](https://modrinth.com/mod/terrablender)
 * [Blueprint](https://modrinth.com/mod/blueprint)
+* [Biolith](https://modrinth.com/mod/biolith)
 
 Since feature generation is a complex system, things can occasionally break, especially with mods that implement their own custom feature generation logic or heavily alter vanilla generation behavior.
 
