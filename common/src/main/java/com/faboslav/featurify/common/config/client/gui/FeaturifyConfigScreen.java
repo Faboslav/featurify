@@ -99,15 +99,6 @@ public class FeaturifyConfigScreen
 		}
 	}
 
-	@Nullable
-	public YACLScreen getOpenedScreen() {
-		if (VersionedGui.getScreen() instanceof YACLScreen yaclScreen) {
-			return yaclScreen;
-		}
-
-		return null;
-	}
-
 	public void savePendingChanges(@Nullable YACLScreen screen) {
 		if (screen == null || !screen.pendingChanges()) {
 			return;

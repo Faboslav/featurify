@@ -1,6 +1,7 @@
 package com.faboslav.featurify.common.worldgen;
 
 import com.faboslav.featurify.common.Featurify;
+import com.faboslav.featurify.common.api.FeaturifyNoiseGeneratorSettings;
 import com.faboslav.featurify.common.config.data.BiomeData;
 import com.faboslav.featurify.common.config.data.PlacedFeatureData;
 import com.faboslav.featurify.common.mixin.biome.MultiNoiseBiomeSourceAccessor;
@@ -111,18 +112,15 @@ public final class WorldgenDataProvider
 				continue;
 			}
 
-			SurfaceRules.RuleSource surfaceRule =
-				noiseGenerator.generatorSettings().value().surfaceRule();
+			SurfaceRules.RuleSource surfaceRule = ((FeaturifyNoiseGeneratorSettings) (Object) noiseGenerator.generatorSettings().value()).featurify$getSurfaceRule();
 
-			Set<ResourceKey<Biome>> biomeKeys =
-				collectBiomeKeys(dimensionId, noiseGenerator.getBiomeSource());
+			Set<ResourceKey<Biome>> biomeKeys = collectBiomeKeys(dimensionId, noiseGenerator.getBiomeSource());
 
 			if (biomeKeys.isEmpty()) {
 				continue;
 			}
 
-			Map<String, SurfaceRules.RuleSource> dimensionSurfaceRuleSources =
-				new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
+			Map<String, SurfaceRules.RuleSource> dimensionSurfaceRuleSources = new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
 
 			for (ResourceKey<Biome> biomeKey : biomeKeys) {
 				dimensionSurfaceRuleSources.put(

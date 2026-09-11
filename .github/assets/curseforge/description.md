@@ -14,7 +14,7 @@
 		<img src="https://img.shields.io/static/v1?label=&message=Become a Patron&color=5b9c51&labelColor=5b9c51&logoColor=ffffff&style=for-the-badge&logo=patreon" alt="Become a Patreon">
 	</a>
 	<a style="text-decoration: none;" href="https://discord.com/invite/QGwFvvMQCn">
-		<img src="https://img.shields.io/discord/924964658169913404?style=for-the-badge&logo=discord&logoColor=ffffff&label=Join Our Discord&labelColor=5b9c51&color=5b9c51" alt="Join Our Discord">
+		<img src="https://img.shields.io/static/v1?label=&amp;message=Join%20the%20community&amp;color=5b9c51&amp;labelColor=5b9c51&amp;logoColor=ffffff&amp;style=for-the-badge&amp;logo=discord" alt="Join the Community" title="Join the Community" style="display: inline-block">
 	</a>
 </p>
 
@@ -72,6 +72,8 @@ No extra mods are needed.
 All placed feature settings can be configured directly in game through intuitive configuration screens. Changes are applied immediately, making it easy to add, remove, and modify placed features without editing files or creating datapacks.
 
 ![Placed features settings](https://raw.githubusercontent.com/Faboslav/featurify/master/.github/assets/images/wiki/placed_features/placed_feature_settings.webp)
+
+<br>
 
 The same goes for biomes, you can disable specific biomes or replace them with another biome directly in game, and changes are applied immediately.
 

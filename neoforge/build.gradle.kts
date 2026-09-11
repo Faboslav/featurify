@@ -71,9 +71,9 @@ dependencies {
 			//"natures-spirit",
 			//"biomes-o-plenty",
 			//"windswept",
-			"no-mans-land",
-			"serene-shrubbery",
-			//"regions-unexplored",
+			//"no-mans-land",
+			//"serene-shrubbery",
+			"regions-unexplored",
 			//"enderscape"
 		).forEach { modId ->
 			try {

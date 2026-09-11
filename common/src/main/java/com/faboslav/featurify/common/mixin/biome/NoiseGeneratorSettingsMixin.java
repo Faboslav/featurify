@@ -7,12 +7,18 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(NoiseGeneratorSettings.class)
 public abstract class NoiseGeneratorSettingsMixin implements FeaturifyNoiseGeneratorSettings
 {
+	@Shadow
+	@Final
+	private SurfaceRules.RuleSource surfaceRule;
+
 	@Unique
 	private volatile boolean featurify$replacementRulesComputed;
 
@@ -49,5 +55,10 @@ public abstract class NoiseGeneratorSettingsMixin implements FeaturifyNoiseGener
 			this.featurify$replacementRulesComputed = false;
 			this.featurify$cachedReplacementRules = null;
 		}
+	}
+
+	@Override
+	public SurfaceRules.RuleSource featurify$getSurfaceRule() {
+		return this.surfaceRule;
 	}
 }

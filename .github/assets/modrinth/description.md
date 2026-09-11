@@ -14,7 +14,7 @@
 		<img src="https://img.shields.io/static/v1?label=&message=Become a Patron&color=5b9c51&labelColor=5b9c51&logoColor=ffffff&style=for-the-badge&logo=patreon" alt="Become a Patreon">
 	</a>
 	<a style="text-decoration: none;" href="https://discord.com/invite/QGwFvvMQCn">
-		<img src="https://img.shields.io/discord/924964658169913404?style=for-the-badge&logo=discord&logoColor=ffffff&label=Join the Community&labelColor=5b9c51&color=5b9c51" alt="Join the Community">
+		<img src="https://img.shields.io/static/v1?label=&amp;message=Join%20the%20community&amp;color=5b9c51&amp;labelColor=5b9c51&amp;logoColor=ffffff&amp;style=for-the-badge&amp;logo=discord" alt="Join the Community" title="Join the Community" style="display: inline-block">
 	</a>
 </center>
 
@@ -28,17 +28,21 @@ Featurify is a worldgen feature configuration mod that eliminates the need for d
 
 **Currently, it is possible to:**
 
-* **Globally disable all placed features:** Easily disable all placed features across your world with a single setting, simplifying your world generation process.
-* **Disable individual placed features:** Disable specific features individually, giving you precise control over which ones generate in your world.
-* **Manage biomes for specific features:** Customize the list of biomes for individual features, add new.
+* **Globally disable all placed features:** Disable all placed features across your world with a single setting.
+* **Disable individual placed features:** Disable specific placed features individually, preventing them from generating in your world.
+* **Manage biomes for specific features:** Add or remove biomes for individual placed features to control where they generate.
+* **Disable specific biomes:** Disable specific biomes individually, preventing them from generating in your world.
+* **Replace specific biomes:** Replace specific biomes with another biome.
 
-Since this is the initial update, you can expect a lot of more features in the future.
+Since the mod is still in the early development phase, you can expect a lot of more features in the future.
 <br>
 
 **Available Commands:**
 
-* **/featurify dump:** Dumps complete config file with default settings to the file.
-* **/featurify dump:** Dumps complete config file with default settings to the file.
+* **/featurify dump:** Dumps the complete config file with all available settings to JSON file.
+* **/featurify config status:** Prints version (hash) of both the client and server config files in chat.
+* **/featurify config sync fromServer:** Synchronizes the config file from the server to the client.
+* **/featurify config sync toServer:** Synchronizes the config file from the client to the server.
 
 <br>
 
@@ -62,6 +66,12 @@ No extra mods are needed.
 All placed feature settings can be configured directly in game through intuitive configuration screens. Changes are applied immediately, making it easy to add, remove, and modify placed features without editing files or creating datapacks.
 
 ![Placed features settings](https://raw.githubusercontent.com/Faboslav/featurify/master/.github/assets/images/wiki/placed_features/placed_feature_settings.webp)
+
+<br>
+
+The same goes for biomes, you can disable specific biomes or replace them with another biome directly in game, and changes are applied immediately.
+
+![Biomes settings](https://raw.githubusercontent.com/Faboslav/featurify/master/.github/assets/images/wiki/biomes/biomes_settings.webp)
 
 <br>
 
@@ -91,8 +101,6 @@ offers enhanced compatibility with the following:
 * [TerraBlender](https://modrinth.com/mod/terrablender)
 * [Blueprint](https://modrinth.com/mod/blueprint)
 * [Biolith](https://modrinth.com/mod/biolith)
-
-
 
 Since feature generation is a complex system, things can occasionally break, especially with mods that implement their own custom feature generation logic or heavily alter vanilla generation behavior.
 

@@ -1,3 +1,7 @@
+## 2.0.13
+
+- Fixed Regions Unexplored biomes having wrong blocks instead of the default blocks
+
 ## 2.0.12
 
 - Fixed crash related to loading biolit compat, when biolit is loaded, but compat should be disabled
