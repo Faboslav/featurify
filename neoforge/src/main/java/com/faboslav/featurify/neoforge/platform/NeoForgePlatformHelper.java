@@ -4,19 +4,33 @@ import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.platform.ModIconInfo;
 import com.faboslav.featurify.common.platform.PlatformHelper;
 import com.faboslav.featurify.common.util.FileUtil;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
+
+//? if >= 1.21.10 {
+import java.io.IOException;
+//?}
 
 public final class NeoForgePlatformHelper implements PlatformHelper
 {
 	@Override
 	public boolean isModLoaded(String modId) {
 		return ModList.get().isLoaded(modId);
+	}
+
+	@Override
+	public boolean isServerEnv() {
+		//? if <= 1.21.9 {
+		/*return FMLEnvironment.dist == Dist.DEDICATED_SERVER;
+		*///?} else {
+		return FMLEnvironment.getDist() == Dist.DEDICATED_SERVER;
+		//?}
 	}
 
 	@Override

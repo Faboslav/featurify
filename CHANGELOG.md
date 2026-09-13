@@ -1,3 +1,7 @@
+## 2.0.14
+
+- Fixed config loading on server side
+
 ## 2.0.13
 
 - Fixed Regions Unexplored biomes having wrong blocks instead of the default blocks

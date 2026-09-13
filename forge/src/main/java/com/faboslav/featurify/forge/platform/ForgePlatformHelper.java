@@ -4,7 +4,9 @@ import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.platform.ModIconInfo;
 import com.faboslav.featurify.common.platform.PlatformHelper;
 import com.faboslav.featurify.common.util.FileUtil;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import javax.annotation.Nullable;
@@ -15,6 +17,11 @@ public final class ForgePlatformHelper implements PlatformHelper
 {
 	public boolean isModLoaded(String modId) {
 		return ModList.get().isLoaded(modId);
+	}
+
+	@Override
+	public boolean isServerEnv() {
+		return FMLEnvironment.dist == Dist.DEDICATED_SERVER;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.commands.FeaturifyCommands;
 import com.faboslav.featurify.common.events.common.LoadConfigEvent;
 import com.faboslav.featurify.common.events.common.UpdateWorldgenDataEvent;
+import com.faboslav.featurify.common.platform.PlatformHooks;
 import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.forge.registry.FeaturifyBiomeModifiers;
 import net.minecraftforge.api.distmarker.Dist;
@@ -49,6 +50,11 @@ public final class FeaturifyForge
 		}
 
 		RegistryManagerProvider.setRegistryManager(event.getRegistryAccess());
+
+		if(PlatformHooks.PLATFORM_HELPER.isServerEnv()) {
+			LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
+		}
+
 		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
 	}
 

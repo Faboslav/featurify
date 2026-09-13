@@ -4,6 +4,7 @@ import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.commands.FeaturifyCommands;
 import com.faboslav.featurify.common.events.common.LoadConfigEvent;
 import com.faboslav.featurify.common.events.common.UpdateWorldgenDataEvent;
+import com.faboslav.featurify.common.platform.PlatformHooks;
 import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -29,6 +30,11 @@ public final class FeaturifyFabric implements ModInitializer
 		}
 
 		RegistryManagerProvider.setRegistryManager(registryAccess);
+
+		if(PlatformHooks.PLATFORM_HELPER.isServerEnv()) {
+			LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
+		}
+
 		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
 	}
 

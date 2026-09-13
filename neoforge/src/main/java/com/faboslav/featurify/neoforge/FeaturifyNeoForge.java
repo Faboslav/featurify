@@ -4,6 +4,8 @@ import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.commands.FeaturifyCommands;
 import com.faboslav.featurify.common.events.common.LoadConfigEvent;
 import com.faboslav.featurify.common.events.common.UpdateWorldgenDataEvent;
+import com.faboslav.featurify.common.platform.PlatformHelper;
+import com.faboslav.featurify.common.platform.PlatformHooks;
 import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.neoforge.platform.NeoForgePlatformNetwork;
 import com.faboslav.featurify.neoforge.registry.FeaturifyBiomeModifiers;
@@ -65,6 +67,11 @@ public final class FeaturifyNeoForge
 		 *///?}
 
 		RegistryManagerProvider.setRegistryManager(registryAccess);
+
+		if(PlatformHooks.PLATFORM_HELPER.isServerEnv()) {
+			LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
+		}
+
 		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
 	}
 

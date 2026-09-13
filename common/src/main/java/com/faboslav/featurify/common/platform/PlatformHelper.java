@@ -11,6 +11,8 @@ public interface PlatformHelper
 
 	boolean isModLoaded(String modId);
 
+	boolean isServerEnv();
+
 	String getModVersion();
 
 	Optional<ModIconInfo> getModIconInfo(String modId);

@@ -4,6 +4,7 @@ import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.platform.ModIconInfo;
 import com.faboslav.featurify.common.platform.PlatformHelper;
 import com.faboslav.featurify.common.util.FileUtil;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Path;
@@ -14,6 +15,11 @@ public final class FabricPlatformHelper implements PlatformHelper
 	@Override
 	public boolean isModLoaded(String modId) {
 		return FabricLoader.getInstance().isModLoaded(modId);
+	}
+
+	@Override
+	public boolean isServerEnv() {
+		return FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
 	}
 
 	@Override
