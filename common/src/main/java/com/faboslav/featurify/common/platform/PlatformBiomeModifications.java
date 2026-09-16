@@ -8,9 +8,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 public interface PlatformBiomeModifications
 {
-	void addPlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biome, GenerationStep.Decoration generationStep);
-
-	void removePlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biomeReference, GenerationStep.Decoration generationStep);
+	void modifyPlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biome, GenerationStep.Decoration generationStep);
 
 	void applyBiomeModifiers(RegistryAccess registryAccess);
 

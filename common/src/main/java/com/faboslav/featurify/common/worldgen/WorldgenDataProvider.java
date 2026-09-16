@@ -72,7 +72,7 @@ public final class WorldgenDataProvider
 		Set<String> biomeIds = new HashSet<>();
 
 		for (var biome : biomeRegistry.listElements().toList()) {
-			biomeIds.add(VersionedId.GetId(biome.unwrapKey().orElseThrow()).toString());
+			biomeIds.add(VersionedId.getId(biome.unwrapKey().orElseThrow()).toString());
 		}
 
 		return biomeIds;
@@ -104,7 +104,7 @@ public final class WorldgenDataProvider
 		}
 
 		for (var levelStem : levelStemRegistry.listElements().toList()) {
-			String dimensionId = VersionedId.GetId(levelStem.key()).toString();
+			String dimensionId = VersionedId.getId(levelStem.key()).toString();
 
 			ChunkGenerator chunkGenerator = levelStem.value().generator();
 
@@ -124,7 +124,7 @@ public final class WorldgenDataProvider
 
 			for (ResourceKey<Biome> biomeKey : biomeKeys) {
 				dimensionSurfaceRuleSources.put(
-					VersionedId.GetId(biomeKey).toString(),
+					VersionedId.getId(biomeKey).toString(),
 					surfaceRule
 				);
 			}
@@ -191,7 +191,7 @@ public final class WorldgenDataProvider
 		Map<String, BiomeData> biomes = new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
 
 		for (var biome : biomeRegistry.listElements().toList()) {
-			var biomeId = VersionedId.GetId(biome.unwrapKey().orElseThrow()).toString();
+			var biomeId = VersionedId.getId(biome.unwrapKey().orElseThrow()).toString();
 			BiomeData biomeData = new BiomeData();
 			biomes.put(biomeId.toString(), biomeData);
 		}
@@ -219,7 +219,7 @@ public final class WorldgenDataProvider
 
 		for (var placedFeatureReference : placedFeatureRegistry.listElements().toList()) {
 			PlacedFeature placedFeature = placedFeatureReference.value();
-			var placedFeatureId = VersionedId.GetId(placedFeatureReference.key());
+			var placedFeatureId = VersionedId.getId(placedFeatureReference.key());
 
 			var defaultBiomes = new ArrayList<String>();
 
@@ -228,7 +228,7 @@ public final class WorldgenDataProvider
 					continue;
 				}
 
-				String biomeId = VersionedId.GetId(biomeReference.key()).toString();
+				String biomeId = VersionedId.getId(biomeReference.key()).toString();
 
 				if (!defaultBiomes.contains(biomeId)) {
 					defaultBiomes.add(biomeId);
@@ -255,7 +255,7 @@ public final class WorldgenDataProvider
 					continue;
 				}
 
-				var usedPlacedFeatureId = VersionedId.GetId(usedPlacedFeatureKey).toString();
+				var usedPlacedFeatureId = VersionedId.getId(usedPlacedFeatureKey).toString();
 
 				usedByPlacedFeatures
 					.computeIfAbsent(usedPlacedFeatureId, key -> new TreeSet<>(Comparators.ALPHABETICALL_ID_COMPARATOR))
@@ -282,7 +282,7 @@ public final class WorldgenDataProvider
 						continue;
 					}
 
-					var subfeatureId = VersionedId.GetId(configuredFeatureKey);
+					var subfeatureId = VersionedId.getId(configuredFeatureKey);
 					subFeaturesData.put(subfeatureId.toString(), weightedPlacedFeatureChance);
 				}
 			}

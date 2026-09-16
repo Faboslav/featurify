@@ -2,13 +2,21 @@ package com.faboslav.featurify.neoforge.worldgen;
 
 import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.platform.PlatformHooks;
+import com.faboslav.featurify.common.versions.VersionedId;
+import com.faboslav.featurify.common.worldgen.WorldgenDataUpdater;
 import com.faboslav.featurify.neoforge.platform.NeoForgeBiomeModifications;
 import com.faboslav.featurify.neoforge.registry.FeaturifyBiomeModifiers;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class PlacedFeaturesBiomeModifier implements BiomeModifier
 {
@@ -17,62 +25,58 @@ public final class PlacedFeaturesBiomeModifier implements BiomeModifier
 	@Override
 	public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
 		if (phase == Phase.AFTER_EVERYTHING && PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.shouldApplyFeaturifyBiomeModifiers()) {
-			addPlacedFeatures(biome, builder);
-			removePlacedFeatures(biome, builder);
+			modifyPlacedFeatures(biome, builder);
 		}
 	}
 
-	private void addPlacedFeatures(Holder<Biome> biome, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+	private void modifyPlacedFeatures(Holder<Biome> biome, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
 		var currentBiomeKey = biome.unwrapKey().orElse(null);
 
 		if (currentBiomeKey == null) {
 			return;
 		}
 
-		for(var placedFeatureBiomeModification : NeoForgeBiomeModifications.PLACED_FEATURES_ADD_BIOME_MODIFICATIONS) {
-			var placedFeatureKey = placedFeatureBiomeModification.placedFeatureReference().unwrapKey().orElseThrow();
-			var placedFeatureId = placedFeatureKey/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString();
+		for (var placedFeatureBiomeModification : NeoForgeBiomeModifications.PLACED_FEATURE_BIOME_MODIFICATIONS) {
+			var placedFeatureReference = placedFeatureBiomeModification.placedFeatureReference();
+			var placedFeatureId = VersionedId.getId(placedFeatureReference.unwrapKey().orElseThrow()).toString();
 			var biomeKey = placedFeatureBiomeModification.biomeReference().unwrapKey().orElseThrow();
+			var biomeId = VersionedId.getId(biomeKey).toString();
 
 			if (!currentBiomeKey.equals(biomeKey)) {
 				continue;
 			}
 
-			var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId, null);
+			var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().get(placedFeatureId);
 
-			if(placedFeatureData == null || !placedFeatureData.getAdditionalBiomes().contains(biomeKey/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString())) {
+			if (placedFeatureData == null) {
 				continue;
 			}
 
-			builder.getGenerationSettings().addFeature(placedFeatureBiomeModification.generationStep(), placedFeatureBiomeModification.placedFeatureReference());
+			var step = placedFeatureBiomeModification.generationStep();
+			var generationSettings = builder.getGenerationSettings();
+
+			if (placedFeatureData.getRemovedBiomes().contains(biomeId)) {
+				generationSettings.getFeatures(step).remove(placedFeatureReference);
+			}
+
+			if (placedFeatureData.getAdditionalBiomes().contains(biomeId)) {
+				var currentFeatures = getAllFeatures(builder);
+
+				if (!WorldgenDataUpdater.containsFeature(currentFeatures, placedFeatureReference) && WorldgenDataUpdater.canSafelyAddFeature(biome, currentFeatures, placedFeatureReference, step)) {
+					generationSettings.addFeature(step, placedFeatureReference);
+				}
+			}
 		}
 	}
 
+	private static List<HolderSet<PlacedFeature>> getAllFeatures(ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+		List<HolderSet<PlacedFeature>> features = new ArrayList<>();
 
-	private void removePlacedFeatures(Holder<Biome> biome, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
-		var currentBiomeKey = biome.unwrapKey().orElse(null);
-
-		if (currentBiomeKey == null) {
-			return;
+		for (var decoration : GenerationStep.Decoration.values()) {
+			features.add(HolderSet.direct(new ArrayList<>(builder.getGenerationSettings().getFeatures(decoration))));
 		}
 
-		for(var placedFeatureBiomeModification : NeoForgeBiomeModifications.PLACED_FEATURES_REMOVE_BIOME_MODIFICATIONS) {
-			var placedFeatureKey = placedFeatureBiomeModification.placedFeatureReference().unwrapKey().orElseThrow();
-			var placedFeatureId = placedFeatureKey/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString();
-			var biomeKey = placedFeatureBiomeModification.biomeReference().unwrapKey().orElseThrow();
-
-			if (!currentBiomeKey.equals(biomeKey)) {
-				continue;
-			}
-
-			var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId, null);
-
-			if(placedFeatureData == null || !placedFeatureData.getRemovedBiomes().contains(biomeKey/*? if >= 1.21.11 {*/.identifier()/*?} else {*//*.location()*//*?}*/.toString())) {
-				continue;
-			}
-
-			builder.getGenerationSettings().getFeatures(placedFeatureBiomeModification.generationStep()).remove(placedFeatureBiomeModification.placedFeatureReference());
-		}
+		return features;
 	}
 
 	@Override

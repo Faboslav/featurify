@@ -26,6 +26,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.*;
 
+@SuppressWarnings({"deprecation", "removal"})
 public final class WorldgenDataUpdater
 {
 	public static void updateWorldgenData(final UpdateWorldgenDataEvent event) {
@@ -70,7 +71,7 @@ public final class WorldgenDataUpdater
 		for (var placedFeatureReference : placedFeatureRegistry.listElements().toList()) {
 			PlacedFeature placedFeature = placedFeatureReference.value();
 			var placedFeatureRegistryKey = placedFeatureReference.key();
-			Identifier placedFeatureId = VersionedId.GetId(placedFeatureRegistryKey);
+			Identifier placedFeatureId = VersionedId.getId(placedFeatureRegistryKey);
 
 			var featurifyPlacedFeature = ((FeaturifyPlacedFeature) (Object) placedFeature);
 			featurifyPlacedFeature.featurify$setIdentifier(placedFeatureId);
@@ -104,7 +105,7 @@ public final class WorldgenDataUpdater
 						continue;
 					}
 
-					var weightedPlacedFeatureId = VersionedId.GetId(configuredFeatureKey);
+					var weightedPlacedFeatureId = VersionedId.getId(configuredFeatureKey);
 					var weightedPlacedFeatureChance = placedFeatureData.getWeightedPlacedFeatures().getOrDefault(weightedPlacedFeatureId.toString(), null);
 
 					if (weightedPlacedFeatureChance == null || weightedPlacedFeatureChance == originalChance) {
@@ -130,40 +131,29 @@ public final class WorldgenDataUpdater
 
 			for (var biomeReference : biomeReferences) {
 				var biomeKey = biomeReference.unwrapKey().orElseThrow();
-				String biomeId = VersionedId.GetId(biomeKey).toString();
+				String biomeId = VersionedId.getId(biomeKey).toString();
 				var currentFeatures = getFeaturesForBiome(simulatedFeatures, biomeReference);
+				var modified = false;
 
 				if (removedBiomes.contains(biomeId) && containsFeature(currentFeatures, placedFeatureReference)) {
 					currentFeatures = createFeaturesWithRemovedFeature(currentFeatures, placedFeatureReference, knownStep);
 					simulatedFeatures.put(biomeKey, currentFeatures);
+					modified = true;
+				}
 
-					PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.removePlacedFeature(
+				if (additionalBiomes.contains(biomeId) && !containsFeature(currentFeatures, placedFeatureReference) && canSafelyAddPlacedFeatureToBiome(simulatedFeatures, placedFeatureReference, biomeReference, knownStep)) {
+					currentFeatures = createFeaturesWithAddedFeature(currentFeatures, placedFeatureReference, knownStep);
+					simulatedFeatures.put(biomeKey, currentFeatures);
+					modified = true;
+				}
+
+				if (modified) {
+					PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.modifyPlacedFeature(
 						placedFeatureReference,
 						biomeReference,
 						knownStep
 					);
 				}
-
-				if (!additionalBiomes.contains(biomeId)) {
-					continue;
-				}
-
-				if (containsFeature(currentFeatures, placedFeatureReference)) {
-					continue;
-				}
-
-				if (!canSafelyAddPlacedFeatureToBiome(simulatedFeatures, placedFeatureReference, biomeReference, knownStep)) {
-					continue;
-				}
-
-				currentFeatures = createFeaturesWithAddedFeature(currentFeatures, placedFeatureReference, knownStep);
-				simulatedFeatures.put(biomeKey, currentFeatures);
-
-				PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.addPlacedFeature(
-					placedFeatureReference,
-					biomeReference,
-					knownStep
-				);
 			}
 		}
 
@@ -298,6 +288,26 @@ public final class WorldgenDataUpdater
 	) {
 		var biomeKey = biomeReference.unwrapKey().orElseThrow();
 		return simulatedFeatures.getOrDefault(biomeKey, biomeReference.value().getGenerationSettings().features());
+	}
+
+	public static boolean canSafelyAddFeature(
+		Holder<Biome> targetBiomeReference,
+		List<HolderSet<PlacedFeature>> currentFeatures,
+		Holder<PlacedFeature> placedFeatureReference,
+		GenerationStep.Decoration generationStep
+	) {
+		var candidateFeatures = createFeaturesWithAddedFeature(currentFeatures, placedFeatureReference, generationStep);
+
+		try {
+			FeatureSorter.buildFeaturesPerStep(
+				List.of(targetBiomeReference),
+				biomeReference -> candidateFeatures,
+				true
+			);
+			return true;
+		} catch (IllegalStateException ignored) {
+			return false;
+		}
 	}
 
 	public static boolean containsFeature(List<HolderSet<PlacedFeature>> features, Holder<PlacedFeature> targetFeature) {

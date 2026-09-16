@@ -163,7 +163,7 @@ public final class PlacedFeaturesConfigScreen
 						}
 
 						for (var biomeHolder : biomeTagHolder.stream().toList()) {
-							descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", VersionedId.GetId(biomeHolder.unwrap().left().get()).toLanguageKey())));
+							descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", VersionedId.getId(biomeHolder.unwrap().left().get()).toLanguageKey())));
 						}
 					} else {
 						descriptionBuilder.text(Component.literal(" - ").append(LanguageUtil.translateId("biome", biome)));

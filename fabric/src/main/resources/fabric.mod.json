@@ -23,6 +23,9 @@
 		"client": [
 			"com.faboslav.featurify.fabric.FeaturifyFabricClient"
 		],
+		"server": [
+			"com.faboslav.featurify.fabric.FeaturifyFabricServer"
+		],
 		"modmenu": [
           "com.faboslav.featurify.fabric.modcompat.ModMenuCompat"
 		]

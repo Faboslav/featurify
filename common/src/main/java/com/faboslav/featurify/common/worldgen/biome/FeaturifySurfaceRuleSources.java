@@ -46,7 +46,7 @@ public final class FeaturifySurfaceRuleSources
 		Map<String, Map<String, SurfaceRules.RuleSource>> surfaceRulesByDimension,
 		ResourceKey<Biome> biome
 	) {
-		String biomeId = VersionedId.GetId(biome).toString();
+		String biomeId = VersionedId.getId(biome).toString();
 		SurfaceRules.RuleSource foundRuleSource = null;
 
 		for (var dimensionRules : surfaceRulesByDimension.values()) {

@@ -14,6 +14,7 @@ import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
@@ -35,6 +36,8 @@ public final class FeaturifyForge
 			FeaturifyForgeClient.init(modEventBus, eventBus);
 		}
 
+		modEventBus.addListener(FeaturifyForge::onCommonSetup);
+
 		eventBus.addListener(FeaturifyForge::registerCommand);
 		eventBus.addListener(FeaturifyForge::onResourceManagerReload);
 		eventBus.addListener(FeaturifyForge::onServerAboutToStart);
@@ -42,6 +45,13 @@ public final class FeaturifyForge
 
 	private static void registerCommand(RegisterCommandsEvent event) {
 		FeaturifyCommands.createCommand(event.getDispatcher(), event.getBuildContext());
+	}
+
+	private static void onCommonSetup(final FMLCommonSetupEvent event) {
+		event.enqueueWork(() -> {
+			LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
+			UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
+		});
 	}
 
 	private static void onResourceManagerReload(TagsUpdatedEvent event) {

@@ -16,7 +16,12 @@ import java.util.function.Supplier;
 public final class FeaturifyBiomeFilter
 {
 	public static ResourceKey<Biome> getReplacementBiomeKey(ResourceKey<Biome> biomeKey) {
-		String biomeId = VersionedId.GetId(biomeKey).toString();
+		String biomeId = VersionedId.getId(biomeKey).toString();
+
+		if (MarkerBiomes.isMarkerBiome(biomeId)) {
+			return biomeKey;
+		}
+
 		BiomeData biomeData = Featurify.getConfig().getBiomeData().get(biomeId);
 
 		if (shouldKeepOriginalBiome(biomeData)) {
@@ -24,9 +29,16 @@ public final class FeaturifyBiomeFilter
 		}
 
 		if (!biomeData.isUsingDefaultReplacementBiome()) {
+			var replacementBiomeId = biomeData.getReplacementBiome().replace("#", "");
+
+			if (MarkerBiomes.isMarkerBiome(replacementBiomeId)) {
+				Featurify.getLogger().warn("Replacement biome \"{}\" for \"{}\" is a marker biome and cannot be used as a replacement, keeping original biome.", replacementBiomeId, biomeId);
+				return biomeKey;
+			}
+
 			return ResourceKey.create(
 				Registries.BIOME,
-				Featurify.makeNamespacedId(biomeData.getReplacementBiome().replace("#", ""))
+				Featurify.makeNamespacedId(replacementBiomeId)
 			);
 		}
 
@@ -54,7 +66,12 @@ public final class FeaturifyBiomeFilter
 			return biome;
 		}
 
-		String biomeId = VersionedId.GetId(biomeKey).toString();
+		String biomeId = VersionedId.getId(biomeKey).toString();
+
+		if (MarkerBiomes.isMarkerBiome(biomeId)) {
+			return biome;
+		}
+
 		BiomeData biomeData = Featurify.getConfig().getBiomeData().get(biomeId);
 
 		if (shouldKeepOriginalBiome(biomeData)) {
@@ -62,7 +79,14 @@ public final class FeaturifyBiomeFilter
 		}
 
 		if (!biomeData.isUsingDefaultReplacementBiome()) {
-			return getConfiguredReplacementBiome(biomeData.getReplacementBiome());
+			var replacementBiomeId = biomeData.getReplacementBiome().replace("#", "");
+
+			if (MarkerBiomes.isMarkerBiome(replacementBiomeId)) {
+				Featurify.getLogger().warn("Replacement biome \"{}\" for \"{}\" is a marker biome and cannot be used as a replacement, keeping original biome.", replacementBiomeId, biomeId);
+				return biome;
+			}
+
+			return getConfiguredReplacementBiome(replacementBiomeId);
 		}
 
 		return baseBiomeSupplier.get();

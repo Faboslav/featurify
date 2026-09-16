@@ -7,6 +7,7 @@ import com.faboslav.featurify.common.modcompat.ModChecker;
 import com.faboslav.featurify.common.modcompat.ModCompat;
 import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.common.versions.VersionedId;
+import com.faboslav.featurify.common.worldgen.biome.compat.MarkerBiomes;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -35,6 +36,16 @@ public final class BiomeParameterReplacer
 
 		for (int i = 0; i < originalEntries.size(); i++) {
 			var entry = originalEntries.get(i);
+			var biomeId = VersionedId.getId(entry.getSecond().unwrapKey().orElseThrow()).toString();
+
+			if (MarkerBiomes.isMarkerBiome(biomeId)) {
+				if (replacedEntries != null) {
+					replacedEntries.add(entry);
+				}
+
+				continue;
+			}
+
 			var biomeData = getBiomeData(entry.getSecond());
 
 			if (shouldKeepOriginalBiome(biomeData)) {
@@ -59,7 +70,14 @@ public final class BiomeParameterReplacer
 
 				replacementBiome = findClosestEnabledBiome(entry.getFirst(), enabledEntries);
 			} else {
-				replacementBiome = getConfiguredReplacementBiome(biomeData.getReplacementBiome());
+				var replacementBiomeId = biomeData.getReplacementBiome().replace("#", "");
+
+				if (MarkerBiomes.isMarkerBiome(replacementBiomeId)) {
+					Featurify.getLogger().warn("Replacement biome \"{}\" for \"{}\" is a marker biome and cannot be used as a replacement, keeping original biome.", replacementBiomeId, biomeId);
+					replacementBiome = entry.getSecond();
+				} else {
+					replacementBiome = getConfiguredReplacementBiome(replacementBiomeId);
+				}
 			}
 
 			replacedEntries.add(Pair.of(
@@ -101,6 +119,12 @@ public final class BiomeParameterReplacer
 		List<Pair<Climate.ParameterPoint, Holder<Biome>>> enabledEntries = new ArrayList<>(entries.size());
 
 		for (Pair<Climate.ParameterPoint, Holder<Biome>> entry : entries) {
+			var biomeId = VersionedId.getId(entry.getSecond().unwrapKey().orElseThrow()).toString();
+
+			if (MarkerBiomes.isMarkerBiome(biomeId)) {
+				continue;
+			}
+
 			if (shouldKeepOriginalBiome(getBiomeData(entry.getSecond()))) {
 				enabledEntries.add(entry);
 			}
@@ -110,7 +134,7 @@ public final class BiomeParameterReplacer
 	}
 
 	private static BiomeData getBiomeData(Holder<Biome> biome) {
-		String biomeId = VersionedId.GetId(biome.unwrapKey().get()).toString();
+		String biomeId = VersionedId.getId(biome.unwrapKey().get()).toString();
 
 		return Featurify.getConfig().getBiomeData().get(biomeId);
 	}

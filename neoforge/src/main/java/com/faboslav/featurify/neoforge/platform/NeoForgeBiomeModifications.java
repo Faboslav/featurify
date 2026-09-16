@@ -15,17 +15,12 @@ import java.util.Set;
 
 public final class NeoForgeBiomeModifications implements PlatformBiomeModifications
 {
-	public static final Set<PlacedFeatureBiomeModification> PLACED_FEATURES_ADD_BIOME_MODIFICATIONS = new HashSet<>();
-	public static final Set<PlacedFeatureBiomeModification> PLACED_FEATURES_REMOVE_BIOME_MODIFICATIONS = new HashSet<>();
+	public static final Set<PlacedFeatureBiomeModification> PLACED_FEATURE_BIOME_MODIFICATIONS = new HashSet<>();
 	private boolean shouldApplyFeaturifyBiomeModifiers = true;
 
 	@Override
-	public void addPlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biomeReference, GenerationStep.Decoration generationStep) {
-		PLACED_FEATURES_ADD_BIOME_MODIFICATIONS.add(new PlacedFeatureBiomeModification(placedFeatureReference, biomeReference, generationStep));
-	}
-
-	public void removePlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biomeReference, GenerationStep.Decoration generationStep) {
-		PLACED_FEATURES_REMOVE_BIOME_MODIFICATIONS.add(new PlacedFeatureBiomeModification(placedFeatureReference, biomeReference, generationStep));
+	public void modifyPlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biomeReference, GenerationStep.Decoration generationStep) {
+		PLACED_FEATURE_BIOME_MODIFICATIONS.add(new PlacedFeatureBiomeModification(placedFeatureReference, biomeReference, generationStep));
 	}
 
 	@Override

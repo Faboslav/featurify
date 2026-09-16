@@ -1,6 +1,6 @@
 ## 2.0.14
 
-- Fixed config loading on server side
+- Improved config loading flow
 
 ## 2.0.13
 

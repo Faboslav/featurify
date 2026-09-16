@@ -2,8 +2,8 @@ package com.faboslav.featurify.fabric.platform;
 
 import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.platform.PlatformBiomeModifications;
-import com.faboslav.featurify.common.platform.PlatformHooks;
 import com.faboslav.featurify.common.versions.VersionedId;
+import com.faboslav.featurify.common.worldgen.WorldgenDataUpdater;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
@@ -19,19 +19,20 @@ import java.util.Set;
 
 public final class FabricBiomeModifications implements PlatformBiomeModifications
 {
-	private static final Set<Identifier> ADDED_MODIFICATIONS = new HashSet<>();
-	private static final Set<Identifier> REMOVED_MODIFICATIONS = new HashSet<>();
+	private static final Set<Identifier> REGISTERED_MODIFICATIONS = new HashSet<>();
 	private boolean shouldApplyFeaturifyBiomeModifiers = true;
 
 	@Override
-	public void addPlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biomeReference, GenerationStep.Decoration generationStep) {
+	public void modifyPlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biomeReference, GenerationStep.Decoration generationStep) {
 		var placedFeatureKey = placedFeatureReference.unwrapKey().orElseThrow();
-		var placedFeatureId = VersionedId.GetId(placedFeatureKey).toString();
+		var placedFeatureId = VersionedId.getId(placedFeatureKey);
+		var stringPlacedFeatureId = placedFeatureId.toString();
 		var biomeKey = biomeReference.unwrapKey().orElseThrow();
-		var biomeModificationId = "add_" + VersionedId.GetId(biomeKey).getNamespace() + "_" + VersionedId.GetId(biomeKey).getPath() + "_" + VersionedId.GetId(placedFeatureKey).getNamespace() + "_" + VersionedId.GetId(placedFeatureKey).getPath();
-		var modificationId = Featurify.makeId(biomeModificationId.replace('/', '_'));
+		var biomeId = VersionedId.getId(biomeKey);
+		var stringBiomeId = biomeId.toString();
+		var modificationId = Featurify.makeId((biomeId.getNamespace() + "_" + biomeId.getPath() + "_" + placedFeatureId.getNamespace() + "_" + placedFeatureId.getPath()).replace('/', '_'));
 
-		if (!ADDED_MODIFICATIONS.add(modificationId)) {
+		if (!REGISTERED_MODIFICATIONS.add(modificationId)) {
 			return;
 		}
 
@@ -39,49 +40,36 @@ public final class FabricBiomeModifications implements PlatformBiomeModification
 			.add(
 				ModificationPhase.POST_PROCESSING,
 				context -> context.getBiomeKey().equals(biomeKey),
-				context -> {
-					if(!PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.shouldApplyFeaturifyBiomeModifiers()) {
+				(selectionContext, modificationContext) -> {
+					if (!this.shouldApplyFeaturifyBiomeModifiers()) {
 						return;
 					}
 
-					var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId, null);
+					var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().get(stringPlacedFeatureId);
 
-					if(placedFeatureData == null || !placedFeatureData.getAdditionalBiomes().contains(VersionedId.GetId(biomeKey).toString())) {
+					if (placedFeatureData == null) {
 						return;
 					}
 
-					context.getGenerationSettings().addFeature(generationStep, placedFeatureKey);
-				}
-			);
-	}
+					if (placedFeatureData.getRemovedBiomes().contains(stringBiomeId)) {
+						modificationContext.getGenerationSettings().removeFeature(generationStep, placedFeatureKey);
+					}
 
-	public void removePlacedFeature(Holder<PlacedFeature> placedFeatureReference, Holder<Biome> biomeReference, GenerationStep.Decoration generationStep) {
-		var placedFeatureKey = placedFeatureReference.unwrapKey().orElseThrow();
-		var placedFeatureId = VersionedId.GetId(placedFeatureKey).toString();
-		var biomeKey = biomeReference.unwrapKey().orElseThrow();
-		var biomeModificationId = "remove_" + VersionedId.GetId(biomeKey).getNamespace() + "_" + VersionedId.GetId(biomeKey).getPath() + "_" + VersionedId.GetId(placedFeatureKey).getNamespace() + "_" + VersionedId.GetId(placedFeatureKey).getPath();
-		var modificationId = Featurify.makeId(biomeModificationId.replace('/', '_'));
-
-		if (!REMOVED_MODIFICATIONS.add(modificationId)) {
-			return;
-		}
-
-		BiomeModifications.create(modificationId)
-			.add(
-				ModificationPhase.POST_PROCESSING,
-				context -> true,
-				context -> {
-					if(!this.shouldApplyFeaturifyBiomeModifiers()) {
+					if (!placedFeatureData.getAdditionalBiomes().contains(stringBiomeId)) {
 						return;
 					}
 
-					var placedFeatureData = Featurify.getConfig().getPlacedFeatureData().getOrDefault(placedFeatureId, null);
+					var currentFeatures = selectionContext.getBiome().getGenerationSettings().features();
 
-					if(placedFeatureData == null || !placedFeatureData.getRemovedBiomes().contains(VersionedId.GetId(biomeKey).toString())) {
+					if (WorldgenDataUpdater.containsFeature(currentFeatures, placedFeatureReference)) {
 						return;
 					}
 
-					context.getGenerationSettings().removeFeature(generationStep, placedFeatureKey);
+					if (!WorldgenDataUpdater.canSafelyAddFeature(selectionContext.getBiomeRegistryEntry(), currentFeatures, placedFeatureReference, generationStep)) {
+						return;
+					}
+
+					modificationContext.getGenerationSettings().addFeature(generationStep, placedFeatureKey);
 				}
 			);
 	}
