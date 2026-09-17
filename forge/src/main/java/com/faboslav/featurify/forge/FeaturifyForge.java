@@ -60,17 +60,11 @@ public final class FeaturifyForge
 		}
 
 		RegistryManagerProvider.setRegistryManager(event.getRegistryAccess());
-
-		if(PlatformHooks.PLATFORM_HELPER.isServerEnv()) {
-			LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
-		}
-
 		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
 	}
 
 	private static void onServerAboutToStart(ServerAboutToStartEvent event) {
 		RegistryManagerProvider.setRegistryManager(event.getServer().registryAccess());
-		LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
 		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
 	}
 }

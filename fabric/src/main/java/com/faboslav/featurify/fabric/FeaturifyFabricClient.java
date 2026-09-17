@@ -1,9 +1,6 @@
 package com.faboslav.featurify.fabric;
 
 import com.faboslav.featurify.common.FeaturifyClient;
-import com.faboslav.featurify.common.events.common.LoadConfigEvent;
-import com.faboslav.featurify.common.events.common.UpdateWorldgenDataEvent;
-import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,9 +11,5 @@ public final class FeaturifyFabricClient implements ClientModInitializer
 	@Environment(EnvType.CLIENT)
 	public void onInitializeClient() {
 		FeaturifyClient.init();
-
-		LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
-		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
 	}
 }
-
