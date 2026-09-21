@@ -1,5 +1,6 @@
 package com.faboslav.featurify.common.config.client.gui;
 
+import com.faboslav.featurify.common.api.FeaturifyYACLScreen;
 import com.faboslav.featurify.common.config.FeaturifyConfig;
 import com.faboslav.featurify.common.config.client.api.controller.builder.BiomeStringControllerBuilder;
 import com.faboslav.featurify.common.config.client.api.option.InvisibleOptionGroup;
@@ -57,6 +58,9 @@ public final class BiomeConfigScreen
 		biomeCategoryBuilder.group(biomeSettingsGroup.build());
 		yacl.category(biomeCategoryBuilder.build());
 
-		return (YACLScreen) yacl.build().generateScreen(parent);
+		var yaclScreen = (YACLScreen) yacl.build().generateScreen(parent);
+		((FeaturifyYACLScreen) yaclScreen).featurify$markAsFeaturifyScreen();
+
+		return yaclScreen;
 	}
 }

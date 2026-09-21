@@ -4,10 +4,9 @@ import com.faboslav.featurify.common.util.LanguageUtil;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.AbstractWidget;
-import dev.isxander.yacl3.gui.TextScaledButtonWidget;
+import dev.isxander.yacl3.gui.TooltipButtonWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.BooleanController;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
@@ -22,8 +21,8 @@ import net.minecraft.client.input.MouseButtonEvent;
 //? if >= 26.1 {
 import net.minecraft.client.gui.GuiGraphicsExtractor;
  //?} else {
-/*import net.minecraft.client.gui.GuiGraphics;
-	*///?}
+//import net.minecraft.client.gui.GuiGraphics;
+	//?}
 
 public class ButtonController extends BooleanController
 {
@@ -66,7 +65,7 @@ public class ButtonController extends BooleanController
 		private final String buttonTooltip;
 
 		private final BooleanControllerElement booleanElement;
-		private final TextScaledButtonWidget configurationButton;
+		private final TooltipButtonWidget configurationButton;
 
 		private boolean focused;
 
@@ -87,23 +86,16 @@ public class ButtonController extends BooleanController
 
 			this.booleanElement = new BooleanControllerElement(controller, screen, dim);
 
-			this.configurationButton = new TextScaledButtonWidget(
+			this.configurationButton = new TooltipButtonWidget(
 				screen,
 				0,
 				0,
 				CONFIG_BUTTON_WIDTH,
 				CONFIG_BUTTON_HEIGHT,
-				1.0f,
 				Component.literal("\u2699").withStyle(style -> style.withBold(true)),
+				LanguageUtil.translateId("placed_feature", id),
 				button -> this.openConfigCallback.openConfig(this.screen, this.id)
 			);
-
-			this.configurationButton.setTooltip(Tooltip.create(
-				Component.translatable(
-					this.buttonTooltip,
-					LanguageUtil.translateId("placed_feature", id)
-				)
-			));
 
 			this.setDimension(dim);
 		}

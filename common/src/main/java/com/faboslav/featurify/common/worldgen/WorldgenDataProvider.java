@@ -15,10 +15,16 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
-import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.feature.WeightedPlacedFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+
+//? if >= 26.3 {
+import net.minecraft.world.level.levelgen.feature.RandomSelectorFeature;
+import net.minecraft.world.level.levelgen.material.rule.MaterialRule;
+//?} else {
+/*import net.minecraft.world.level.levelgen.SurfaceRules;
+import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
+*///?}
 
 import java.util.*;
 
@@ -26,7 +32,11 @@ public final class WorldgenDataProvider
 {
 	private static Set<String> biomeIds = new HashSet<>();
 	private static Set<String> biomeTags = new HashSet<>();
-	private static Map<String, Map<String, SurfaceRules.RuleSource>> surfaceRuleSources = new TreeMap<>();
+	//? if >= 26.3 {
+	private static Map<String, Map<String, MaterialRule>> surfaceRuleSources = new TreeMap<>();
+	//?} else {
+	//private static Map<String, Map<String, SurfaceRules.RuleSource>> surfaceRuleSources = new TreeMap<>();
+	//?}
 	private static Map<String, BiomeData> biomes = new TreeMap<>();
 	private static Map<String, PlacedFeatureData> placedFeatures = new TreeMap<>();
 	private static Map<String, Set<String>> usedByPlacedFeatures = new TreeMap<>();
@@ -39,7 +49,11 @@ public final class WorldgenDataProvider
 		return biomeTags;
 	}
 
-	public static Map<String, Map<String, SurfaceRules.RuleSource>> getSurfaceRuleSources() {
+	//? if >= 26.3 {
+	public static Map<String, Map<String, MaterialRule>> getSurfaceRuleSources() {
+	//?} else {
+	//public static Map<String, Map<String, SurfaceRules.RuleSource>> getSurfaceRuleSources() {
+	//?}
 		return surfaceRuleSources;
 	}
 
@@ -94,8 +108,13 @@ public final class WorldgenDataProvider
 		return biomeTags;
 	}
 
-	public static Map<String, Map<String, SurfaceRules.RuleSource>> loadSurfaceRuleSources() {
+	//? if >= 26.3 {
+	public static Map<String, Map<String, MaterialRule>> loadSurfaceRuleSources() {
+		Map<String, Map<String, MaterialRule>> surfaceRuleSources = new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
+	//?} else {
+	/*public static Map<String, Map<String, SurfaceRules.RuleSource>> loadSurfaceRuleSources() {
 		Map<String, Map<String, SurfaceRules.RuleSource>> surfaceRuleSources = new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
+	*///?}
 
 		var levelStemRegistry = RegistryManagerProvider.getLevelStemRegistry();
 
@@ -112,7 +131,11 @@ public final class WorldgenDataProvider
 				continue;
 			}
 
-			SurfaceRules.RuleSource surfaceRule = ((FeaturifyNoiseGeneratorSettings) (Object) noiseGenerator.generatorSettings().value()).featurify$getSurfaceRule();
+			//? if >= 26.3 {
+			MaterialRule surfaceRule = ((FeaturifyNoiseGeneratorSettings) (Object) noiseGenerator.generatorSettings().value()).featurify$getSurfaceRule();
+			//?} else {
+			//SurfaceRules.RuleSource surfaceRule = ((FeaturifyNoiseGeneratorSettings) (Object) noiseGenerator.generatorSettings().value()).featurify$getSurfaceRule();
+			//?}
 
 			Set<ResourceKey<Biome>> biomeKeys = collectBiomeKeys(dimensionId, noiseGenerator.getBiomeSource());
 
@@ -120,7 +143,11 @@ public final class WorldgenDataProvider
 				continue;
 			}
 
-			Map<String, SurfaceRules.RuleSource> dimensionSurfaceRuleSources = new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
+			//? if >= 26.3 {
+			Map<String, MaterialRule> dimensionSurfaceRuleSources = new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
+			//?} else {
+			//Map<String, SurfaceRules.RuleSource> dimensionSurfaceRuleSources = new TreeMap<>(Comparators.ALPHABETICALL_ID_COMPARATOR);
+			//?}
 
 			for (ResourceKey<Biome> biomeKey : biomeKeys) {
 				dimensionSurfaceRuleSources.put(
@@ -238,7 +265,11 @@ public final class WorldgenDataProvider
 			defaultBiomes.sort(Comparators.ALPHABETICALL_ID_COMPARATOR);
 
 			var subFeaturesData = new TreeMap<String, Float>(Comparators.ALPHABETICALL_ID_COMPARATOR);
-			var randomFeatureConfigurations = new ArrayList<RandomFeatureConfiguration>();
+			//? if >= 26.3 {
+			var randomFeatureConfigurations = new ArrayList<RandomSelectorFeature>();
+			//?} else {
+			//var randomFeatureConfigurations = new ArrayList<RandomFeatureConfiguration>();
+			//?}
 			var usedPlacedFeatures = new ArrayList<Holder<PlacedFeature>>();
 
 			FeatureUtil.collectRandomFeatureConfigurations(
@@ -262,12 +293,16 @@ public final class WorldgenDataProvider
 					.add(placedFeatureId.toString());
 			}
 
-			for (RandomFeatureConfiguration config : randomFeatureConfigurations) {
+			//? if >= 26.3 {
+			for (RandomSelectorFeature config : randomFeatureConfigurations) {
+			//?} else {
+			//for (RandomFeatureConfiguration config : randomFeatureConfigurations) {
+			//?}
 				//? if >= 26.2 {
 				var features = config.features();
 				//?} else {
-				/*var features = config.features;
-				 *///?}
+				//var features = config.features;
+				 //?}
 
 				for (WeightedPlacedFeature weightedFeature : features) {
 					//? if >= 26.2 {

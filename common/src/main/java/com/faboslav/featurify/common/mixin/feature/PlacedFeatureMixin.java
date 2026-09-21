@@ -1,17 +1,20 @@
 package com.faboslav.featurify.common.mixin.feature;
 
-import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.api.FeaturifyPlacedFeature;
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+
+//? if < 26.3 {
+/*import com.faboslav.featurify.common.Featurify;
+import net.minecraft.world.level.levelgen.placement.PlacementContext;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+*///?}
 
 @Mixin(PlacedFeature.class)
 public abstract class PlacedFeatureMixin implements FeaturifyPlacedFeature
@@ -19,7 +22,7 @@ public abstract class PlacedFeatureMixin implements FeaturifyPlacedFeature
 	@Unique
 	@Nullable
 	public Identifier featurify$resourceLocation = null;
-	
+
 	@Override
 	public void featurify$setIdentifier(@Nullable Identifier resourceLocation) {
 		this.featurify$resourceLocation = resourceLocation;
@@ -30,7 +33,8 @@ public abstract class PlacedFeatureMixin implements FeaturifyPlacedFeature
 		return this.featurify$resourceLocation;
 	}
 
-	@WrapMethod(
+	//? if < 26.3 {
+	/*@WrapMethod(
 		method = "placeWithContext"
 	)
 	private boolean featurify$placeWithContext(
@@ -58,4 +62,5 @@ public abstract class PlacedFeatureMixin implements FeaturifyPlacedFeature
 
 			return original.call(context, source, pos);
 	}
+	*///?}
 }

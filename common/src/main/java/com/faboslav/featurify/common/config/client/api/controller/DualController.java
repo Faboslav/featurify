@@ -10,6 +10,7 @@ import dev.isxander.yacl3.gui.TextScaledButtonWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.network.chat.Component;
 
+@SuppressWarnings({"all", "removal", "deprecated"})
 public record DualController<K extends Option<?>, V extends Option<?>>(OptionPair<K, V> optionPair) implements Controller<OptionPair<K, V>>
 {
 	@Override

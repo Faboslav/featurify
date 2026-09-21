@@ -173,8 +173,8 @@ public final class BiomeParameterReplacer
 		//? if >= 1.21.1 {
 		Holder<Biome> closestBiome = enabledEntries.getFirst().getSecond();
 		//?} else {
-		/*Holder<Biome> closestBiome = enabledEntries.get(0).getSecond();
-		*///?}
+		//Holder<Biome> closestBiome = enabledEntries.get(0).getSecond();
+		//?}
 		long closestFitness = Long.MAX_VALUE;
 
 		for (Pair<Climate.ParameterPoint, Holder<Biome>> enabledEntry : enabledEntries) {

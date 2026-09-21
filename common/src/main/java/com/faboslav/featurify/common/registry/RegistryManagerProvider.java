@@ -94,7 +94,11 @@ public final class RegistryManagerProvider
 
 					//? if >=1.21.3 {
 					var dimensionsConfig = loadContextSupplierContext
-						.datapackWorldgen()
+						//? if >=26.3 {
+						.datapackWorldRegistries()
+						//?} else {
+						//.datapackWorldgen()
+						//?}
 						.lookupOrThrow(Registries.WORLD_PRESET)
 						.getOrThrow(WorldPresets.FLAT)
 						.value()

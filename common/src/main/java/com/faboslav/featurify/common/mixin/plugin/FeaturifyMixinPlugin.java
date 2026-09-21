@@ -40,6 +40,11 @@ public class FeaturifyMixinPlugin implements IMixinConfigPlugin
 		List<String> mixins = new ArrayList<>();
 
 		if (this.mixinPackage.equals("com.faboslav.featurify.common.mixin")) {
+			// 26.3+
+			if (this.isClassAvailable("net.minecraft.world.level.levelgen.placement.FeaturePlacer")) {
+				mixins.add("feature.FeaturePlacerMixin");
+			}
+
 			// TerraBlender
 			if (this.isClassAvailable("terrablender.util.LevelUtils")) {
 				mixins.add("compat.terrablender.LevelUtilsMixin");

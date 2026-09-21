@@ -4,7 +4,13 @@ import com.faboslav.featurify.common.worldgen.WorldgenDataProvider;
 import com.faboslav.featurify.common.versions.VersionedId;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.SurfaceRules;
+
+//? if >= 26.3 {
+import net.minecraft.world.level.levelgen.material.MaterialRules;
+import net.minecraft.world.level.levelgen.material.rule.MaterialRule;
+//?} else {
+//import net.minecraft.world.level.levelgen.SurfaceRules;
+//?}
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +22,68 @@ import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 
 public final class FeaturifySurfaceRuleSources
 {
-	public static SurfaceRules.RuleSource createReplacementRules() {
+	//? if >= 26.3 {
+	public static MaterialRule createReplacementRules() {
+		Map<String, Map<String, MaterialRule>> surfaceRulesByDimension =
+			WorldgenDataProvider.getSurfaceRuleSources();
+
+		if (surfaceRulesByDimension.isEmpty()) {
+			return null;
+		}
+
+		List<MaterialRule> replacementRules = new ArrayList<>();
+
+		for (ResourceKey<Biome> biome : BiomeReplacementData.getReplacementBiomes()) {
+			MaterialRule sourceRule =
+				findUniqueSurfaceRule(surfaceRulesByDimension, biome);
+
+			if (sourceRule != null) {
+				replacementRules.add(createBiomeRule(biome, sourceRule));
+			}
+		}
+
+		if(replacementRules.isEmpty()) {
+			return null;
+		}
+
+		return MaterialRules.sequence(replacementRules.toArray(MaterialRule[]::new));
+	}
+
+	private static MaterialRule findUniqueSurfaceRule(
+		Map<String, Map<String, MaterialRule>> surfaceRulesByDimension,
+		ResourceKey<Biome> biome
+	) {
+		String biomeId = VersionedId.getId(biome).toString();
+		MaterialRule foundRuleSource = null;
+
+		for (var dimensionRules : surfaceRulesByDimension.values()) {
+			MaterialRule possibleRuleSource = dimensionRules.get(biomeId);
+
+			if (possibleRuleSource == null) {
+				continue;
+			}
+
+			if (foundRuleSource != null) {
+				return null;
+			}
+
+			foundRuleSource = possibleRuleSource;
+		}
+
+		return foundRuleSource;
+	}
+
+	private static MaterialRule createBiomeRule(
+		ResourceKey<Biome> biome,
+		MaterialRule sourceRule
+	) {
+		return MaterialRules.ifTrue(
+			MaterialRules.isBiome(RegistryManagerProvider.getBiomeRegistry(), biome),
+			sourceRule
+		);
+	}
+	//?} else {
+	/*public static SurfaceRules.RuleSource createReplacementRules() {
 		Map<String, Map<String, SurfaceRules.RuleSource>> surfaceRulesByDimension =
 			WorldgenDataProvider.getSurfaceRuleSources();
 
@@ -74,9 +141,10 @@ public final class FeaturifySurfaceRuleSources
 			//? >= 26.2 {
 			SurfaceRules.isBiome(RegistryManagerProvider.getBiomeRegistry(), biome),
 			//?} else {
-			/*SurfaceRules.isBiome(biome),
-			*///?}
+			//SurfaceRules.isBiome(biome),
+			//?}
 			sourceRule
 		);
 	}
+	*///?}
 }

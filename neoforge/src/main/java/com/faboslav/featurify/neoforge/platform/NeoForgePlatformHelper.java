@@ -27,8 +27,8 @@ public final class NeoForgePlatformHelper implements PlatformHelper
 	@Override
 	public boolean isServerEnv() {
 		//? if <= 1.21.9 {
-		/*return FMLEnvironment.dist == Dist.DEDICATED_SERVER;
-		*///?} else {
+		//return FMLEnvironment.dist == Dist.DEDICATED_SERVER;
+		//?} else {
 		return FMLEnvironment.getDist() == Dist.DEDICATED_SERVER;
 		//?}
 	}
@@ -56,8 +56,8 @@ public final class NeoForgePlatformHelper implements PlatformHelper
 				return Optional.empty();
 			}
 			//?} else {
-			/*return FileUtil.getModIconInfo(id, iconPath, Optional.of(modContainer.get().getModInfo().getOwningFile().getFile().findResource(iconPath.get())));
-			 *///?}
+			//return FileUtil.getModIconInfo(id, iconPath, Optional.of(modContainer.get().getModInfo().getOwningFile().getFile().findResource(iconPath.get())));
+			 //?}
 		});
 	}
 

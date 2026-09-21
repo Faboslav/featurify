@@ -33,8 +33,8 @@ public final class ResourcePackProvider
 		//? if >=1.21 {
 		vanillaResourcePackProviders.addAll(((ResourcePackManagerAccessor) ServerPacksSource.createVanillaTrustedRepository()).getSources());
 		//?} else {
-		/*vanillaResourcePackProviders.add(new ServerPacksSource());
-		 *///?}
+		//vanillaResourcePackProviders.add(new ServerPacksSource());
+		 //?}
 
 		return vanillaResourcePackProviders;
 	}

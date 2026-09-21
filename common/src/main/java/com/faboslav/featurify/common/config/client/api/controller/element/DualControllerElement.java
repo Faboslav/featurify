@@ -2,7 +2,7 @@ package com.faboslav.featurify.common.config.client.api.controller.element;
 
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.AbstractWidget;
-import dev.isxander.yacl3.gui.TextScaledButtonWidget;
+import dev.isxander.yacl3.gui.TooltipButtonWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,21 +15,21 @@ import net.minecraft.client.input.MouseButtonEvent;
 //? if >= 26.1 {
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 //?} else {
-/*import net.minecraft.client.gui.GuiGraphics;
- *///?}
+//import net.minecraft.client.gui.GuiGraphics;
+ //?}
 
 public final class DualControllerElement extends AbstractWidget
 {
 	private final AbstractWidget firstElement;
 	private final AbstractWidget secondElement;
 	@Nullable
-	private final TextScaledButtonWidget resetButton;
+	private final TooltipButtonWidget resetButton;
 
 	public DualControllerElement(
 		Dimension<Integer> dim,
 		AbstractWidget firstElement,
 		AbstractWidget secondElement,
-		@Nullable TextScaledButtonWidget resetButton
+		@Nullable TooltipButtonWidget resetButton
 	) {
 		super(dim);
 

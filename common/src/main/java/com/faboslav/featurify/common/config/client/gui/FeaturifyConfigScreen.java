@@ -1,6 +1,7 @@
 package com.faboslav.featurify.common.config.client.gui;
 
 import com.faboslav.featurify.common.Featurify;
+import com.faboslav.featurify.common.api.FeaturifyYACLScreen;
 import com.faboslav.featurify.common.events.common.LoadConfigEvent;
 import com.faboslav.featurify.common.mixin.yacl.CategoryTabAccessor;
 import com.faboslav.featurify.common.mixin.yacl.GroupSeparatorEntryAccessor;
@@ -17,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 //? if <= 1.20.1 {
-/*import com.faboslav.featurify.common.mixin.yacl.ElementListWidgetExtMixin;
-*///?}
+//import com.faboslav.featurify.common.mixin.yacl.ElementListWidgetExtMixin;
+//?}
 
 public class FeaturifyConfigScreen
 {
@@ -36,6 +37,7 @@ public class FeaturifyConfigScreen
 		BiomesConfigScreen.createBiomesTab(yaclBuilder, config);
 
 		var yaclScreen = (YACLScreen) yaclBuilder.build().generateScreen(parent);
+		((FeaturifyYACLScreen) yaclScreen).featurify$markAsFeaturifyScreen();
 
 		return yaclScreen;
 	}
@@ -64,8 +66,8 @@ public class FeaturifyConfigScreen
 				//? if >= 1.21.4 {
 				optionListWidget.scrollAmount(),
 				//?} else {
-				/*optionListWidget.getScrollAmount(),
-				 *///?}
+				//optionListWidget.getScrollAmount(),
+				 //?}
 				collapsedGroups
 			));
 		}
@@ -83,8 +85,8 @@ public class FeaturifyConfigScreen
 				categoryTab.getSearchField().setValue(screenState.lastSearchText());
 				optionListWidget.setScrollAmount(screenState.lastScrollAmount());
 				//? if <= 1.20.1 {
-				/*((ElementListWidgetExtMixin) optionListWidget).featurify$resetSmoothScrolling();
-				*///?}
+				//((ElementListWidgetExtMixin) optionListWidget).featurify$resetSmoothScrolling();
+				//?}
 
 				for (OptionListWidget.Entry entry : optionListWidget.children()) {
 					if (entry instanceof OptionListWidget.GroupSeparatorEntry groupSeparatorEntry) {

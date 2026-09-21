@@ -22,8 +22,8 @@ public final class NeoForgeNetwork implements Network
 	//? if >= 1.21.10 {
 	private static final boolean IS_CLIENT = FMLLoader.getCurrent().getDist().isClient();
 	//?} else if >= 1.21.8 {
-	/*private static final boolean IS_CLIENT = FMLLoader.getDist().isClient();
-	*///?}
+	//private static final boolean IS_CLIENT = FMLLoader.getDist().isClient();
+	//?}
 
 	private final List<ClientboundPacketType<?>> clientPackets = new ArrayList<>();
 	private final List<ServerboundPacketType<?>> serverPackets = new ArrayList<>();
@@ -54,8 +54,8 @@ public final class NeoForgeNetwork implements Network
 
 		ClientPacketDistributor.sendToServer(new NetworkPacketPayload<>(message, this.channel));
 		//?} else {
-		/*PacketDistributor.sendToServer(new NetworkPacketPayload<>(message, this.channel));
-		 *///?}
+		//PacketDistributor.sendToServer(new NetworkPacketPayload<>(message, this.channel));
+		 //?}
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public final class NeoForgeNetwork implements Network
 	}
 
 	public void onNetworkSetup(RegisterPayloadHandlersEvent event) {
-		PayloadRegistrar registrar = event.registrar(this.version);
+		PayloadRegistrar registrar = event.registrar(this.version).optional();
 
 		for (ClientboundPacketType<?> type : this.clientPackets) {
 			this.registerClientbound(registrar, type);

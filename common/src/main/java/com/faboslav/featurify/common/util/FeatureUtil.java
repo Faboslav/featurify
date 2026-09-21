@@ -6,9 +6,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.WeightedPlacedFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.jetbrains.annotations.Nullable;
+
+//? if >= 26.3 {
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.RandomSelectorFeature;
+//?} else {
+//import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
+//?}
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -20,7 +26,11 @@ public final class FeatureUtil
 	public static void collectRandomFeatureConfigurations(
 		PlacedFeature placedFeature,
 		Set<PlacedFeature> visitedPlacedFeatures,
-		List<RandomFeatureConfiguration> configs
+		//? if >= 26.3 {
+		List<RandomSelectorFeature> configs
+		//?} else {
+		//List<RandomFeatureConfiguration> configs
+		//?}
 	) {
 		collectRandomFeatureConfigurations(placedFeature, visitedPlacedFeatures, configs, null);
 	}
@@ -28,7 +38,11 @@ public final class FeatureUtil
 	public static void collectRandomFeatureConfigurations(
 		PlacedFeature placedFeature,
 		Set<PlacedFeature> visitedPlacedFeatures,
-		List<RandomFeatureConfiguration> configs,
+		//? if >= 26.3 {
+		List<RandomSelectorFeature> configs,
+		//?} else {
+		//List<RandomFeatureConfiguration> configs,
+		//?}
 		@Nullable List<Holder<PlacedFeature>> usedPlacedFeatures
 	) {
 		collectRandomFeatureConfigurations(
@@ -44,7 +58,11 @@ public final class FeatureUtil
 		PlacedFeature placedFeature,
 		Set<PlacedFeature> visitedPlacedFeatures,
 		Set<Object> visitedConfiguredFeatures,
-		List<RandomFeatureConfiguration> configs,
+		//? if >= 26.3 {
+		List<RandomSelectorFeature> configs,
+		//?} else {
+		//List<RandomFeatureConfiguration> configs,
+		//?}
 		@Nullable List<Holder<PlacedFeature>> usedPlacedFeatures
 	) {
 		if (!visitedPlacedFeatures.add(placedFeature)) {
@@ -58,7 +76,11 @@ public final class FeatureUtil
 		Object configuredFeature,
 		Set<PlacedFeature> visitedPlacedFeatures,
 		Set<Object> visitedConfiguredFeatures,
-		List<RandomFeatureConfiguration> configs,
+		//? if >= 26.3 {
+		List<RandomSelectorFeature> configs,
+		//?} else {
+		//List<RandomFeatureConfiguration> configs,
+		//?}
 		@Nullable List<Holder<PlacedFeature>> usedPlacedFeatures
 	) {
 		try {
@@ -66,9 +88,13 @@ public final class FeatureUtil
 				return;
 			}
 
-			var config = ((net.minecraft.world.level.levelgen.feature.ConfiguredFeature<?, ?>) configuredFeature).config();
+			//? if >= 26.3 {
+			if (configuredFeature instanceof RandomSelectorFeature randomFeatureConfiguration) {
+			//?} else {
+			/*var config = ((net.minecraft.world.level.levelgen.feature.ConfiguredFeature<?, ?>) configuredFeature).config();
 
 			if (config instanceof RandomFeatureConfiguration randomFeatureConfiguration) {
+			*///?}
 				configs.add(randomFeatureConfiguration);
 
 				//? if >= 26.2 {
@@ -83,8 +109,8 @@ public final class FeatureUtil
 					//? if >= 26.2 {
 					var subPlacedFeature = weightedPlacedFeature.feature();
 					 //?} else {
-					/*var subPlacedFeature = weightedPlacedFeature.feature;
-					*///?}
+					//var subPlacedFeature = weightedPlacedFeature.feature;
+					//?}
 
 					if (usedPlacedFeatures != null) {
 						usedPlacedFeatures.add(subPlacedFeature);
@@ -102,11 +128,15 @@ public final class FeatureUtil
 				return;
 			}
 
-			//? if >= 26.1 {
-			config.getSubFeatures().forEach(childConfiguredFeature -> {
+			//? if >= 26.3 {
+			((Feature) configuredFeature).getSubFeatures().forEach(childConfiguredFeature -> {
 				collectRandomFeatureConfigurations(childConfiguredFeature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs, usedPlacedFeatures);
 			});
-			//?} else {
+			//?} else if >= 26.1 {
+			/*config.getSubFeatures().forEach(childConfiguredFeature -> {
+				collectRandomFeatureConfigurations(childConfiguredFeature.value(), visitedPlacedFeatures, visitedConfiguredFeatures, configs, usedPlacedFeatures);
+			});
+			*///?} else {
 			/*config.getFeatures().forEach(childConfiguredFeature -> {
 				collectRandomFeatureConfigurations(childConfiguredFeature, visitedPlacedFeatures, visitedConfiguredFeatures, configs, usedPlacedFeatures);
 			});

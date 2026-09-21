@@ -68,8 +68,8 @@ public final class FabricBiomeModifications implements PlatformBiomeModification
 					//? if >= 26.1 {
 					var biomeHolder = selectionContext.getBiomeHolder();
 					//?} else {
-					/*var biomeHolder = selectionContext.getBiomeRegistryEntry();
-					 *///?}
+					//var biomeHolder = selectionContext.getBiomeRegistryEntry();
+					 //?}
 
 					if (!WorldgenDataUpdater.canSafelyAddFeature(biomeHolder, currentFeatures, placedFeatureReference, generationStep)) {
 						return;

@@ -1,3 +1,9 @@
+## 2.0.15
+
+- Make Featurify optional on the client
+- Added "Collapse all" / "Expand all" button
+- Small UI quality of life tweaks
+
 ## 2.0.14
 
 - Improved config loading flow

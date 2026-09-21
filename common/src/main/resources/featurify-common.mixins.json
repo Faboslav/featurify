@@ -21,13 +21,17 @@
 	],
 	"client": [
 		"AbstractWidgetInvoker",
+		"TabManagerMixin",
 		"WorldOpenFlowsMixin",
 		"yacl.CategoryTabAccessor",
+		"yacl.CategoryTabMixin",
 		"yacl.ElementListWidgetExtMixin",
 		"yacl.GroupSeparatorEntryAccessor",
+		"yacl.GroupSeparatorEntryMixin",
 		"yacl.LabelControllerElementMixin",
 		"yacl.OptionImplMixin",
 		"yacl.OptionListWidgetMixin",
+		"yacl.TextScaledButtonWidgetMixin",
 		"yacl.YACLScreenMixin"
 	]
 }

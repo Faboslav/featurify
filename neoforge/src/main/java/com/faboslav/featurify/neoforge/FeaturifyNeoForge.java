@@ -35,8 +35,8 @@ public final class FeaturifyNeoForge
 		//? if >= 1.21.9 {
 		if (FMLEnvironment.getDist() == Dist.CLIENT)
 			//?} else {
-			/*if (FMLEnvironment.dist == Dist.CLIENT)
-			 *///?}
+			//if (FMLEnvironment.dist == Dist.CLIENT)
+			 //?}
 		{
 			FeaturifyNeoForgeClient.init(modEventBus, eventBus);
 		}
@@ -45,7 +45,11 @@ public final class FeaturifyNeoForge
 		modEventBus.addListener(FeaturifyNeoForge::onCommonSetup);
 
 		eventBus.addListener(FeaturifyNeoForge::registerCommand);
-		eventBus.addListener(EventPriority.LOWEST, FeaturifyNeoForge::onResourceManagerReload);
+		//? if >= 26.3 {
+		eventBus.addListener(EventPriority.LOWEST, FeaturifyNeoForge::onServerDataLoad);
+		//?} else {
+		//eventBus.addListener(EventPriority.LOWEST, FeaturifyNeoForge::onResourceManagerReload);
+		//?}
 		eventBus.addListener(EventPriority.LOWEST, FeaturifyNeoForge::onServerAboutToStart);
 	}
 
@@ -64,7 +68,13 @@ public final class FeaturifyNeoForge
 		FeaturifyCommands.createCommand(event.getDispatcher(), event.getBuildContext());
 	}
 
-	private static void onResourceManagerReload(TagsUpdatedEvent event) {
+	//? if >= 26.3 {
+	private static void onServerDataLoad(TagsUpdatedEvent.ServerDataLoad event) {
+		RegistryManagerProvider.setRegistryManager(event.getRegistries());
+		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
+	}
+	//?} else {
+	/*private static void onResourceManagerReload(TagsUpdatedEvent event) {
 		if (event.getUpdateCause() == TagsUpdatedEvent.UpdateCause.CLIENT_PACKET_RECEIVED) {
 			return;
 		}
@@ -72,12 +82,13 @@ public final class FeaturifyNeoForge
 		//? if >=1.21.3 {
 		var registryAccess = event.getLookupProvider();
 		//?} else {
-		/*var registryAccess = event.getRegistryAccess();
-		 *///?}
+		//var registryAccess = event.getRegistryAccess();
+		 //?}
 
 		RegistryManagerProvider.setRegistryManager(registryAccess);
 		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
 	}
+	*///?}
 
 	private static void onServerAboutToStart(ServerAboutToStartEvent event) {
 		RegistryManagerProvider.setRegistryManager(event.getServer().registryAccess());

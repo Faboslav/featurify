@@ -8,8 +8,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.Climate;
+
+//? if >= 26.3 {
+import net.minecraft.world.level.biome.BiomeSource;
+//?} else {
+//import net.minecraft.world.level.biome.BiomeResolver;
+//?}
 
 import java.util.function.Supplier;
 
@@ -51,9 +56,17 @@ public final class FeaturifyBiomeFilter
 		int quartY,
 		int quartZ,
 		Climate.Sampler sampler,
-		BiomeResolver baseResolver
+		//? if >= 26.3 {
+		BiomeSource baseResolver
+		//?} else {
+		//BiomeResolver baseResolver
+		//?}
 	) {
-		return getReplacementBiome(biome, () -> baseResolver.getNoiseBiome(quartX, quartY, quartZ, sampler));
+		//? if >= 26.3 {
+		return getReplacementBiome(biome, () -> baseResolver.createResolver(sampler).getNoiseBiome(quartX, quartY, quartZ));
+		//?} else {
+		//return getReplacementBiome(biome, () -> baseResolver.getNoiseBiome(quartX, quartY, quartZ, sampler));
+		//?}
 	}
 
 	public static Holder<Biome> getReplacementBiome(

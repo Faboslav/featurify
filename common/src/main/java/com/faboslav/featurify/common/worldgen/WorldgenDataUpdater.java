@@ -21,8 +21,13 @@ import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.WeightedPlacedFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+
+//? if >= 26.3 {
+import net.minecraft.world.level.levelgen.feature.RandomSelectorFeature;
+//?} else {
+//import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
+//?}
 
 import java.util.*;
 
@@ -82,15 +87,23 @@ public final class WorldgenDataUpdater
 				continue;
 			}
 
-			var randomFeatureConfigurations = new ArrayList<RandomFeatureConfiguration>();
+			//? if >= 26.3 {
+			var randomFeatureConfigurations = new ArrayList<RandomSelectorFeature>();
+			//?} else {
+			//var randomFeatureConfigurations = new ArrayList<RandomFeatureConfiguration>();
+			//?}
 			FeatureUtil.collectRandomFeatureConfigurations(placedFeature, Collections.newSetFromMap(new IdentityHashMap<>()), randomFeatureConfigurations);
 
-			for (RandomFeatureConfiguration config : randomFeatureConfigurations) {
+			//? if >= 26.3 {
+			for (RandomSelectorFeature config : randomFeatureConfigurations) {
+			//?} else {
+			//for (RandomFeatureConfiguration config : randomFeatureConfigurations) {
+			//?}
 				//? if >= 26.2 {
 				var features = config.features();
 				//?} else {
-				/*var features = config.features;
-				 *///?}
+				//var features = config.features;
+				 //?}
 
 				for (WeightedPlacedFeature weightedPlacedFeature : features) {
 					//? if >= 26.2 {

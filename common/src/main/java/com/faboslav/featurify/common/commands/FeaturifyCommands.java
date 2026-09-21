@@ -1,6 +1,7 @@
 package com.faboslav.featurify.common.commands;
 
 import com.faboslav.featurify.common.Featurify;
+import com.faboslav.featurify.common.network.MessageHandler;
 import com.faboslav.featurify.common.network.packet.ConfigStatusToClientPacket;
 import com.faboslav.featurify.common.network.packet.ConfigSyncRequestToClientPacket;
 import com.faboslav.featurify.common.network.packet.ConfigSyncToClientPacket;
@@ -57,6 +58,11 @@ public final class FeaturifyCommands
 			return 0;
 		}
 
+		if (!MessageHandler.DEFAULT_CHANNEL.canSendToPlayer(player, ConfigSyncRequestToClientPacket.TYPE)) {
+			source.sendFailure(Component.literal("Featurify is not installed on your client."));
+			return 0;
+		}
+
 		ConfigSyncRequestToClientPacket.sendToClient(player);
 
 		source.sendSuccess(
@@ -75,6 +81,11 @@ public final class FeaturifyCommands
 			return 0;
 		}
 
+		if (!MessageHandler.DEFAULT_CHANNEL.canSendToPlayer(player, ConfigSyncToClientPacket.TYPE)) {
+			source.sendFailure(Component.literal("Featurify is not installed on your client."));
+			return 0;
+		}
+
 		ConfigSyncToClientPacket.sendToClient(Featurify.getConfig(), player);
 
 		return 1;
@@ -85,6 +96,11 @@ public final class FeaturifyCommands
 
 		if (player == null) {
 			source.sendFailure(Component.literal("This command can only be executed by a player."));
+			return 0;
+		}
+
+		if (!MessageHandler.DEFAULT_CHANNEL.canSendToPlayer(player, ConfigStatusToClientPacket.TYPE)) {
+			source.sendFailure(Component.literal("Featurify is not installed on your client."));
 			return 0;
 		}
 

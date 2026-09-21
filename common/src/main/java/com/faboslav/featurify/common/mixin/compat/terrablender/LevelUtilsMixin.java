@@ -25,8 +25,8 @@ public abstract class LevelUtilsMixin
 		//? if >=26.2 {
 		method = "lambda$initializeBiomes$0",
 		//?} else {
-		/*method = "lambda$initializeBiomes$1",
-		*///?}
+		//method = "lambda$initializeBiomes$1",
+		//?}
 		at = @At(
 			value = "INVOKE",
 			target = "Lterrablender/api/Region;addBiomes(Lnet/minecraft/core/Registry;Ljava/util/function/Consumer;)V"
