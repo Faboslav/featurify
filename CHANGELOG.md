@@ -1,3 +1,7 @@
+## 2.0.16
+
+- Fixed some of the crashes related to featurify loading flow (again)
+
 ## 2.0.15
 
 - Make Featurify optional on the client

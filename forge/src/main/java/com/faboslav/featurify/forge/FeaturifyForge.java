@@ -34,9 +34,9 @@ public final class FeaturifyForge
 
 		if (FMLEnvironment.dist == Dist.CLIENT) {
 			FeaturifyForgeClient.init(modEventBus, eventBus);
+		} else {
+			FeaturifyForgeServer.init(modEventBus, eventBus);
 		}
-
-		modEventBus.addListener(FeaturifyForge::onCommonSetup);
 
 		eventBus.addListener(FeaturifyForge::registerCommand);
 		eventBus.addListener(FeaturifyForge::onResourceManagerReload);
@@ -45,13 +45,6 @@ public final class FeaturifyForge
 
 	private static void registerCommand(RegisterCommandsEvent event) {
 		FeaturifyCommands.createCommand(event.getDispatcher(), event.getBuildContext());
-	}
-
-	private static void onCommonSetup(final FMLCommonSetupEvent event) {
-		event.enqueueWork(() -> {
-			LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
-			UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
-		});
 	}
 
 	private static void onResourceManagerReload(TagsUpdatedEvent event) {

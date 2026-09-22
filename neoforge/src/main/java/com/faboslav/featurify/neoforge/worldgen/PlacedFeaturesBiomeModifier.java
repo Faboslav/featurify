@@ -1,7 +1,10 @@
 package com.faboslav.featurify.neoforge.worldgen;
 
 import com.faboslav.featurify.common.Featurify;
+import com.faboslav.featurify.common.events.common.LoadConfigEvent;
+import com.faboslav.featurify.common.events.common.UpdateWorldgenDataEvent;
 import com.faboslav.featurify.common.platform.PlatformHooks;
+import com.faboslav.featurify.common.registry.RegistryManagerProvider;
 import com.faboslav.featurify.common.versions.VersionedId;
 import com.faboslav.featurify.common.worldgen.WorldgenDataUpdater;
 import com.faboslav.featurify.neoforge.platform.NeoForgeBiomeModifications;

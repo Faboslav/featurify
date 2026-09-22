@@ -72,7 +72,7 @@ dependencies {
 			//"biomes-o-plenty",
 			//"windswept",
 			//"no-mans-land",
-			//"serene-shrubbery",
+			"serene-shrubbery",
 			"regions-unexplored",
 			//"enderscape"
 		).forEach { modId ->

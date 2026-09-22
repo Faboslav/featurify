@@ -30,11 +30,12 @@ public final class FeaturifyFabric implements ModInitializer
 		}
 
 		RegistryManagerProvider.setRegistryManager(registryAccess);
-		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
+		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(registryAccess));
 	}
 
 	private void onServerStart(MinecraftServer minecraftServer) {
-		RegistryManagerProvider.setRegistryManager(minecraftServer.registryAccess());
-		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
+		var registryAccess = minecraftServer.registryAccess();
+		RegistryManagerProvider.setRegistryManager(registryAccess);
+		UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(registryAccess));
 	}
 }

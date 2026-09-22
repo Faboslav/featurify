@@ -9,9 +9,7 @@
 		"defaultRequire": 1
 	},
 	"mixins": [
-		"MainMixin"
 	],
 	"client": [
-		"MinecraftMixin"
 	]
 }

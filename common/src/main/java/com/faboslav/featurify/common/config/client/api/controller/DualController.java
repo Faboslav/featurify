@@ -6,7 +6,7 @@ import dev.isxander.yacl3.api.Controller;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.AbstractWidget;
-import dev.isxander.yacl3.gui.TextScaledButtonWidget;
+import dev.isxander.yacl3.gui.TooltipButtonWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.minecraft.network.chat.Component;
 
@@ -30,13 +30,13 @@ public record DualController<K extends Option<?>, V extends Option<?>>(OptionPai
 
 		AbstractWidget firstOptionWidget = this.optionPair.firstOption().controller().provideWidget(screen, firstWidgetDimension);
 		AbstractWidget secondOptionWidget = this.optionPair.secondOption().controller().provideWidget(screen, secondWidgetDimension);
-		TextScaledButtonWidget resetButtonWidget;
+		TooltipButtonWidget resetButtonWidget;
 
 		if (this.optionPair.firstOption().controller().option().canResetToDefault() && firstOptionWidget.canReset() && this.optionPair.secondOption().controller().option().canResetToDefault() && secondOptionWidget.canReset()) {
 			firstOptionWidget.setDimension(firstOptionWidget.getDimension().expanded(-10, 0));
 			secondOptionWidget.setDimension(secondOptionWidget.getDimension().expanded(-10, 0));
 
-			var resetButton = new TextScaledButtonWidget(screen, secondOptionWidget.getDimension().xLimit() - 10, 0, 20, 20, 2f, Component.literal("\u21BB"), button -> {
+			var resetButton = new TooltipButtonWidget(screen, secondOptionWidget.getDimension().xLimit() - 10, 0, 20, 20, Component.literal("\u21BB"), null, button -> {
 				this.optionPair.firstOption().requestSetDefault();
 				this.optionPair.secondOption().requestSetDefault();
 			});

@@ -14,6 +14,11 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
+//? if >= 26.3 {
+import net.minecraft.world.level.biome.BiomeResolver;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySamplerSet;
+//?}
+
 @Pseudo
 @Mixin(value = InjectorBiomeSource.class, remap = false)
 public abstract class InjectorBiomeSourceMixin
@@ -32,7 +37,13 @@ public abstract class InjectorBiomeSourceMixin
 		int quartX,
 		int quartY,
 		int quartZ,
-		Climate.Sampler sampler
+		//? if >= 26.3 {
+		BiomeResolver baseResolver,
+		Climate.Sampler sampler,
+		DensitySamplerSet samplers
+		//?} else {
+		//Climate.Sampler sampler
+		//?}
 	) {
 		return FeaturifyBiomeFilter.getReplacementBiome(
 			original,

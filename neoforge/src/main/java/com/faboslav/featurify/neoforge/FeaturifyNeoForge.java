@@ -15,6 +15,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -34,15 +35,16 @@ public final class FeaturifyNeoForge
 
 		//? if >= 1.21.9 {
 		if (FMLEnvironment.getDist() == Dist.CLIENT)
-			//?} else {
-			//if (FMLEnvironment.dist == Dist.CLIENT)
-			 //?}
+		//?} else {
+		//if (FMLEnvironment.dist == Dist.CLIENT)
+		//?}
 		{
 			FeaturifyNeoForgeClient.init(modEventBus, eventBus);
+		} else {
+			FeaturifyNeoForgeServer.init(modEventBus, eventBus);
 		}
 
 		modEventBus.addListener(FeaturifyNeoForge::onRegisterPayloadHandlers);
-		modEventBus.addListener(FeaturifyNeoForge::onCommonSetup);
 
 		eventBus.addListener(FeaturifyNeoForge::registerCommand);
 		//? if >= 26.3 {
@@ -55,13 +57,6 @@ public final class FeaturifyNeoForge
 
 	private static void onRegisterPayloadHandlers(final RegisterPayloadHandlersEvent event) {
 		NeoForgePlatformNetwork.onRegisterPayloadHandlers(event);
-	}
-
-	private static void onCommonSetup(final FMLCommonSetupEvent event) {
-		event.enqueueWork(() -> {
-			LoadConfigEvent.EVENT.invoke(new LoadConfigEvent());
-			UpdateWorldgenDataEvent.EVENT.invoke(new UpdateWorldgenDataEvent(RegistryManagerProvider.getRegistryManager()));
-		});
 	}
 
 	private static void registerCommand(RegisterCommandsEvent event) {
