@@ -1,6 +1,7 @@
 ## 2.0.16
 
 - Fixed some of the crashes related to featurify loading flow (again)
+ Fixed the TextScaledButtonWidgetMixin mixin crash
 
 ## 2.0.15
 

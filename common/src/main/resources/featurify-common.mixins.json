@@ -31,7 +31,6 @@
 		"yacl.LabelControllerElementMixin",
 		"yacl.OptionImplMixin",
 		"yacl.OptionListWidgetMixin",
-		"yacl.TextScaledButtonWidgetMixin",
 		"yacl.YACLScreenMixin"
 	]
 }
