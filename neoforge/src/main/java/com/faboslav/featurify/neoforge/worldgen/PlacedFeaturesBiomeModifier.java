@@ -12,6 +12,7 @@ import com.faboslav.featurify.neoforge.registry.FeaturifyBiomeModifiers;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -26,7 +27,12 @@ public final class PlacedFeaturesBiomeModifier implements BiomeModifier
 	public static final MapCodec<? extends BiomeModifier> CODEC = MapCodec.unit(PlacedFeaturesBiomeModifier::new);
 
 	@Override
-	public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+	//? if >= 26.3 {
+	public void modify(RegistryAccess registryAccess, Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder)
+	//?} else {
+	//public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder)
+	//?}
+	{
 		if (phase == Phase.AFTER_EVERYTHING && PlatformHooks.PLATFORM_BIOME_MODIFICATIONS.shouldApplyFeaturifyBiomeModifiers()) {
 			modifyPlacedFeatures(biome, builder);
 		}
