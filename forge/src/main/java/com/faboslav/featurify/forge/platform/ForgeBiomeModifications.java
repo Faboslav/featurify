@@ -1,13 +1,16 @@
 package com.faboslav.featurify.forge.platform;
 
+import com.faboslav.featurify.common.Featurify;
 import com.faboslav.featurify.common.platform.PlatformBiomeModifications;
 import com.faboslav.featurify.common.worldgen.PlacedFeatureBiomeModification;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashSet;
@@ -16,6 +19,7 @@ import java.util.Set;
 public final class ForgeBiomeModifications implements PlatformBiomeModifications
 {
 	public static final Set<PlacedFeatureBiomeModification> PLACED_FEATURE_BIOME_MODIFICATIONS = new HashSet<>();
+	private static final ResourceKey<BiomeModifier> FABRIC_BIOME_MODIFIER = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, Featurify.makeId("fabric_biome_api_v1", "fabric_biome_modifier_instance"));
 	private boolean shouldApplyFeaturifyBiomeModifiers = true;
 
 	@Override
@@ -32,7 +36,10 @@ public final class ForgeBiomeModifications implements PlatformBiomeModifications
 			return;
 		}
 
-		var biomeModifiers = biomeModifierRegistry.listElements().map(Holder::value).toList();
+		var biomeModifiers = biomeModifierRegistry.listElements()
+			.filter(biomeModifier -> !biomeModifier.is(FABRIC_BIOME_MODIFIER))
+			.map(Holder::value)
+			.toList();
 
 		for (Holder.Reference<Biome> biomeHolder : biomeRegistry.listElements().toList()) {
 			biomeHolder.value().modifiableBiomeInfo().applyBiomeModifiers(biomeHolder, biomeModifiers);

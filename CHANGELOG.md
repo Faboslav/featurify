@@ -1,3 +1,8 @@
+## 2.0.17
+
+- Fixed crash related to biome modifications not loading when Forgified Fabric API is installed
+- Fixed not being able to type into biome inputs in the config
+
 ## 2.0.16
 
 - Fixed some of the crashes related to featurify loading flow (again)
